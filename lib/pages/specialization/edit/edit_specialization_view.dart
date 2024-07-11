@@ -2,14 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 import '../../../constants/text_style.dart';
+import '../../../utility/CustomEditText.dart';
 import '../../../widgets/custom_appbar.dart';
 import '../components/delete_file_dialog.dart';
+import '../create/create_specialization_vc.dart';
 
 class EditSpecializationView extends StatefulWidget {
-  const EditSpecializationView({super.key});
+  String  id;
+  EditSpecializationView({super.key,required this.id});
 
   @override
   State<EditSpecializationView> createState() => _EditSpecializationViewState();
@@ -18,12 +24,14 @@ class EditSpecializationView extends StatefulWidget {
 class _EditSpecializationViewState extends State<EditSpecializationView> {
   final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
 
+  final TextEditingController specializationText = TextEditingController();
+  final controller = Get.find<CreateSpecializationVC>();
   var icons = [
     'icon1.png', 'icon2.png', 'icon3.png', 'icon4.png', 'icon5.png', 'icon1.png'
   ];
 
   int selected = 0;
-
+bool tap=true;
 
   onDeleteClick(){
     showDialog(context: context, builder: (_){
@@ -33,19 +41,23 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(40)
         ),
-        child: const DeleteFileDialog(),
+        child: DeleteFileDialog(id:widget.id),
       );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
+    final specialization = controller.specilisationDetails;
+    specializationText.text=specialization.name.toString()??'';
     return Scaffold(
       body: Column(
         children: [
           CustomAppbar(showback: true, scaffoldKey: scaffoldKey),
-          Expanded(
+        GetBuilder(
+        init: CreateSpecializationVC(),
+    builder: (c) {
+          return Expanded(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -62,11 +74,10 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                       ),
                       child: Column(
                         children: [
-                          
                           Row(
                             children: [
                               Expanded(
-                                flex: 5,
+                                flex: !tap ? 2 : 5,
                                 child: Text("Specialization", style: CustomFonts.poppins10W600(
                                   color: HexColor("#80222425")
                                 )),
@@ -75,20 +86,64 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                 flex: 6,
                                 child: Row(
                                   children: [
-                                    Text("Dental", style: CustomFonts.poppins12W600(
-                                      color: HexColor("#FF222425")
-                                    )),
+                                    Visibility(
+                                      visible: !tap,
+                                      child: SizedBox(
+                                        width:150,
+                                        height: 30,
+                                        child: CustomTextFormField(controller: specializationText,textFormPaddingVerticle:0,
+                                            onChanged: (value) {
+                                              // controller
+                                              //     .handleConfirmPassword();
+                                            },),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: tap,
+                                      child: Text(specialization.name.toString()?? '', style: CustomFonts.poppins12W600(
+                                        color: HexColor("#FF222425")
+                                      )),
+                                    ),
                                     const SizedBox(width: 14,),
-                                    CircleAvatar(
-                                      radius: 11,
-                                      backgroundColor: HexColor("#FF724C"),
-                                      child: const Icon(Icons.edit, size: 12, color: Colors.white,),
+                                    Visibility(
+                                      visible: tap,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() {
+                                            tap=false;
+                                          });
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 11,
+                                          backgroundColor: HexColor("#FF724C"),
+                                          child: const Icon(Icons.edit, size: 12, color: Colors.white,),
+                                        ),
+                                      ),
+                                    ),
+                                    Visibility(
+                                      visible: !tap,
+                                      child: GestureDetector(
+                                        onTap: (){
+                                          setState(() {
+                                            tap=true;
+                                            controller.updateSpecializatonById(widget.id,specializationText.text.toString());
+                                          });
+                                        },
+                                        child: CircleAvatar(
+                                          radius: 11,
+                                          backgroundColor: HexColor("#FF724C"),
+                                          child: const Icon(Icons.done, size: 12, color: Colors.white,),
+                                        ),
+                                      ),
                                     ),
                                     const Spacer(),
-                                    CircleAvatar(
-                                      radius: 16,
-                                      backgroundColor: HexColor("#E5D7BC"),
-                                      child: const Icon(Icons.close, color: Colors.white, size: 16,),
+                                    GestureDetector(
+                                      onTap: ()=>onDeleteClick(),
+                                      child: CircleAvatar(
+                                        radius: 16,
+                                        backgroundColor: HexColor("#E5D7BC"),
+                                        child: const Icon(Icons.close, color: Colors.white, size: 16,),
+                                      ),
                                     )
                                   ],
                                 ),
@@ -107,7 +162,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               ),
                               Expanded(
                                 flex: 6,
-                                child: Text("06", style: CustomFonts.poppins12W600(
+                                child: specialization.icons ==null ?const SizedBox():Text(specialization.icons!.length.toString(), style: CustomFonts.poppins12W600(
                                   color: HexColor("#FF222425")
                                 )),
                               )
@@ -125,7 +180,9 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               ),
                               Expanded(
                                 flex: 6,
-                                child: Text("Nov 21, 2024", style: CustomFonts.poppins12W600(
+                                child:specialization.updatedAt==null?SizedBox(): Text(DateFormat("MMM dd yyyy").format(
+                                    DateTime.parse(specialization.updatedAt ?? '')
+                                        .toLocal()), style: CustomFonts.poppins12W600(
                                   color: HexColor("#FF222425")
                                 )),
                               )
@@ -143,7 +200,9 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               ),
                               Expanded(
                                 flex: 6,
-                                child: Text("12:37 pm", style: CustomFonts.poppins12W600(
+                                child: specialization.updatedAt==null?SizedBox(): Text(DateFormat().add_jms().format(
+                                    DateTime.parse(specialization.updatedAt??'')
+                                        .toLocal()), style: CustomFonts.poppins12W600(
                                   color: HexColor("#FF222425")
                                 )),
                               )
@@ -175,7 +234,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               mainAxisSpacing: 6,
                               crossAxisSpacing: 6
                             ), 
-                            itemCount: 7,
+                            itemCount: specialization.icons?.length,
                             itemBuilder: (_, idx){
                               return InkWell(
                                 onTap: (){
@@ -193,9 +252,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                       backgroundColor: selected==idx
                                         ? HexColor("#FF724C")
                                         : Colors.white,
-                                      child: idx==6
-                                      ? Icon(Icons.add, color: HexColor("#FF724C"),)
-                                      : Image.asset('assets/images/icons/${icons[idx]}', color: selected==idx ? Colors.white: HexColor("#FF724C"), width: 24, height: 24,),
+                                      child:specialization.icons==null ? SizedBox():Image.network(specialization.icons![idx].url.toString(),),
                                     ),
                                     Visibility(
                                       visible: selected==idx,
@@ -224,7 +281,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                 ],
               ),
             ),
-          )
+          );})
         ],
       ),
     );
