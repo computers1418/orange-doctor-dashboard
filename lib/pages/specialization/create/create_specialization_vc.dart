@@ -39,11 +39,12 @@ class CreateSpecializationVC extends GetxController {
   Future getSpecializatonList() async {
     rxGetList = RxStatus.loading();
     update();
+    specializations.clear();
     final response =
         await ApiMiddleWear(url: 'specialization/list', data: FormData()).get();
     if (response.statusCode == 200) {
-      if (response.data != null) {
-        for (var specialization in response.data["data"]) {
+      if (response.data["data"] != null) {
+        for  (var specialization in response.data["data"]) {
           specializations.add(Specialization.fromJson(specialization));
         }
         update();

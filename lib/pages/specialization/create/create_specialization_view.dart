@@ -26,11 +26,8 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _defaultFileNameController = TextEditingController();
   final _dialogTitleController = TextEditingController();
   final _initialDirectoryController = TextEditingController();
-  final _fileExtensionController = TextEditingController();
   String? _fileName;
   String? _saveAsFileName;
   List<PlatformFile> _paths = [];
@@ -57,8 +54,8 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
         dialogTitle: _dialogTitleController.text,
         initialDirectory: _initialDirectoryController.text,
         lockParentWindow: _lockParentWindow,
-      ))
-          !.files;
+      ))!
+          .files;
     } on PlatformException catch (e) {
       _logException('Unsupported operation' + e.toString());
     } catch (e) {
@@ -150,73 +147,55 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            SizedBox(
-                              width: MediaQuery.of(context).size.width / 1.2,
-                              height: 90,
-                              child: Center(
+                            Row(children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width / 1.2,
+                                height: 60,
                                 child: ListView.builder(
                                     shrinkWrap: true,
-                                    scrollDirection: Axis.horizontal,
                                     padding: EdgeInsets.zero,
-                                    itemCount:  _paths.length > 4
-                                        ? _paths.length
-                                        : 4,
+                                    scrollDirection: Axis.horizontal,
+                                    // physics:
+                                    //     const NeverScrollableScrollPhysics(),
+                                    itemCount: _paths.length > 1
+                                        ? _paths.length + 1
+                                        : 1,
                                     itemBuilder: (_, idx) {
-                                      return Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 4.0),
-                                        child: SizedBox(
-                                          width: 80,
-                                          child: Column(
-                                            children: [
-                                              _paths.length > idx
-                                                  ? SizedBox(
-                                                      height: 80,
-                                                      width: 80,
-                                                      child: ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      50.0),
-                                                          child: Image.file(
-                                                              fit:
-                                                                  BoxFit.fill,
-                                                              File(_paths[
-                                                                      idx]
-                                                                  .path
-                                                                  .toString()))),
-                                                    )
-                                                  : GestureDetector(
-                                                      onTap: () {
-                                                        _pickFiles();
-                                                      },
-                                                      child: CircleAvatar(
-                                                          radius: 30,
-                                                          backgroundColor:
-                                                              Colors.white,
-                                                          child: Icon(
-                                                              Icons.add,
-                                                              color: HexColor(
-                                                                  "#FF724C")))),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              _paths.length > idx
-                                                  ? const SizedBox()
-                                                  : Text(
-                                                      idx == 3
-                                                          ? "More"
-                                                          : "Add Icon",
-                                                      style: CustomFonts
-                                                          .poppins10W500(),
-                                                    ),
-                                            ],
+                                      if (idx == _paths.length) {
+                                        return Align(
+                                          alignment: Alignment.center,
+                                          child: GestureDetector(
+                                              onTap: () {
+                                                _pickFiles();
+                                              },
+                                              child: CircleAvatar(
+                                                  radius: 30,
+                                                  backgroundColor: Colors.white,
+                                                  child: Icon(Icons.add,
+                                                      color: HexColor(
+                                                          "#FF724C")))),
+                                        );
+                                      } else {
+                                        return Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 4.0),
+                                          child: SizedBox(
+                                            width: 60,
+                                            child: ClipRRect(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        50.0),
+                                                child: Image.file(
+                                                    fit: BoxFit.fill,
+                                                    File(_paths[idx]
+                                                        .path
+                                                        .toString()))),
                                           ),
-                                        ),
-                                      );
+                                        );
+                                      }
                                     }),
                               ),
-                            ),
+                            ]),
                           ],
                         ),
                         const SizedBox(
@@ -288,6 +267,9 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                   const SizedBox(height: 15),
                   GetBuilder(
                       init: CreateSpecializationVC(),
+                      initState: (state) async {
+                        state.controller?.refresh();
+                      },
                       builder: (c) {
                         return Container(
                           width: double.infinity,
