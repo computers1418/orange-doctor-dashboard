@@ -49,7 +49,7 @@ class DeleteFileDialog extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap:(){
-                        controller.deleteSpecializaton(id,).then((val){Navigator.pop(context);Navigator.pop(context);
+                        controller.deleteSpecializaton(id,).then((val){Navigator.pop(context);
                         controller.getSpecializatonList().then((val) {Navigator.push(context, MaterialPageRoute(
                             builder: (context) => const CreateSpecializationView()));});});
                         },

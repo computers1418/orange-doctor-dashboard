@@ -1,9 +1,5 @@
-import 'dart:convert';
-import 'dart:io';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:http_parser/http_parser.dart';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orange_doctor_dashboard/models/specialization.dart';
@@ -68,7 +64,6 @@ class CreateSpecializationVC extends GetxController {
             .get();
     if (response.statusCode == 200) {
       if (response.data != null) {
-        getSpecializatonList();
         update();
       }
     } else {
