@@ -37,6 +37,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor:
   dropdown_button2: ^2.3.9
+  get: ^4.6.6
+  dio: ^5.5.0+1
+  intl: ^0.19.0
+  image_picker: ^1.1.2
+  file_picker: ^8.0.6
+  http: ^1.2.1
+  curl_logger_dio_interceptor: ^1.0.0
 
 dev_dependencies:
   flutter_test:
@@ -63,8 +70,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/images/
-    - lib/pages/admin_login/assets/
-    - lib/pages/create_sub_admin/assets/
+    # - lib/pages/admin_login/assets/
+    # - lib/pages/create_sub_admin/assets/
     - assets/images/popup/
     - assets/images/icons/
     - assets/images/icons/problems/
