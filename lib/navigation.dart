@@ -1,15 +1,34 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
-import 'package:orange_doctor_dashboard/pages/specialization/create/create_specialization_vc.dart';
+import 'package:orange_doctor_dashboard/pages/admin_login/admin_login.dart';
+import 'package:orange_doctor_dashboard/pages/apk/resend/resend_apk_view.dart';
+import 'package:orange_doctor_dashboard/pages/apk/send/send_apk_view.dart';
+import 'package:orange_doctor_dashboard/pages/city/create/add_city_view.dart';
+import 'package:orange_doctor_dashboard/pages/create_sub_admin/create_sub_admin.dart';
+import 'package:orange_doctor_dashboard/pages/doctor_details/doctor_details.dart';
+import 'package:orange_doctor_dashboard/pages/invitation/invitation_link/add_invitation_link_view.dart';
+import 'package:orange_doctor_dashboard/pages/patients/consultation/consultation_info.dart';
+import 'package:orange_doctor_dashboard/pages/problem/details/set_problem_details_view.dart';
+import 'package:orange_doctor_dashboard/pages/problem/icons/problem_icons_view.dart';
+import 'package:orange_doctor_dashboard/pages/problem/set_problem_view.dart';
+import 'package:orange_doctor_dashboard/pages/registered_doctor/registered_doctor.dart';
+import 'package:orange_doctor_dashboard/pages/registered_doctor/resgistered_doctors_list_view.dart';
+import 'package:orange_doctor_dashboard/pages/registered_doctor_update/registered_doctor_update.dart';
+import 'package:orange_doctor_dashboard/pages/resend_invitation/resend_invitation.dart';
+import 'package:orange_doctor_dashboard/pages/schedule/create/set_schedule_view.dart';
+import 'package:orange_doctor_dashboard/pages/schedule/previous/previous_schedule_view.dart';
+import 'package:orange_doctor_dashboard/pages/schedule/upcoming/upcoming_schedule_view.dart';
+import 'package:orange_doctor_dashboard/pages/search/patients/search_patients_view.dart';
+import 'package:orange_doctor_dashboard/pages/send_invititaion/send_invititaion.dart';
 import 'package:orange_doctor_dashboard/pages/specialization/create/create_specialization_view.dart';
 import 'package:orange_doctor_dashboard/pages/specialization/edit/edit_specialization_view.dart';
+import 'package:orange_doctor_dashboard/pages/sub_admin_list/sub_admin_list.dart';
 
 // ignore: must_be_immutable
 class Navigation extends StatelessWidget {
   Navigation({ Key? key }) : super(key: key);
-  final CreateSpecializationVC controller = Get.find<CreateSpecializationVC>();
+
   List popItems = [
     'Edit Profile',
     'Edit Problem',
@@ -25,25 +44,253 @@ class Navigation extends StatelessWidget {
             child: SingleChildScrollView(
               child: Column(
             children: [
-              
               InkWell(
-                onTap: () {controller.getSpecializatonList().then((val) {Navigator.push(context, MaterialPageRoute(
-            builder: (context) => const CreateSpecializationView()));});} ,
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const ProblemIconsView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Problem Icons")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const ConsultationInfoView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Consultation Info")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SetScheduleView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Set Schedule")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const PreviousSchedulesView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Previous Schedules")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const UpcomingSchedulesView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Upcoming Schedules")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const CreateSpecializationView())),
                             child: Card(
                   child: Container(width: double.infinity,
                             padding: const EdgeInsets.all(16),
                     child: const Text("Create Specialization")),
                 ),
               ),
-              // InkWell(
-              //   onTap: () => Navigator.push(context, MaterialPageRoute(
-              //     builder: (context) =>  EditSpecializationView(id: '',))),
-              //               child: Card(
-              //     child: Container(width: double.infinity,
-              //               padding: const EdgeInsets.all(16),
-              //       child: const Text("Edit Specialization")),
-              //   ),
-              // ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const EditSpecializationView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Edit Specialization")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const AddCityView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Add City")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SendApkView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Send APK")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const ResendApkView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Resend APK")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const RegisteredDoctor())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Registered Doctor")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const RegisteredDoctorsListView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Registered Doctors List")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const RegisteredDoctorUpdate())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Registered Doctor Update")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SendInvitation())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Send Invitation")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const AddInvitationLinkView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Add Invitation Link")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const ResendInvitation())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Resend Invitation")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const DoctorDetails())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Doctor Details")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SetProblemView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Set Problem")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SetProblemDetailsView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Set Problem Details")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SearchPatientsView())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Search Patients")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const SubAdminList())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Sub Admin List")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const AdminLogin())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Admin Login")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const CreateSubAdmin())),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Craete Sub-Admin")),
+                ),
+              ),
+              InkWell(
+                onTap: () => popUp1(context, "Delete"),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Delete Popup")),
+                ),
+              ),
+              InkWell(
+                onTap: () => popUp1(context, "Update"),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Update Popup")),
+                ),
+              ),
+              InkWell(
+                onTap: () => popUp1(context, "Save"),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Save Popup")),
+                ),
+              ),
+              InkWell(
+                onTap: () => popUp1(context, "Add"),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Add Popup")),
+                ),
+              ),
+              InkWell(
+                onTap: () => popUp3(context),
+                            child: Card(
+                  child: Container(width: double.infinity,
+                            padding: const EdgeInsets.all(16),
+                    child: const Text("Options Popup")),
+                ),
+              ),
             ],
           ),
         ),

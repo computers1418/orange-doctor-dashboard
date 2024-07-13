@@ -4,8 +4,6 @@
 <dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Doctor uses Library access to add Icons</string>
 	<key>CFBundleDisplayName</key>
 	<string>Orange Doctor Dashboard</string>
 	<key>CFBundleExecutable</key>
