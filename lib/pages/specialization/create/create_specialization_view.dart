@@ -28,9 +28,13 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   final _dialogTitleController = TextEditingController();
   final _initialDirectoryController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
   String? _fileName;
   String? _saveAsFileName;
-  List<PlatformFile> _paths = [];
+  final List<PlatformFile?> _paths = List.generate(
+    4,
+    (index) => null,
+  );
   String? _directoryPath;
   String? _extension;
   bool _isLoading = false;
@@ -43,7 +47,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
     _resetState();
     try {
       _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
+      List<PlatformFile> pickedResut = (await FilePicker.platform.pickFiles(
         compressionQuality: 30,
         type: _pickingType,
         allowMultiple: true,
@@ -56,6 +60,24 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
         lockParentWindow: _lockParentWindow,
       ))!
           .files;
+      if (!mounted) return;
+      _paths.removeWhere((element) => element == null);
+      _paths.addAll(pickedResut);
+      _paths.addAll(
+        List.generate(
+          4 - (_paths.length % 4),
+          (index) => null,
+        ),
+      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(
+            milliseconds: 500,
+          ),
+          curve: Curves.ease,
+        );
+      });
     } on PlatformException catch (e) {
       _logException('Unsupported operation' + e.toString());
     } catch (e) {
@@ -64,7 +86,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
     if (!mounted) return;
     setState(() {
       _isLoading = false;
-      _fileName = _paths.map((e) => e.name).toString();
+      _fileName = _paths.map((e) => e?.name).toString();
       _userAborted = _paths == [];
     });
   }
@@ -77,11 +99,16 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
       _isLoading = true;
       _directoryPath = null;
       _fileName = null;
-      _paths = [];
+      // _paths = [];
       _saveAsFileName = null;
       _userAborted = false;
     });
   }
+
+  int get _totalSelectedFiles => {
+        for (int i = 0; i < _paths.length; i++)
+          if (_paths[i] != null) i
+      }.length;
 
   void _logException(String message) {
     print(message);
@@ -135,26 +162,30 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: TextField(
                               decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "Specialization Name",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                      color: HexColor("#222425")),
-                                  border: InputBorder.none),
+                                contentPadding:
+                                    const EdgeInsets.symmetric(horizontal: 16),
+                                hintText: "Specialization Name",
+                                hintStyle: CustomFonts.poppins14W500(
+                                    color: HexColor("#222425")),
+                                border: InputBorder.none,
+                              ),
                             ),
                           ),
                         ),
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            Row(children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                height: 60,
-                                child: ListView.builder(
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.2,
+                                  height: 100,
+                                  child: ListView.builder(
                                     shrinkWrap: true,
                                     padding: EdgeInsets.zero,
                                     scrollDirection: Axis.horizontal,
+                                    controller: _scrollController,
                                     // physics:
                                     //     const NeverScrollableScrollPhysics(),
                                     itemCount: _paths.length > 1
@@ -165,37 +196,119 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                         return Align(
                                           alignment: Alignment.center,
                                           child: GestureDetector(
-                                              onTap: () {
-                                                _pickFiles();
-                                              },
-                                              child: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor: Colors.white,
-                                                  child: Icon(Icons.add,
-                                                      color: HexColor(
-                                                          "#FF724C")))),
+                                            onTap: () {
+                                              setState(() {
+                                                _paths.addAll(
+                                                  [
+                                                    null,
+                                                    null,
+                                                    null,
+                                                    null,
+                                                  ],
+                                                );
+                                              });
+                                              WidgetsBinding.instance
+                                                  .addPostFrameCallback((_) {
+                                                _scrollController.animateTo(
+                                                  _scrollController
+                                                      .position.maxScrollExtent,
+                                                  duration: const Duration(
+                                                    milliseconds: 500,
+                                                  ),
+                                                  curve: Curves.ease,
+                                                );
+                                              });
+                                            },
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 8,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    child: Icon(
+                                                      Icons.add,
+                                                      color:
+                                                          HexColor("#FF724C"),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 6,
+                                                  ),
+                                                  Text(
+                                                    "More",
+                                                    style: CustomFonts
+                                                        .poppins12W500(
+                                                      color:
+                                                          HexColor("#222425"),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         );
                                       } else {
                                         return Padding(
                                           padding: const EdgeInsets.symmetric(
-                                              horizontal: 4.0),
+                                            horizontal: 8.0,
+                                          ),
                                           child: SizedBox(
-                                            width: 60,
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        50.0),
-                                                child: Image.file(
-                                                    fit: BoxFit.fill,
-                                                    File(_paths[idx]
-                                                        .path
-                                                        .toString()))),
+                                            child: Column(
+                                              children: [
+                                                _paths[idx] == null
+                                                    ? GestureDetector(
+                                                        onTap: () async {
+                                                          _pickFiles();
+                                                        },
+                                                        child: CircleAvatar(
+                                                          radius: 30,
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          child: Icon(
+                                                            Icons.add,
+                                                            color: HexColor(
+                                                              "#FF724C",
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(50.0),
+                                                        child: Image.file(
+                                                          fit: BoxFit.fill,
+                                                          height: 60,
+                                                          width: 60,
+                                                          File(
+                                                            _paths[idx]!
+                                                                .path
+                                                                .toString(),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                const SizedBox(
+                                                  height: 8,
+                                                ),
+                                                Text(
+                                                  "Add Icon",
+                                                  style: CustomFonts
+                                                      .poppins12W500(),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         );
                                       }
-                                    }),
-                              ),
-                            ]),
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ],
                         ),
                         const SizedBox(
@@ -204,8 +317,10 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text("${_paths.length} Icons Added",
-                                style: CustomFonts.poppins14W500()),
+                            Text(
+                              "$_totalSelectedFiles Icons Added",
+                              style: CustomFonts.poppins14W500(),
+                            ),
                             const SizedBox(width: 20),
                             GetBuilder(
                               init: CreateSpecializationVC(),
@@ -217,28 +332,47 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                   height: 37,
                                   width: 120,
                                   decoration: BoxDecoration(
-                                      color: HexColor("#FF724C"),
-                                      borderRadius: BorderRadius.circular(30)),
+                                    color: HexColor("#FF724C"),
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
                                   child: controller.rxGetList.isLoading
                                       ? const Padding(
                                           padding: EdgeInsets.symmetric(
                                               vertical: 8.0, horizontal: 8),
                                           child: Center(
-                                              child: SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Colors.white,
-                                                  ))),
+                                            child: SizedBox(
+                                              width: 20,
+                                              height: 20,
+                                              child: CircularProgressIndicator(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                         )
                                       : GestureDetector(
                                           onTap: () {
                                             print('Tapped Send');
                                             // controller.sendSpecializatonList(_paths);
+                                            List<String> paths = [];
+                                            List<String> names = [];
+
+                                            for (int i = 0;
+                                                i < _paths.length;
+                                                i++) {
+                                              if (_paths[i] != null) {
+                                                paths
+                                                    .add(_paths[i]!.xFile.path);
+                                                names
+                                                    .add(_paths[i]!.xFile.name);
+                                              }
+                                            }
+                                            if (paths.isEmpty) {
+                                              return;
+                                            }
                                             controller.uploadImage(
-                                                _paths.first.xFile.path,
-                                                _paths.first.xFile.name);
+                                              paths,
+                                              names,
+                                            );
                                             // controller.deleteSpecializatonIconById('668d6b77b1e15c3b7368f968',_paths?.first);
                                           },
                                           child: Center(

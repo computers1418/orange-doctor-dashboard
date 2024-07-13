@@ -9,8 +9,8 @@ import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
 class CreateSpecializationVC extends GetxController {
   RxStatus rxGetList = RxStatus.empty();
 
-  Dio dio  = Dio(BaseOptions(
-    connectTimeout: const Duration(seconds: 10),// 10 seconds
+  Dio dio = Dio(BaseOptions(
+    connectTimeout: const Duration(seconds: 10), // 10 seconds
     receiveTimeout: const Duration(seconds: 10), // 10 seconds
   ));
   List<String> pickedPath = [];
@@ -40,7 +40,7 @@ class CreateSpecializationVC extends GetxController {
         await ApiMiddleWear(url: 'specialization/list', data: FormData()).get();
     if (response.statusCode == 200) {
       if (response.data["data"] != null) {
-        for  (var specialization in response.data["data"]) {
+        for (var specialization in response.data["data"]) {
           specializations.add(Specialization.fromJson(specialization));
         }
         update();
@@ -241,18 +241,17 @@ class CreateSpecializationVC extends GetxController {
     }
   }
 
-  Future<void> uploadImage(String path,String name) async {
+  Future<void> uploadImage(List<String> path, List<String> name) async {
     Dio dio = Dio();
     var headers = {
-      'Cookie': 'connect.sid=s%3ARgk4CF6icDr7rIOuYOTzTstB2ziJJryr.AYXSVarBo1inNaEnSczCkEz6q5p3FZpogjbJs1NfLrY'
+      'Cookie':
+          'connect.sid=s%3ARgk4CF6icDr7rIOuYOTzTstB2ziJJryr.AYXSVarBo1inNaEnSczCkEz6q5p3FZpogjbJs1NfLrY'
     };
-    var data = FormData.fromMap({
-      'files': [
-        await MultipartFile.fromFile(path, filename: name)
-      ],
-      'name': 'test8'
-    });
-
+    List<MultipartFile> files = [];
+    for (var i = 0; i < path.length; i++) {
+      files.add(await MultipartFile.fromFile(path[i], filename: name[i]));
+    }
+    var data = FormData.fromMap({'files': files, 'name': 'test8'});
 
     try {
       var response = await dio.request(
@@ -260,10 +259,13 @@ class CreateSpecializationVC extends GetxController {
         options: Options(
           method: 'POST',
           headers: headers,
+          validateStatus: (status) {
+            return true;
+          },
         ),
         data: data,
       );
-      print(response.data);
+      print("Response status: ${response.statusCode} ${response.data}");
     } catch (e) {
       print('Upload error: $e');
     }
