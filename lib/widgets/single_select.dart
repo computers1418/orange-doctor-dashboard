@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class SingleSelect extends StatefulWidget {
-  final List<String> items;
+  final List items;
   final String label;
   final bool invert;
-  const SingleSelect({super.key, required this.items, required this.label, this.invert = false});
+  final ValueChanged<String> onTap;
+  const SingleSelect({super.key, required this.items, required this.label, this.invert = false, required this.onTap});
 
   @override
   State<SingleSelect> createState() => _SingleSelectState();
@@ -41,7 +42,7 @@ class _SingleSelectState extends State<SingleSelect> {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                  e,
+                  e['name'],
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                     color: widget.invert ? Colors.white: null
                   ),
@@ -50,14 +51,14 @@ class _SingleSelectState extends State<SingleSelect> {
             );
           }).toList();
         },
-        items: widget.items.map((String item) => DropdownMenuItem<String>(
-                  value: item,
+        items: widget.items.map((dynamic item) => DropdownMenuItem<String>(
+                  value: item['_id'],
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(height: 12,),
                       Text(
-                        item,
+                        item['name'],
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -77,6 +78,7 @@ class _SingleSelectState extends State<SingleSelect> {
           setState(() {
             selectedValue = value;
           });
+          widget.onTap(value!);
         },
         buttonStyleData: ButtonStyleData(
           height: 48,

@@ -113,20 +113,20 @@ class _ResendApkViewState extends State<ResendApkView> {
                               ),
                             ),
                             const SizedBox(height: 12,),
-                            const SingleSelect(
+                             SingleSelect(
                               label: "Brand", 
                               invert: true, 
                               items: [
                                 'Default', 'Orange Brand', 'Precilo', 'Nutrelis'
-                              ]
+                              ], onTap: (String value) {  },
                             ),
                             const SizedBox(height: 16,),
-                            const SingleSelect(
+                            SingleSelect(
                               label: "Specialization",  
                               invert: true, 
                               items: [
                                 'Default', 'Dental', 'Homeopathy', 'Orthopedics'
-                              ]
+                              ], onTap: (String value) {  },
                             ),
                             const SizedBox(height: 16,),
                             Container(

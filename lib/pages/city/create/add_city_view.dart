@@ -75,18 +75,18 @@ class _AddCityViewState extends State<AddCityView> {
                         ),
                         child: Column(
                           children: [
-                            const SingleSelect(
+                            SingleSelect(
                               label: "Brand",  
                               items: [
                                 'Default', 'Orange Brand', 'Precilo', 'Nutrelis'
-                              ]
+                              ], onTap: (String value) {  },
                             ),
                             const SizedBox(height: 16,),
-                            const SingleSelect(
+                            SingleSelect(
                               label: "Specialization",  
                               items: [
                                 'Default', 'Dental', 'Homeopathy', 'Orthopedics'
-                              ]
+                              ], onTap: (String value) {  },
                             ),
                             const SizedBox(height: 16,),
 

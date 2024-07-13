@@ -37,6 +37,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   hexcolor:
   dropdown_button2: ^2.3.9
+  get:
+  http:
+  intl:
 
 dev_dependencies:
   flutter_test:
