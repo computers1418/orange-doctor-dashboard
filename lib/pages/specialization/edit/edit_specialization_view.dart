@@ -58,7 +58,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
   void _pickFiles() async {
     try {
       _directoryPath = null;
-      List<PlatformFile> _pickedResult = (await FilePicker.platform.pickFiles(
+      List<PlatformFile>? _pickedResult = (await FilePicker.platform.pickFiles(
         compressionQuality: 30,
         type: _pickingType,
         allowMultiple: true,
@@ -71,7 +71,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
           .files;
       if (_pickedResult.isNotEmpty) {
         _paths.addAll(_pickedResult);
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent,
             duration: const Duration(milliseconds: 500),
@@ -187,14 +187,17 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                               tap = false;
                                             });
                                           },
-                                          child: CircleAvatar(
-                                            radius: 11,
-                                            backgroundColor:
-                                                HexColor("#FF724C"),
-                                            child: const Icon(
-                                              Icons.edit,
-                                              size: 12,
-                                              color: Colors.white,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            child: CircleAvatar(
+                                              radius: 11,
+                                              backgroundColor:
+                                                  HexColor("#FF724C"),
+                                              child: const Icon(
+                                                Icons.edit,
+                                                size: 12,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -222,20 +225,23 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                               // controller.updateSpecializatonById(widget.id,specializationText.text.toString());
                                             });
                                           },
-                                          child: CircleAvatar(
-                                            radius: 11,
-                                            backgroundColor:
-                                                HexColor("#FF724C"),
-                                            child: const Icon(
-                                              Icons.done,
-                                              size: 12,
-                                              color: Colors.white,
+                                          child: Container(
+                                            padding: const EdgeInsets.all(8),
+                                            child: CircleAvatar(
+                                              radius: 11,
+                                              backgroundColor:
+                                                  HexColor("#FF724C"),
+                                              child: const Icon(
+                                                Icons.done,
+                                                size: 12,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                       const SizedBox(
-                                        width: 8,
+                                        width: 12,
                                       ),
                                       GestureDetector(
                                         onTap: () {
@@ -257,7 +263,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               ],
                             ),
                             const SizedBox(
-                              height: 14,
+                              height: 8,
                             ),
                             Row(
                               children: [

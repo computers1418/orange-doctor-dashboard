@@ -38,6 +38,7 @@ class CreateSpecializationVC extends GetxController {
     specializations.clear();
     final response =
         await ApiMiddleWear(url: 'specialization/list', data: FormData()).get();
+    print('response:${response.data}');
     if (response.statusCode == 200) {
       if (response.data["data"] != null) {
         for (var specialization in response.data["data"]) {
@@ -105,8 +106,14 @@ class CreateSpecializationVC extends GetxController {
         await ApiMiddleWear(url: 'specialization/update/$id', data: formData)
             .post();
     if (response.statusCode == 200) {
-      print('Stat:${response.data}');
       if (response.data != null) {
+        // update the name of the specialization
+        specilisationDetails.name = updateName;
+        for (var specialization in specializations) {
+          if (specialization.sId == id) {
+            specialization.name = updateName;
+          }
+        }
         update();
       }
     } else {
@@ -126,7 +133,6 @@ class CreateSpecializationVC extends GetxController {
             url: 'specialization/delete-icon/$id', data: formData)
         .post();
     if (response.statusCode == 200) {
-      print('Stat:${response.data}');
       if (response.data != null) {
         update();
       }
@@ -159,65 +165,26 @@ class CreateSpecializationVC extends GetxController {
     update();
   }
 
-  Future<dynamic> sendSpecializatonList(platformFile) async {
-    // File file = File(platformFile.first.path);
-    for (var items in platformFile) {
-      selectedImagesPath.add(items);
-    }
+  Future<dynamic> createSpecialization({
+    required List<String> paths,
+    required List<String> names,
+    required String specilizationName,
+  }) async {
     rxGetList = RxStatus.loading();
-    // String path;
-    // String extension;
-    // List<String> parts;
-    // path = platformFile!.path.toString();
-    // parts = path.split('.');
-    // extension = parts.last;
     update();
-    // print('extension:${extension}');
-    // print('extension:${file.path.split('/').last}');
-    // print('extension:${file.path}');
-    // List<Future<MapEntry<String, MultipartFile>>> futures = [];
-    FormData formData = FormData.fromMap({
-      'name': 'testsds',
+    List<MultipartFile> files = [];
+    for (var i = 0; i < paths.length; i++) {
+      files.add(await MultipartFile.fromFile(paths[i], filename: names[i]));
+    }
+    var data = FormData.fromMap({
+      'icons': files,
+      'name': specilizationName,
     });
-    formData.files
-        .addAll(await Future.wait(selectedImagesPath.map((imagePath) async {
-      return MapEntry(
-          "icons",
-          await MultipartFile.fromFile(imagePath.path,
-              filename: imagePath.name));
-    })));
-    // for (var imagePath in file) {
-    //   futures.add(Future<MapEntry<String, MultipartFile>>(() async {
-    //     return MapEntry(
-    //       "icons",
-    //       await MultipartFile.fromFile(imagePath.path,
-    //           filename: imagePath.name),
-    //     );
-    //   }));
-    // }
-    // formData.files.addAll(await Future.wait(futures));
-    print('formData:${formData.fields.asMap()}');
     try {
-      Response response = await dio.post(
-        'http://13.127.57.197/api/specialization/create',
-        data: formData,
-        options: Options(
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-          // validateStatus: (status) {
-          //   return status! < 500; // Accept responses with status codes less than 500
-          // },
-        ),
-      );
-      // final response = await Dio().post(
-      //   'http://13.127.57.197/api/specialization/create',
-      //   data: formData,
-      //   options: Options(headers: {
-      //     'Content-Type': 'multipart/form-data'
-      //   },),
-      // );
-      print('Status:${response.statusCode}');
+      final response = await ApiMiddleWear(
+        url: 'specialization/create',
+        data: data,
+      ).post();
       if (response.statusCode == 200) {
         if (response.data != null) {
           for (var specialization in response.data["data"]) {
@@ -241,7 +208,11 @@ class CreateSpecializationVC extends GetxController {
     }
   }
 
-  Future<void> uploadImage(List<String> path, List<String> name) async {
+  Future<void> uploadImage(
+    List<String> path,
+    List<String> name, {
+    required String specilizationName,
+  }) async {
     Dio dio = Dio();
     var headers = {
       'Cookie':
@@ -249,9 +220,23 @@ class CreateSpecializationVC extends GetxController {
     };
     List<MultipartFile> files = [];
     for (var i = 0; i < path.length; i++) {
-      files.add(await MultipartFile.fromFile(path[i], filename: name[i]));
+      print('path:$path');
+      files.add(await MultipartFile.fromFile(
+        path[i],
+        filename: name[i],
+      ));
     }
-    var data = FormData.fromMap({'files': files, 'name': 'test8'});
+    var data = FormData.fromMap({
+      'icons': files,
+      'name': specilizationName,
+    });
+
+    data.fields.forEach((field) {
+      print('Field: ${field.key} = ${field.value}');
+    });
+    data.files.forEach((file) {
+      print('File: ${file.key} = ${file.value.filename}');
+    });
 
     try {
       var response = await dio.request(

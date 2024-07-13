@@ -6,14 +6,14 @@ import 'package:orange_doctor_dashboard/utility/networking.dart';
 class ApiMiddleWear extends APIInterface {
   String url;
   FormData data;
-  ApiMiddleWear({required this.url,required this.data});
+  ApiMiddleWear({required this.url, required this.data});
 
-  DioService dio=DioService(
+  DioService dio = DioService(
       dioClient: Dio(BaseOptions(
-        baseUrl: "http://13.127.57.197/api/",
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-      )));
+    baseUrl: "http://13.127.57.197/api/",
+    connectTimeout: const Duration(seconds: 5),
+    receiveTimeout: const Duration(seconds: 5),
+  )));
   @override
   Future<Response> delete() {
     throw UnimplementedError();
@@ -33,7 +33,7 @@ class ApiMiddleWear extends APIInterface {
 
   @override
   Future<Response> post() async {
-    final response = await dio.post(endpoint: url,data:data);
+    final response = await dio.post(endpoint: url, data: data);
     return response;
   }
 }

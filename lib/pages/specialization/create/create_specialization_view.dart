@@ -29,6 +29,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   final _dialogTitleController = TextEditingController();
   final _initialDirectoryController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _nameController = TextEditingController();
   String? _fileName;
   String? _saveAsFileName;
   final List<PlatformFile?> _paths = List.generate(
@@ -47,7 +48,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
     _resetState();
     try {
       _directoryPath = null;
-      List<PlatformFile> pickedResut = (await FilePicker.platform.pickFiles(
+      List<PlatformFile>? pickedResut = (await FilePicker.platform.pickFiles(
         compressionQuality: 30,
         type: _pickingType,
         allowMultiple: true,
@@ -126,6 +127,14 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _nameController.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
@@ -161,6 +170,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: TextField(
+                              controller: _nameController,
                               decoration: InputDecoration(
                                 contentPadding:
                                     const EdgeInsets.symmetric(horizontal: 16),
@@ -351,8 +361,6 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                         )
                                       : GestureDetector(
                                           onTap: () {
-                                            print('Tapped Send');
-                                            // controller.sendSpecializatonList(_paths);
                                             List<String> paths = [];
                                             List<String> names = [];
 
@@ -366,12 +374,16 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                                     .add(_paths[i]!.xFile.name);
                                               }
                                             }
-                                            if (paths.isEmpty) {
+                                            if (paths.isEmpty ||
+                                                names.isEmpty ||
+                                                _nameController.text.isEmpty) {
                                               return;
                                             }
                                             controller.uploadImage(
                                               paths,
                                               names,
+                                              specilizationName:
+                                                  _nameController.text.trim(),
                                             );
                                             // controller.deleteSpecializatonIconById('668d6b77b1e15c3b7368f968',_paths?.first);
                                           },
