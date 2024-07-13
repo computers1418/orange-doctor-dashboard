@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../constants/text_style.dart';
-import '../create/create_specialization_vc.dart';
-import '../create/create_specialization_view.dart';
 
 class DeleteFileDialog extends StatelessWidget {
-  String id;
+  const DeleteFileDialog({super.key});
 
-   DeleteFileDialog( {super.key,required this.id});
-
-  final controller = Get.find<CreateSpecializationVC>();
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
@@ -47,24 +40,17 @@ class DeleteFileDialog extends StatelessWidget {
             
                 Row(mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap:(){
-                        controller.deleteSpecializaton(id,).then((val){Navigator.pop(context);
-                        controller.getSpecializatonList().then((val) {Navigator.push(context, MaterialPageRoute(
-                            builder: (context) => const CreateSpecializationView()));});});
-                        },
-                      child: Container(height: 42,
-                      width: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: HexColor("#FF724C"),
-                        ),
-                        child: Center(
-                          child: Text("DELETE",
-                          style: CustomFonts.poppins16W600(
-                            color: Colors.white
-                          ),),
-                        ),
+                    Container(height: 42,
+                    width: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: HexColor("#FF724C"),
+                      ),
+                      child: Center(
+                        child: Text("DELETE",
+                        style: CustomFonts.poppins16W600(
+                          color: Colors.white
+                        ),),
                       ),
                     ),
                     const SizedBox(width: 10,),
