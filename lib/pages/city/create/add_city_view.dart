@@ -49,6 +49,8 @@ class _AddCityViewState extends State<AddCityView> {
     'Chennai'
   ];
 
+  bool _viewAddCity = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,24 +70,36 @@ class _AddCityViewState extends State<AddCityView> {
                         "Add City",
                         style: CustomFonts.poppins20W600(),
                       ),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 16, vertical: 8),
-                        decoration: BoxDecoration(
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _viewAddCity = !_viewAddCity;
+                          });
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 8,
+                          ),
+                          decoration: BoxDecoration(
                             color: HexColor("#FF724C"),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Row(
-                          children: [
-                            Text(
-                              "Minimize",
-                              style: CustomFonts.poppins14W600(
-                                  color: Colors.white),
-                            ),
-                            const Icon(
-                              Icons.keyboard_arrow_up_outlined,
-                              color: Colors.white,
-                            )
-                          ],
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          child: Row(
+                            children: [
+                              Text(
+                                _viewAddCity ? "Minimize" : "Expand",
+                                style: CustomFonts.poppins14W600(
+                                    color: Colors.white),
+                              ),
+                              Icon(
+                                _viewAddCity
+                                    ? Icons.keyboard_arrow_up_outlined
+                                    : Icons.keyboard_arrow_down_outlined,
+                                color: Colors.white,
+                              )
+                            ],
+                          ),
                         ),
                       )
                     ],
@@ -93,98 +107,100 @@ class _AddCityViewState extends State<AddCityView> {
                   const SizedBox(
                     height: 10,
                   ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: HexColor("#FFE8BF"),
-                    ),
-                    child: Column(
-                      children: [
-                        SingleSelect(
-                          label: "Brand",
-                          items: const [
-                            {'_id': "1", 'name': "Default"},
-                            {'_id': "2", 'name': "Orange Brand"},
-                            {'_id': "3", 'name': "Precilo"},
-                            {'_id': "4", 'name': "Nutrelis"},
-                          ],
-                          onTap: (String value) {},
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SingleSelect(
-                          label: "Specialization",
-                          items: const [
-                            {'_id': "1", 'name': "Default"},
-                            {'_id': "2", 'name': "Dental"},
-                            {'_id': "3", 'name': "Homeopathy"},
-                            {'_id': "4", 'name': "Orthopedics"},
-                          ],
-                          onTap: (String value) {},
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        SingleSelectCity(
-                          label: "View City",
-                          items: _cities,
-                          onEditName: (String newName, int index) {
-                            _cities[index] = newName;
-                            setState(() {
-                              _cities = _cities;
-                            });
-                            print("Cities: $_cities");
-                          },
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Container(
-                          width: double.infinity,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
+                  if (_viewAddCity)
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: HexColor("#FFE8BF"),
+                      ),
+                      child: Column(
+                        children: [
+                          SingleSelect(
+                            label: "Brand",
+                            items: const [
+                              {'_id': "1", 'name': "Default"},
+                              {'_id': "2", 'name': "Orange Brand"},
+                              {'_id': "3", 'name': "Precilo"},
+                              {'_id': "4", 'name': "Nutrelis"},
+                            ],
+                            onTap: (String value) {},
                           ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextField(
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "Add City",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                      color: HexColor("#222425")),
-                                  border: InputBorder.none),
-                            ),
+                          const SizedBox(
+                            height: 16,
                           ),
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Container(
-                            height: 37,
-                            width: 100,
+                          SingleSelect(
+                            label: "Specialization",
+                            items: const [
+                              {'_id': "1", 'name': "Default"},
+                              {'_id': "2", 'name': "Dental"},
+                              {'_id': "3", 'name': "Homeopathy"},
+                              {'_id': "4", 'name': "Orthopedics"},
+                            ],
+                            onTap: (String value) {},
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          SingleSelectCity(
+                            label: "View City",
+                            items: _cities,
+                            onEditName: (String newName, int index) {
+                              _cities[index] = newName;
+                              setState(() {
+                                _cities = _cities;
+                              });
+                              print("Cities: $_cities");
+                            },
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Container(
+                            width: double.infinity,
+                            height: 48,
                             decoration: BoxDecoration(
-                              color: HexColor("#FF724C"),
+                              color: Colors.white,
                               borderRadius: BorderRadius.circular(30),
                             ),
-                            child: Center(
-                              child: Text(
-                                'Done',
-                                style: CustomFonts.poppins14W700(
-                                    color: Colors.white),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: TextField(
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    hintText: "Add City",
+                                    hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#222425")),
+                                    border: InputBorder.none),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Container(
+                              height: 37,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: HexColor("#FF724C"),
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'Done',
+                                  style: CustomFonts.poppins14W700(
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   const Filters(),
                   const SizedBox(
                     height: 15,

@@ -259,6 +259,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
   String? selectedValue;
   final List<TextEditingController> _textEditingControllers = [];
   int _currentEditIndex = -1;
+  FocusNode node = FocusNode();
 
   @override
   void initState() {
@@ -335,6 +336,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                       ? TextFormField(
                                           controller: _textEditingControllers[
                                               itemIndex],
+                                          focusNode: node,
                                           style: const TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
@@ -392,7 +394,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                         itemIndex,
                                       );
                                     }
-                                    FocusScope.of(context).unfocus();
+                                    node.requestFocus();
                                     setState2(() {
                                       _currentEditIndex =
                                           _currentEditIndex == itemIndex
@@ -404,25 +406,25 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                       }
                                     });
                                   },
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(4),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        color: HexColor("#222425"),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 4,
-                                        horizontal: 10,
-                                      ),
-                                      child: Center(
-                                        child: Text(
-                                          _currentEditIndex == itemIndex
-                                              ? 'Save'
-                                              : "Edit",
-                                          style: CustomFonts.poppins8W600(
-                                              color: Colors.white),
-                                        ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor("#222425"),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 16,
+                                    ),
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        _currentEditIndex == itemIndex
+                                            ? 'Save'
+                                            : "Edit",
+                                        style: CustomFonts.poppins8W600(
+                                            color: Colors.white),
                                       ),
                                     ),
                                   ),

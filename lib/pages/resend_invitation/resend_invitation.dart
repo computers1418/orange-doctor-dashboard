@@ -141,6 +141,10 @@ class _ResendInvitationState extends State<ResendInvitation> {
                                             color: HexColor("#FFFFFF")),
                                         border: InputBorder.none,
                                       ),
+                                      style: CustomFonts.poppins14W500(
+                                        color: HexColor("#FFFFFF"),
+                                      ),
+                                      cursorColor: Colors.white,
                                     ),
                                     Positioned(
                                       right: 0,
@@ -170,13 +174,17 @@ class _ResendInvitationState extends State<ResendInvitation> {
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: TextField(
                                   decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                      hintText: "Email ID",
-                                      hintStyle: CustomFonts.poppins14W500(
-                                          color: HexColor("#FFFFFF")),
-                                      border: InputBorder.none),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    hintText: "Email ID",
+                                    hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#FFFFFF")),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: CustomFonts.poppins14W500(
+                                    color: HexColor("#FFFFFF"),
+                                  ),
+                                  cursorColor: Colors.white,
                                 ),
                               ),
                             ),
@@ -195,13 +203,17 @@ class _ResendInvitationState extends State<ResendInvitation> {
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: TextField(
                                   decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                      hintText: "Phone Number",
-                                      hintStyle: CustomFonts.poppins14W500(
-                                          color: HexColor("#FFFFFF")),
-                                      border: InputBorder.none),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    hintText: "Phone Number",
+                                    hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#FFFFFF")),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: CustomFonts.poppins14W500(
+                                    color: HexColor("#FFFFFF"),
+                                  ),
+                                  cursorColor: Colors.white,
                                 ),
                               ),
                             ),
@@ -220,13 +232,17 @@ class _ResendInvitationState extends State<ResendInvitation> {
                                     const EdgeInsets.symmetric(horizontal: 16),
                                 child: TextField(
                                   decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                      hintText: "City",
-                                      hintStyle: CustomFonts.poppins14W500(
-                                          color: HexColor("#FFFFFF")),
-                                      border: InputBorder.none),
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    hintText: "City",
+                                    hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#FFFFFF")),
+                                    border: InputBorder.none,
+                                  ),
+                                  style: CustomFonts.poppins14W500(
+                                    color: HexColor("#FFFFFF"),
+                                  ),
+                                  cursorColor: Colors.white,
                                 ),
                               ),
                             ),

@@ -66,7 +66,7 @@ class _SingleSelectState extends State<SingleSelect> {
                         height: 12,
                       ),
                       Text(
-                        item,
+                        item['name'],
                         style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
@@ -89,6 +89,7 @@ class _SingleSelectState extends State<SingleSelect> {
           setState(() {
             selectedValue = value;
           });
+          widget.onTap(value!);
         },
         buttonStyleData: ButtonStyleData(
           height: 48,
