@@ -4,7 +4,11 @@ import 'package:hexcolor/hexcolor.dart';
 import '../../../constants/text_style.dart';
 
 class SearchInput extends StatelessWidget {
-  const SearchInput({super.key});
+  final TextEditingController controller;
+  const SearchInput({
+    super.key,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,25 +21,30 @@ class SearchInput extends StatelessWidget {
       ),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Stack(alignment: Alignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
             TextField(
               decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 16
-                ),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                 hintText: "Search here",
-                hintStyle: CustomFonts.poppins14W500(
-                  color: HexColor("#40664D21")
-                ),
+                hintStyle:
+                    CustomFonts.poppins14W500(color: HexColor("#40664D21")),
                 border: InputBorder.none,
               ),
+              controller: controller,
             ),
-            Positioned(right: 0,
-              height: 34, width: 34,
+            Positioned(
+              right: 0,
+              height: 34,
+              width: 34,
               child: CircleAvatar(
                 backgroundColor: HexColor("#FF724C"),
-                child: const Icon(Icons.search, color: Colors.white, size: 16,),
+                child: const Icon(
+                  Icons.search,
+                  color: Colors.white,
+                  size: 16,
+                ),
               ),
             )
           ],

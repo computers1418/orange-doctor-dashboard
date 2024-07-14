@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 import '../common_methods/common_methods.dart';
 import '../constants/constants.dart';
 
-
-class InvitationController extends GetxController{
+class InvitationController extends GetxController {
   RxBool isDataLoading = false.obs;
   RxList brands = [].obs;
   RxList specializations = [].obs;
@@ -34,15 +33,14 @@ class InvitationController extends GetxController{
       var headers = {
         'Content-Type': 'application/json',
       };
-      var request = http.Request(
-          'GET', Uri.parse('$baseUrl/api/brand/list'));
-   
+      var request = http.Request('GET', Uri.parse('$baseUrl/api/brand/list'));
+
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-      
-      if(response.statusCode == 401){
-      }else{
+
+      if (response.statusCode == 401) {
+      } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
           brands.value = resp['data'];
@@ -52,8 +50,7 @@ class InvitationController extends GetxController{
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return resp;
   }
 
@@ -63,16 +60,16 @@ class InvitationController extends GetxController{
       var headers = {
         'Content-Type': 'application/json',
       };
-      var request = http.Request(
-          'GET', Uri.parse('$baseUrl/api/specialization/list'));
-   
+      var request =
+          http.Request('GET', Uri.parse('$baseUrl/api/specialization/list'));
+
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-      
-      if(response.statusCode == 401){
+
+      if (response.statusCode == 401) {
         // Get.offAndToNamed('login');
-      }else{
+      } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
           specializations.value = resp['data'];
@@ -82,8 +79,7 @@ class InvitationController extends GetxController{
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return resp;
   }
 
@@ -93,15 +89,15 @@ class InvitationController extends GetxController{
       var headers = {
         'Content-Type': 'application/json',
       };
-      var request = http.Request(
-          'GET', Uri.parse('$baseUrl/api/registrationlink/list'));
-   
+      var request =
+          http.Request('GET', Uri.parse('$baseUrl/api/registrationlink/list'));
+
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-      
-      if(response.statusCode == 401){
-      }else{
+
+      if (response.statusCode == 401) {
+      } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
           invitationsList.value = resp['data'];
@@ -112,8 +108,7 @@ class InvitationController extends GetxController{
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return resp;
   }
 
@@ -123,17 +118,17 @@ class InvitationController extends GetxController{
       var headers = {
         'Content-Type': 'application/json',
       };
-      var request = http.Request(
-          'POST', Uri.parse('$baseUrl/api/registrationlink/add'));
-   
+      var request =
+          http.Request('POST', Uri.parse('$baseUrl/api/registrationlink/add'));
+
       request.headers.addAll(headers);
 
       request.body = jsonEncode(body);
 
       http.StreamedResponse response = await request.send();
-      
-      if(response.statusCode == 401){
-      }else{
+
+      if (response.statusCode == 401) {
+      } else {
         if (response.statusCode == 200) {
           getInvitationLinkList();
         } else {
@@ -142,8 +137,7 @@ class InvitationController extends GetxController{
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return resp;
   }
 
@@ -155,7 +149,7 @@ class InvitationController extends GetxController{
       };
       var request = http.Request(
           'POST', Uri.parse('$baseUrl/api/registrationlink/delete'));
-   
+
       request.headers.addAll(headers);
 
       request.body = jsonEncode(body);
@@ -163,8 +157,8 @@ class InvitationController extends GetxController{
       http.StreamedResponse response = await request.send();
       // resp = await CommonMethods.decodeStreamedResponse(response);
       // print(resp);
-      if(response.statusCode == 401){
-      }else{
+      if (response.statusCode == 401) {
+      } else {
         if (response.statusCode == 200) {
           getInvitationLinkList();
         } else {
@@ -173,8 +167,7 @@ class InvitationController extends GetxController{
           }
         }
       }
-    } catch (e) {
-    }
+    } catch (e) {}
     return resp;
   }
 }

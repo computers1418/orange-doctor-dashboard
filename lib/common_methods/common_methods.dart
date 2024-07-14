@@ -16,8 +16,8 @@ class CommonMethods {
     }
   }
 
-  static String getValue(String value){
-    if(double.parse(value) == double.parse(value).toInt()){
+  static String getValue(String value) {
+    if (double.parse(value) == double.parse(value).toInt()) {
       return double.parse(value).toStringAsFixed(0);
     }
     return double.parse(value).toStringAsFixed(2);
@@ -26,29 +26,29 @@ class CommonMethods {
   static showSnackbar(text, context, {color, durationInMs}) {
     return ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       duration: Duration(milliseconds: durationInMs ?? 3000),
-      content: Text(text??''),
+      content: Text(text ?? ''),
       backgroundColor: color,
     ));
   }
 
-  static Map decodeResponse(String response){
+  static Map decodeResponse(String response) {
     Map respJson = {};
-    try{
+    try {
       respJson = jsonDecode(response);
       return respJson;
-    }catch(e){
+    } catch (e) {
       respJson = {};
       return respJson;
     }
   }
 
   static Future<Map<String, dynamic>> decodeStreamedResponse(
-      http.StreamedResponse response) async{
+      http.StreamedResponse response) async {
     Map<String, dynamic> respJson = {};
-    try{
+    try {
       respJson = jsonDecode(await response.stream.bytesToString());
       return respJson;
-    }catch(e){
+    } catch (e) {
       respJson = {};
       return respJson;
     }
