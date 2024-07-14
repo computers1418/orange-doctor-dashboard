@@ -123,7 +123,7 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                               const SizedBox(height: 16,),
                               Align(alignment: Alignment.centerRight,
                                 child: GestureDetector(
-                                  onTap: () {
+                                  onTap: () async {
                                     String emptyFields = '';
                                     if(selectedBrandId.isEmpty || selectedSpecializationId.isEmpty || linkController.text.isEmpty){
                                       if(selectedBrandId.isEmpty){
@@ -138,18 +138,25 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
 
                                       showSnackbar('${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
                                     } else {
-                                      ic.addInvitationLink({
+                                      try{
+                                          Map resp = await ic.addInvitationLink({
                                         'specializationId': selectedSpecializationId,
                                         'brandId': selectedBrandId,
                                         // 'name': linkController.text,
                                         'link': linkController.text
-                                      }).then((_){
-                                        setState(() {
+                                        });
+                                        if(resp['status'] != 200){
+                                          showSnackbar(resp['message']);
+                                        } else {
+                                          setState(() {
                                           linkController.text = '';
                                           ic.isDataLoading.value = true;
                                           ic.isDataLoading.value = false;
                                         });
-                                      });
+                                        }
+                                        }finally{
+
+                                        }
                                     }
                                   },
                                   child: Container(
@@ -362,11 +369,18 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
               GestureDetector(
-                onTap: () {
-                  ic.deleteInvitationLink({
+                onTap: () async{
+                  try{
+                    Map resp = await ic.deleteInvitationLink({
                     'specializationId': ic.invitationsList[index]['specializationId'],
                     'brandId': ic.invitationsList[index]['brandId'],
                   });
+                  if(resp['status'] != 200){
+                    showSnackbar(resp['message']);
+                  }
+                  }finally{
+
+                  }
                 },
                 child: Container(
                   height: 22,

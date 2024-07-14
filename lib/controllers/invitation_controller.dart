@@ -161,13 +161,16 @@ class InvitationController extends GetxController{
       request.body = jsonEncode(body);
 
       http.StreamedResponse response = await request.send();
-      // resp = await CommonMethods.decodeStreamedResponse(response);
-      // print(resp);
+      resp = await CommonMethods.decodeStreamedResponse(response);
+      print(resp);
       if(response.statusCode == 401){
       }else{
         if (response.statusCode == 200) {
           getInvitationLinkList();
         } else {
+          Get.showSnackbar(GetSnackBar(
+            title: resp['message'],
+          ));
           if (kDebugMode) {
             print(response.reasonPhrase);
           }
