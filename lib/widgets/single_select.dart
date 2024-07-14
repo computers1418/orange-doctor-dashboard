@@ -3,17 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 class SingleSelect extends StatefulWidget {
-  final List<String> items;
+  final List<Map> items;
   final String label;
   final bool invert;
-  const SingleSelect({super.key, required this.items, required this.label, this.invert = false});
+  final ValueChanged<String> onTap;
+  const SingleSelect(
+      {super.key,
+      required this.items,
+      required this.label,
+      this.invert = false,
+      required this.onTap});
 
   @override
   State<SingleSelect> createState() => _SingleSelectState();
 }
 
 class _SingleSelectState extends State<SingleSelect> {
-
   String? selectedValue;
 
   @override
@@ -27,35 +32,39 @@ class _SingleSelectState extends State<SingleSelect> {
               child: Text(
                 widget.label,
                 style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: widget.invert ? Colors.white: const Color(0xFF222425)
-                ),
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color:
+                        widget.invert ? Colors.white : const Color(0xFF222425)),
                 overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
         ),
-        selectedItemBuilder: (_){
-          return widget.items.map((e){
+        selectedItemBuilder: (_) {
+          return widget.items.map((e) {
             return Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                  e,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: widget.invert ? Colors.white: null
-                  ),
-                  overflow: TextOverflow.ellipsis,
-                ),
+                e['name'],
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge
+                    ?.copyWith(color: widget.invert ? Colors.white : null),
+                overflow: TextOverflow.ellipsis,
+              ),
             );
           }).toList();
         },
-        items: widget.items.map((String item) => DropdownMenuItem<String>(
-                  value: item,
+        items: widget.items
+            .map((dynamic item) => DropdownMenuItem<String>(
+                  value: item['_id'],
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12,),
+                      const SizedBox(
+                        height: 12,
+                      ),
                       Text(
                         item,
                         style: const TextStyle(
@@ -66,8 +75,11 @@ class _SingleSelectState extends State<SingleSelect> {
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 12),
-                      if(widget.items.indexOf(item)<widget.items.length-1)
-                      const Divider(height: 0, color: Color(0x33FFFFFF),)
+                      if (widget.items.indexOf(item) < widget.items.length - 1)
+                        const Divider(
+                          height: 0,
+                          color: Color(0x33FFFFFF),
+                        )
                     ],
                   ),
                 ))
@@ -83,7 +95,9 @@ class _SingleSelectState extends State<SingleSelect> {
           padding: const EdgeInsets.only(left: 0, right: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            color: widget.invert ? HexColor("#F7F8FC").withOpacity(0.1) :Colors.white,
+            color: widget.invert
+                ? HexColor("#F7F8FC").withOpacity(0.1)
+                : Colors.white,
           ),
         ),
         iconStyleData: IconStyleData(
@@ -91,21 +105,21 @@ class _SingleSelectState extends State<SingleSelect> {
             Icons.keyboard_arrow_down_outlined,
           ),
           iconSize: 24,
-          iconEnabledColor:widget.invert ? Colors.white:  Colors.black,
+          iconEnabledColor: widget.invert ? Colors.white : Colors.black,
           iconDisabledColor: Colors.grey,
         ),
         dropdownStyleData: DropdownStyleData(
           maxHeight: 200,
-          padding: const EdgeInsets.symmetric(horizontal:  16, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: const Color(0xEFFF724C),
-            boxShadow: const [
-              BoxShadow(
-                offset: Offset(0, 10), blurRadius: 20, color: Color(0x1A000000)
-              ),
-            ]
-          ),
+              borderRadius: BorderRadius.circular(25),
+              color: const Color(0xEFFF724C),
+              boxShadow: const [
+                BoxShadow(
+                    offset: Offset(0, 10),
+                    blurRadius: 20,
+                    color: Color(0x1A000000)),
+              ]),
           offset: const Offset(0, 0),
           scrollbarTheme: ScrollbarThemeData(
             radius: const Radius.circular(40),
