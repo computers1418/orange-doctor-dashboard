@@ -23,12 +23,6 @@ class _SingleSelectState extends State<SingleSelect> {
   String? selectedValue;
 
   @override
-  void initState() {
-    super.initState();
-    print("********************  ${widget.items}");
-  }
-
-  @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
       child: DropdownButton2<String>(
@@ -96,10 +90,7 @@ class _SingleSelectState extends State<SingleSelect> {
           setState(() {
             selectedValue = value;
           });
-          widget.onTap(
-            widget.items
-                .firstWhere((element) => element['name'] == value)['_id'],
-          );
+          widget.onTap(value!);
         },
         buttonStyleData: ButtonStyleData(
           height: 48,

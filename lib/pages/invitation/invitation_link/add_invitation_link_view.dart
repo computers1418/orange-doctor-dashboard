@@ -90,7 +90,12 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                   children: [
                                     SingleSelect(
                                         label: "Brand",
-                                        items: ic.brands as List<Map>,
+                                        items: ic.brands.map((e) {
+                                          return {
+                                            'name': e['name'],
+                                            '_id': e['_id'],
+                                          };
+                                        }).toList(),
                                         onTap: (String value) {
                                           setState(() {
                                             selectedBrandId = value;
@@ -101,7 +106,12 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                     ),
                                     SingleSelect(
                                         label: "Specialization",
-                                        items: ic.specializations as List<Map>,
+                                        items: ic.specializations.map((e) {
+                                          return {
+                                            'name': e['name'],
+                                            '_id': e['_id'],
+                                          };
+                                        }).toList(),
                                         onTap: (String value) {
                                           setState(() {
                                             selectedSpecializationId = value;

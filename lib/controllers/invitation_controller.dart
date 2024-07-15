@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:orange_doctor_dashboard/models/specilization.dart';
 
 import '../common_methods/common_methods.dart';
 import '../constants/constants.dart';
