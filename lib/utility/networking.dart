@@ -30,9 +30,6 @@ class DioService {
     Options? options,
     CancelToken? cancelToken,
   }) async {
-    print('URL:${endpoint}');
-    print('data:${data}');
-    print('options:${options}');
     final response = await _dio.post(
       endpoint,
       data: data,

@@ -5,7 +5,7 @@ import 'package:orange_doctor_dashboard/utility/networking.dart';
 
 class ApiMiddleWear extends APIInterface {
   String url;
-  FormData data;
+  dynamic data;
   ApiMiddleWear({required this.url, required this.data});
 
   DioService dio = DioService(
@@ -14,6 +14,9 @@ class ApiMiddleWear extends APIInterface {
         baseUrl: "http://13.127.57.197/api/",
         connectTimeout: const Duration(seconds: 5),
         receiveTimeout: const Duration(seconds: 5),
+        validateStatus: (status) {
+          return true;
+        },
       ),
     ),
   );
@@ -35,8 +38,12 @@ class ApiMiddleWear extends APIInterface {
   }
 
   @override
-  Future<Response> post() async {
-    final response = await dio.post(endpoint: url, data: data);
+  Future<Response> post({Options? options}) async {
+    final response = await dio.post(
+      endpoint: url,
+      data: data,
+      options: options,
+    );
     return response;
   }
 }

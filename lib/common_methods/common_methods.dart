@@ -16,6 +16,20 @@ class CommonMethods {
     }
   }
 
+  static successCustomSnackBar(title, msg) {
+    if (!Get.isSnackbarOpen) {
+      Get.snackbar(
+        title,
+        msg,
+        backgroundColor: Colors.green,
+        snackStyle: SnackStyle.FLOATING,
+        maxWidth: 300,
+        margin: const EdgeInsets.all(20),
+        colorText: Colors.white,
+      );
+    }
+  }
+
   static String getValue(String value) {
     if (double.parse(value) == double.parse(value).toInt()) {
       return double.parse(value).toStringAsFixed(0);

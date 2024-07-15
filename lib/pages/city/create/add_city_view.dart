@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:orange_doctor_dashboard/models/brands_model.dart';
+import 'package:orange_doctor_dashboard/common_methods/common_methods.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/count_info.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/doctor_info_card.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/filters.dart';
@@ -25,6 +25,11 @@ class _AddCityViewState extends State<AddCityView> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int currentPage = 1;
   final TextEditingController _searchController = TextEditingController();
+  bool _viewAddCity = true;
+  String? selectedBrandId;
+  String? selectedSpecializationId;
+  final TextEditingController _nameController = TextEditingController();
+  CityController cityController = Get.put(CityController());
 
   @override
   initState() {
@@ -32,6 +37,13 @@ class _AddCityViewState extends State<AddCityView> {
     _searchController.addListener(() {
       setState(() {});
     });
+    _nameController.addListener(() {
+      setState(() {});
+    });
+
+    cityController.getBrandsList();
+    cityController.getSpecializatonList();
+    cityController.getCitiesList();
   }
 
   callback(page) {
@@ -39,23 +51,6 @@ class _AddCityViewState extends State<AddCityView> {
       currentPage = page;
     });
   }
-
-  List<String> _cities = [
-    'Default',
-    'Bangalore',
-    'Mumbai',
-    'Hyderabad',
-    'Pune',
-    'Delhi',
-    'NCR',
-    'Kolkata',
-    'Chennai'
-  ];
-
-  bool _viewAddCity = true;
-
-  String? selectedBrandId;
-  String? selectedSpecializationId;
 
   @override
   Widget build(BuildContext context) {
@@ -114,13 +109,8 @@ class _AddCityViewState extends State<AddCityView> {
                     height: 10,
                   ),
                   if (_viewAddCity) ...[
-                    GetBuilder(
-                      init: CityController(),
-                      initState: (_) {
-                        Get.find<CityController>().getBrandsList();
-                        Get.find<CityController>().getSpecializatonList();
-                      },
-                      builder: (CityController cityController) {
+                    Obx(
+                      () {
                         if (cityController.rxGetList.value.isError) {
                           return const Center(
                             child: Text("Error"),
@@ -170,16 +160,7 @@ class _AddCityViewState extends State<AddCityView> {
                               const SizedBox(
                                 height: 16,
                               ),
-                              SingleSelectCity(
-                                label: "View City",
-                                items: _cities,
-                                onEditName: (String newName, int index) {
-                                  _cities[index] = newName;
-                                  setState(() {
-                                    _cities = _cities;
-                                  });
-                                },
-                              ),
+                              const SingleSelectCity(),
                               const SizedBox(
                                 height: 16,
                               ),
@@ -192,16 +173,21 @@ class _AddCityViewState extends State<AddCityView> {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
+                                    horizontal: 16,
+                                  ),
                                   child: TextField(
+                                    controller: _nameController,
                                     decoration: InputDecoration(
-                                        contentPadding:
-                                            const EdgeInsets.symmetric(
-                                                horizontal: 16),
-                                        hintText: "Add City",
-                                        hintStyle: CustomFonts.poppins14W500(
-                                            color: HexColor("#222425")),
-                                        border: InputBorder.none),
+                                      contentPadding:
+                                          const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                      ),
+                                      hintText: "Add City",
+                                      hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#222425"),
+                                      ),
+                                      border: InputBorder.none,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -210,21 +196,69 @@ class _AddCityViewState extends State<AddCityView> {
                               ),
                               Align(
                                 alignment: Alignment.centerRight,
-                                child: Container(
-                                  height: 37,
-                                  width: 100,
-                                  decoration: BoxDecoration(
-                                    color: HexColor("#FF724C"),
-                                    borderRadius: BorderRadius.circular(30),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'Done',
-                                      style: CustomFonts.poppins14W700(
-                                          color: Colors.white),
-                                    ),
-                                  ),
-                                ),
+                                child: cityController.creatingCity.value
+                                    ? const CircularProgressIndicator()
+                                    : InkWell(
+                                        onTap: () async {
+                                          if (selectedBrandId == null) {
+                                            CommonMethods.customSnackBar(
+                                              "Error",
+                                              "Please select Brand",
+                                            );
+                                            return;
+                                          }
+                                          if (selectedSpecializationId ==
+                                              null) {
+                                            CommonMethods.customSnackBar(
+                                              "Error",
+                                              "Please select Specialization",
+                                            );
+                                            return;
+                                          }
+                                          if (_nameController.text
+                                              .trim()
+                                              .isEmpty) {
+                                            CommonMethods.customSnackBar(
+                                              "Error",
+                                              "Please enter City Name",
+                                            );
+                                            return;
+                                          }
+
+                                          bool success =
+                                              await cityController.createCity(
+                                            brandId: selectedBrandId!,
+                                            specializationId:
+                                                selectedSpecializationId!,
+                                            name: _nameController.text.trim(),
+                                          );
+                                          if (success) {
+                                            _nameController.clear();
+                                            setState(() {});
+                                            CommonMethods.successCustomSnackBar(
+                                              "Success",
+                                              "City Added Successfully",
+                                            );
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 37,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: HexColor("#FF724C"),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Done',
+                                              style: CustomFonts.poppins14W700(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                               ),
                             ],
                           ),
