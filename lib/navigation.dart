@@ -129,21 +129,21 @@ class Navigation extends StatelessWidget {
                   ),
                 ),
               ),
-              InkWell(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const AddCityView(),
-                  ),
-                ),
-                child: Card(
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(16),
-                    child: const Text("Add City"),
-                  ),
-                ),
-              ),
+              // InkWell(
+              //   onTap: () => Navigator.push(
+              //     context,
+              //     MaterialPageRoute(
+              //       builder: (context) => const AddCityView(),
+              //     ),
+              //   ),
+              //   child: Card(
+              //     child: Container(
+              //       width: double.infinity,
+              //       padding: const EdgeInsets.all(16),
+              //       child: const Text("Add City"),
+              //     ),
+              //   ),
+              // ),
               InkWell(
                 onTap: () => Navigator.push(
                     context,

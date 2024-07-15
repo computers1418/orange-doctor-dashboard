@@ -9,11 +9,15 @@ class ApiMiddleWear extends APIInterface {
   ApiMiddleWear({required this.url, required this.data});
 
   DioService dio = DioService(
-      dioClient: Dio(BaseOptions(
-    baseUrl: "http://13.127.57.197/api/",
-    connectTimeout: const Duration(seconds: 5),
-    receiveTimeout: const Duration(seconds: 5),
-  )));
+    dioClient: Dio(
+      BaseOptions(
+        baseUrl: "http://13.127.57.197/api/",
+        connectTimeout: const Duration(seconds: 5),
+        receiveTimeout: const Duration(seconds: 5),
+      ),
+    ),
+  );
+
   @override
   Future<Response> delete() {
     throw UnimplementedError();
@@ -27,7 +31,6 @@ class ApiMiddleWear extends APIInterface {
 
   @override
   Future<Response> patch() {
-    // TODO: implement patch
     throw UnimplementedError();
   }
 

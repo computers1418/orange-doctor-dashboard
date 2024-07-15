@@ -7,12 +7,13 @@ class SingleSelect extends StatefulWidget {
   final String label;
   final bool invert;
   final ValueChanged<String> onTap;
-  const SingleSelect(
-      {super.key,
-      required this.items,
-      required this.label,
-      this.invert = false,
-      required this.onTap});
+  const SingleSelect({
+    super.key,
+    required this.items,
+    required this.label,
+    this.invert = false,
+    required this.onTap,
+  });
 
   @override
   State<SingleSelect> createState() => _SingleSelectState();
@@ -20,6 +21,12 @@ class SingleSelect extends StatefulWidget {
 
 class _SingleSelectState extends State<SingleSelect> {
   String? selectedValue;
+
+  @override
+  void initState() {
+    super.initState();
+    print("********************  ${widget.items}");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,7 +96,10 @@ class _SingleSelectState extends State<SingleSelect> {
           setState(() {
             selectedValue = value;
           });
-          widget.onTap(value!);
+          widget.onTap(
+            widget.items
+                .firstWhere((element) => element['name'] == value)['_id'],
+          );
         },
         buttonStyleData: ButtonStyleData(
           height: 48,
