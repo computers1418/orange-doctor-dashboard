@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
+import 'package:orange_doctor_dashboard/models/brands_model.dart';
+import 'package:orange_doctor_dashboard/models/invitation_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 
 import '../common_methods/common_methods.dart';
@@ -10,9 +13,9 @@ import '../constants/constants.dart';
 
 class InvitationController extends GetxController {
   RxBool isDataLoading = false.obs;
-  RxList brands = [].obs;
-  RxList specializations = [].obs;
-  RxList invitationsList = [].obs;
+  RxList<BrandsModel> brands = <BrandsModel>[].obs;
+  RxList<Specialization> specializations = <Specialization>[].obs;
+  RxList<InvitationModel> invitationsList = <InvitationModel>[].obs;
 
   @override
   void onInit() async {
@@ -44,7 +47,9 @@ class InvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          brands.value = resp['data'];
+          brands.value = resp['data']
+              .map<BrandsModel>((e) => BrandsModel.fromJson(e))
+              .toList();
         } else {
           if (kDebugMode) {
             print(response.reasonPhrase);
@@ -73,7 +78,9 @@ class InvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          specializations.value = resp['data'];
+          specializations.value = resp['data']
+              .map<Specialization>((e) => Specialization.fromJson(e))
+              .toList();
         } else {
           if (kDebugMode) {
             print(response.reasonPhrase);
@@ -101,15 +108,18 @@ class InvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          invitationsList.value = resp['data'];
-          print(resp['data']);
+          invitationsList.value = resp['data']
+              .map<InvitationModel>((e) => InvitationModel.fromJson(e))
+              .toList();
         } else {
           if (kDebugMode) {
             print(response.reasonPhrase);
           }
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      printC("getInvitationLinkList error $e");
+    }
     return resp;
   }
 

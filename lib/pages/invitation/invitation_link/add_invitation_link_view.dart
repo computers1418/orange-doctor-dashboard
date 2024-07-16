@@ -25,8 +25,6 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
   final linkController = TextEditingController();
 
   int currentPage = 1;
-  Map brand = {};
-  Map specialization = {};
 
   String selectedBrandId = '';
   String selectedSpecializationId = '';
@@ -90,12 +88,9 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                   children: [
                                     SingleSelect(
                                         label: "Brand",
-                                        items: ic.brands.map((e) {
-                                          return {
-                                            'name': e['name'],
-                                            '_id': e['_id'],
-                                          };
-                                        }).toList(),
+                                        items: ic.brands
+                                            .map((e) => e.toJson())
+                                            .toList(),
                                         onTap: (String value) {
                                           setState(() {
                                             selectedBrandId = value;
@@ -106,12 +101,9 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                     ),
                                     SingleSelect(
                                         label: "Specialization",
-                                        items: ic.specializations.map((e) {
-                                          return {
-                                            'name': e['name'],
-                                            '_id': e['_id'],
-                                          };
-                                        }).toList(),
+                                        items: ic.specializations
+                                            .map((e) => e.toJson())
+                                            .toList(),
                                         onTap: (String value) {
                                           setState(() {
                                             selectedSpecializationId = value;
@@ -143,8 +135,8 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                                 hintText: "Add Link URL",
                                                 hintStyle:
                                                     CustomFonts.poppins14W500(
-                                                        color: HexColor(
-                                                            "#222425")),
+                                                  color: HexColor("#222425"),
+                                                ),
                                                 border: InputBorder.none,
                                               ),
                                             ),
@@ -223,9 +215,9 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 8),
                                     decoration: BoxDecoration(
-                                        color: HexColor("#222425"),
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
+                                      color: HexColor("#222425"),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
                                     child: Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
@@ -280,45 +272,44 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                     Expanded(
                                       flex: 4,
                                       child: Text(
-                                        "URL List (124)",
+                                        "URL List (${ic.invitationsList.length})",
                                         style: CustomFonts.poppins20W600(),
                                       ),
                                     ),
                                     Expanded(
-                                        flex: 5,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.end,
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 20,
-                                                      vertical: 3),
-                                              decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(30),
-                                                  color: HexColor("#2A2C41")),
-                                              child: Text(
-                                                "Refresh",
-                                                style:
-                                                    CustomFonts.poppins10W700(
-                                                        color: HexColor(
-                                                            "#FF724C")),
+                                      flex: 5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 20, vertical: 3),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              color: HexColor("#2A2C41"),
+                                            ),
+                                            child: Text(
+                                              "Refresh",
+                                              style: CustomFonts.poppins10W700(
+                                                color: HexColor("#FF724C"),
                                               ),
                                             ),
-                                            const SizedBox(
-                                              height: 6,
-                                            ),
-                                            Pagination(
-                                              pagesLenght: 10,
-                                              currentPage: currentPage,
-                                              callback: callback,
-                                            ),
-                                          ],
-                                        )),
+                                          ),
+                                          const SizedBox(
+                                            height: 6,
+                                          ),
+                                          Pagination(
+                                            pagesLenght: 10,
+                                            currentPage: currentPage,
+                                            callback: callback,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
@@ -379,12 +370,14 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Precilo',
+                    // 'Precilo',
+                    ic.invitationsList[index].brandId?.name ?? "Brand Name",
                     style: CustomFonts.poppins10W600(
                         color: HexColor("#FF724C").withOpacity(.5)),
                   ),
                   Text(
-                    'Homeopathy',
+                    ic.invitationsList[index].specializationId?.name ??
+                        "Specialization Name",
                     style:
                         CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
@@ -403,9 +396,11 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                   ),
                   Text(
                     DateFormat('dd MMM yy').format(
-                        DateTime.parse(ic.invitationsList[index]['createdAt'])),
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                      DateTime.parse(ic.invitationsList[index].createdAt ?? ""),
+                    ),
+                    style: CustomFonts.poppins12W600(
+                      color: HexColor("#222425"),
+                    ),
                   ),
                 ],
               ),
@@ -422,9 +417,13 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                   ),
                   Text(
                     DateFormat('hh:mm a').format(
-                        DateTime.parse(ic.invitationsList[index]['createdAt'])),
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                      DateTime.parse(
+                        ic.invitationsList[index].createdAt ?? "",
+                      ),
+                    ),
+                    style: CustomFonts.poppins12W600(
+                      color: HexColor("#222425"),
+                    ),
                   ),
                 ],
               ),
@@ -446,9 +445,10 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    ic.invitationsList[index]['link'],
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                    ic.invitationsList[index].link ?? "Link",
+                    style: CustomFonts.poppins12W600(
+                      color: HexColor("#222425"),
+                    ),
                   ),
                 ],
               ),
@@ -464,17 +464,18 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
             GestureDetector(
               onTap: () {
                 ic.deleteInvitationLink({
-                  'specializationId': ic.invitationsList[index]
-                      ['specializationId'],
-                  'brandId': ic.invitationsList[index]['brandId'],
+                  'specializationId':
+                      ic.invitationsList[index].specializationId,
+                  'brandId': ic.invitationsList[index].brandId?.id,
                 });
               },
               child: Container(
                 height: 22,
                 width: 66,
                 decoration: BoxDecoration(
-                    color: HexColor("#FF724C"),
-                    borderRadius: BorderRadius.circular(30)),
+                  color: HexColor("#FF724C"),
+                  borderRadius: BorderRadius.circular(30),
+                ),
                 child: Center(
                   child: Text(
                     'Delete',
