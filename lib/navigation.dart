@@ -5,7 +5,7 @@ import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import 'package:orange_doctor_dashboard/pages/city/create/add_city_view.dart';
 import 'package:orange_doctor_dashboard/pages/resend_invitation/resend_invitation.dart';
 import 'package:orange_doctor_dashboard/pages/send_invititaion/send_invititaion.dart';
-import 'package:orange_doctor_dashboard/pages/specialization/create/create_specialization_vc.dart';
+import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
 import 'package:orange_doctor_dashboard/pages/admin_login/admin_login.dart';
 import 'package:orange_doctor_dashboard/pages/apk/resend/resend_apk_view.dart';
 import 'package:orange_doctor_dashboard/pages/apk/send/send_apk_view.dart';

@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../constants/text_style.dart';
-import '../create/create_specialization_vc.dart';
+import '../../../controllers/create_specialization_vc.dart';
 import '../create/create_specialization_view.dart';
 
 class DeleteFileDialog extends StatelessWidget {

@@ -6,7 +6,7 @@ import 'package:orange_doctor_dashboard/pages/city/components/count_info.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/doctor_info_card.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/filters.dart';
 import 'package:orange_doctor_dashboard/pages/city/components/search_input.dart';
-import 'package:orange_doctor_dashboard/pages/city/create/city_controller.dart';
+import 'package:orange_doctor_dashboard/controllers/city_controller.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select_city.dart';
 
 import '../../../constants/text_style.dart';

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/models/city_model.dart';
-import 'package:orange_doctor_dashboard/pages/city/create/city_controller.dart';
+import 'package:orange_doctor_dashboard/controllers/city_controller.dart';
 
 import '../constants/text_style.dart';
 
@@ -22,7 +22,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
   OverlayEntry? _overlayEntry;
   CityModel? selectedValue;
   // List<TextEditingController> _textEditingControllers = [];
-  List<String> _cities = [];
+  final List<String> _cities = [];
   int _currentEditIndex = -1;
   FocusNode node = FocusNode();
 

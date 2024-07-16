@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:orange_doctor_dashboard/pages/specialization/create/create_specialization_vc.dart';
+import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
 
 import '../../../constants/text_style.dart';
 import '../../../widgets/custom_appbar.dart';

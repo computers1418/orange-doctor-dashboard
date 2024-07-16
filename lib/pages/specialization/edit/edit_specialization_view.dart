@@ -15,7 +15,7 @@ import 'package:orange_doctor_dashboard/utility/custom_edit_text.dart';
 import '../../../constants/text_style.dart';
 import '../../../widgets/custom_appbar.dart';
 import '../components/delete_file_dialog.dart';
-import '../create/create_specialization_vc.dart';
+import '../../../controllers/create_specialization_vc.dart';
 import '../create/create_specialization_view.dart';
 
 class EditSpecializationView extends StatefulWidget {

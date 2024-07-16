@@ -3,17 +3,19 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:orange_doctor_dashboard/constants/initial_binding.dart';
 import 'package:orange_doctor_dashboard/navigation.dart';
-import 'package:orange_doctor_dashboard/pages/specialization/create/create_specialization_vc.dart';
+import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light // Set your desired color
-      ));
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light // Set your desired color
+        ),
+  );
   runApp(MyApp());
 }
 
@@ -22,7 +24,6 @@ class MyApp extends StatelessWidget {
 
   final CreateSpecializationVC authController =
       Get.put(CreateSpecializationVC());
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
