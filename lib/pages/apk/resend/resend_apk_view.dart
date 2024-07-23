@@ -405,7 +405,8 @@ class _ResendApkViewState extends State<ResendApkView> {
                                 child: Column(
                                   children: [
                                     for (int index = 0; index < 5; index++)
-                                      InvitationCard(index: index),
+                                      // InvitationCard(index: index),
+                                      Container()
                                   ],
                                 ),
                               ),

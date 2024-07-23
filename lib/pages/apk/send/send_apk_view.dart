@@ -396,7 +396,8 @@ class _SendApkViewState extends State<SendApkView> {
                                 child: Column(
                                   children: [
                                     for (int index = 0; index < 5; index++)
-                                      InvitationCard(index: index),
+                                      // InvitationCard(index: index),
+                                      Container()
                                   ],
                                 ),
                               ),

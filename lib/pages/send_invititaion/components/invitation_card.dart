@@ -2,10 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
 import '../../../../constants/text_style.dart';
+import '../../../models/list_invitation_model.dart';
 
 class InvitationCard extends StatelessWidget {
   final int index;
-  const InvitationCard({super.key, required this.index});
+  final ListInvitationModel model;
+  final VoidCallback onTap;
+
+  const InvitationCard({
+    super.key,
+    required this.index,
+    required this.model,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -104,7 +113,7 @@ class InvitationCard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    'Dr. Arnold Nilson',
+                    model.name.isEmpty ? "-" : model.name,
                     style:
                         CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
@@ -122,7 +131,7 @@ class InvitationCard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    '+91 9087654321',
+                    model.phone.isEmpty ? "-" : model.phone,
                     style:
                         CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
@@ -147,7 +156,7 @@ class InvitationCard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    'Drnilson89@gmail.com',
+                    model.email.isEmpty ? "-" : model.email,
                     style:
                         CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
@@ -165,7 +174,7 @@ class InvitationCard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    'Delhi',
+                    model.city.isEmpty ? "-" : model.city,
                     style:
                         CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
@@ -275,16 +284,19 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 3,
-              child: Container(
-                height: 22,
-                // width: 66,
-                decoration: BoxDecoration(
-                    color: HexColor("#FF724C"),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Center(
-                  child: Text(
-                    'Delete',
-                    style: CustomFonts.poppins10W700(color: Colors.white),
+              child: GestureDetector(
+                onTap: onTap,
+                child: Container(
+                  height: 22,
+                  // width: 66,
+                  decoration: BoxDecoration(
+                      color: HexColor("#FF724C"),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Center(
+                    child: Text(
+                      'Delete',
+                      style: CustomFonts.poppins10W700(color: Colors.white),
+                    ),
                   ),
                 ),
               ),
@@ -348,11 +360,11 @@ class InvitationCard extends StatelessWidget {
             )
           ],
         ),
-        if (index < 9)
-          Divider(
-            color: HexColor("#F8E3BD"),
-            height: 32,
-          )
+        // if (index < 9)
+        Divider(
+          color: HexColor("#F8E3BD"),
+          height: 32,
+        )
       ],
     );
   }

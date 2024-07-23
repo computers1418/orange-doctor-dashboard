@@ -63,7 +63,7 @@ class SendInvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          CommonMethods.showSnackbar(resp["message"], context);
+          CommonMethods.showSnackbar(resp["messsage"], context);
           getListInvitation();
         } else {
           if (kDebugMode) {
@@ -115,6 +115,38 @@ class SendInvitationController extends GetxController {
     } catch (e) {
       printC("getInvitationLinkList error $e");
     }
+    return resp;
+  }
+
+  Future<Map<String, dynamic>> deleteInvitationLink(body, context) async {
+    Map<String, dynamic> resp = {};
+    try {
+      var headers = {
+        'Content-Type': 'application/json',
+      };
+      var request = http.Request(
+          'PUT', Uri.parse('$baseUrl/api/subadmin/deleteInvitation'));
+
+      request.headers.addAll(headers);
+
+      request.body = jsonEncode(body);
+
+      http.StreamedResponse response = await request.send();
+
+      if (response.statusCode == 401) {
+      } else {
+        if (response.statusCode == 200) {
+          resp = await CommonMethods.decodeStreamedResponse(response);
+          print(resp);
+          CommonMethods.showSnackbar(resp["data"], context);
+          getListInvitation();
+        } else {
+          if (kDebugMode) {
+            print(response.reasonPhrase);
+          }
+        }
+      }
+    } catch (e) {}
     return resp;
   }
 }

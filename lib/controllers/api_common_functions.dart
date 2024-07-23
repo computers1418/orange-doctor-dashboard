@@ -10,7 +10,6 @@ Future<List<Specialization>> getAllSepcilizations() async {
     url: 'specialization/list',
     data: FormData(),
   ).get();
-  printC('response:${response.data}');
   if (response.statusCode == 200) {
     if (response.data["data"] != null) {
       for (var specialization in response.data["data"]) {
@@ -31,7 +30,6 @@ Future<List<BrandsModel>> getAllBrands() async {
     url: 'brand/list',
     data: FormData(),
   ).get();
-  printC('response:${response.data}');
   if (response.statusCode == 200) {
     if (response.data["data"] != null) {
       for (var brand in response.data["data"]) {

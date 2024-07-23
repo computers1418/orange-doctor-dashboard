@@ -37,7 +37,6 @@ class CityController extends GetxController {
       url: 'city/list',
       data: FormData(),
     ).get();
-    printC('response:${response.data}');
     if (response.statusCode == 200) {
       if (response.data["data"] != null) {
         for (var city in response.data["data"]) {
@@ -73,7 +72,6 @@ class CityController extends GetxController {
           contentType: Headers.jsonContentType,
         ),
       );
-      printC('response:${response.data}');
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
           cities.add(CityModel.fromJson(response.data["data"]));
@@ -110,7 +108,6 @@ class CityController extends GetxController {
           contentType: Headers.jsonContentType,
         ),
       );
-      printC('response:${response.data}');
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
           final index = cities.indexWhere((element) => element.id == cityId);

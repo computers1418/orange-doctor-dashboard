@@ -369,7 +369,8 @@ class _ResendInvitationState extends State<ResendInvitation> {
                           child: Column(
                             children: [
                               for (int index = 0; index < 5; index++)
-                                InvitationCard(index: index),
+                                // InvitationCard(index: index),
+                                Container()
                             ],
                           ),
                         ),

@@ -38,7 +38,6 @@ class CreateSpecializationVC extends GetxController {
     specializations.clear();
     final response =
         await ApiMiddleWear(url: 'specialization/list', data: FormData()).get();
-    print('response:${response.data}');
     if (response.statusCode == 200) {
       if (response.data["data"] != null) {
         for (var specialization in response.data["data"]) {
