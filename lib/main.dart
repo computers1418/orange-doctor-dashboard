@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
 
   final CreateSpecializationVC authController =
       Get.put(CreateSpecializationVC());
+
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

@@ -30,7 +30,7 @@ class ProblemsSheet extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           const SizedBox(height: 100,),
-          
+
           Stack(
             alignment: Alignment.bottomCenter,
             children: [

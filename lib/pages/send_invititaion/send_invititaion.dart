@@ -1,11 +1,16 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
+import 'package:orange_doctor_dashboard/controllers/send_invitation_controller.dart';
 import 'package:orange_doctor_dashboard/pages/send_invititaion/components/invitation_card.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select2.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select_filter.dart';
 
+import '../../common_methods/common_methods.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../widgets/pagination.dart';
@@ -21,6 +26,15 @@ class SendInvitation extends StatefulWidget {
 class _SendInvitationState extends State<SendInvitation> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
+  SendInvitationController sendInvitationController =
+      Get.put(SendInvitationController());
+  String selectedBrandId = '';
+  String selectedSpecializationId = '';
+  TextEditingController doctorController = TextEditingController();
+  TextEditingController emailConteoller = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
+
   int currentPage = 1;
 
   callback(page) {
@@ -29,6 +43,8 @@ class _SendInvitationState extends State<SendInvitation> {
     });
   }
 
+  showSnackbar(data) => CommonMethods.showSnackbar(data, context);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,327 +52,417 @@ class _SendInvitationState extends State<SendInvitation> {
       endDrawer: CustomDrawer(
         scaffoldKey: scaffoldKey,
       ),
-      body: Column(
-        children: [
-          CustomAppbar(
-            showback: true,
-            scaffoldKey: scaffoldKey,
-          ),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Send Invitation",
-                          style: CustomFonts.poppins20W600(),
-                        ),
-                        InkWell(
-                          onTap: () => {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    const AddInvitationLinkView(),
-                              ),
-                            )
-                          },
-                          child: Container(
-                            height: 32,
-                            width: 130,
-                            decoration: BoxDecoration(
-                              color: HexColor("#FF724C"),
-                              borderRadius: BorderRadius.circular(30),
+      body: Obx(
+        () => sendInvitationController.isFetching.value
+            ? const Center(
+                child: CircularProgressIndicator(
+                color: Colors.orange,
+              ))
+            : Column(
+                children: [
+                  CustomAppbar(
+                    showback: true,
+                    scaffoldKey: scaffoldKey,
+                  ),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 20,
                             ),
-                            child: Center(
-                              child: Text(
-                                'Add Invitation Link',
-                                style: CustomFonts.poppins10W600(
-                                  color: Colors.white,
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "Send Invitation",
+                                  style: CustomFonts.poppins20W600(),
                                 ),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: HexColor("#FFE8BF"),
-                      ),
-                      child: Column(
-                        children: [
-                          SingleSelect(
-                            label: "Brand",
-                            items: const [
-                              {'_id': "1", 'name': "Default"},
-                              {'_id': "2", 'name': "Orange Brand"},
-                              {'_id': "3", 'name': "Precilo"},
-                              {'_id': "4", 'name': "Nutrelis"},
-                            ],
-                            onTap: (String value) {},
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SingleSelect(
-                            label: "Specialization",
-                            items: const [
-                              {'_id': "1", 'name': "Default"},
-                              {'_id': "2", 'name': "Dental"},
-                              {'_id': "3", 'name': "Homeopathy"},
-                              {'_id': "4", 'name': "Orthopedics"},
-                            ],
-                            onTap: (String value) {},
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: Stack(
-                                alignment: Alignment.center,
-                                children: [
-                                  TextField(
-                                    decoration: InputDecoration(
-                                      contentPadding:
-                                          const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                      hintText: "Doctor Name",
-                                      hintStyle: CustomFonts.poppins14W500(
-                                        color: HexColor("#222425"),
+                                InkWell(
+                                  onTap: () => {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AddInvitationLinkView(),
                                       ),
-                                      border: InputBorder.none,
+                                    )
+                                  },
+                                  child: Container(
+                                    height: 32,
+                                    width: 130,
+                                    decoration: BoxDecoration(
+                                      color: HexColor("#FF724C"),
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Add Invitation Link',
+                                        style: CustomFonts.poppins10W600(
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                  Positioned(
-                                    right: 0,
-                                    child: Image.asset(
-                                      "assets/images/edit.png",
-                                      height: 20,
-                                      width: 20,
+                                )
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: HexColor("#FFE8BF"),
+                              ),
+                              child: Column(
+                                children: [
+                                  SingleSelect(
+                                      label: "Brand",
+                                      items: sendInvitationController.brands
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedBrandId = value;
+                                        });
+                                      }),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  SingleSelect(
+                                      label: "Specialization",
+                                      items: sendInvitationController
+                                          .specializations
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedSpecializationId = value;
+                                        });
+                                      }),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(30),
                                     ),
-                                  )
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          TextField(
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16),
+                                              hintText: "Doctor Name",
+                                              hintStyle:
+                                                  CustomFonts.poppins14W500(
+                                                color: HexColor("#222425"),
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                            controller: doctorController,
+                                          ),
+                                          Positioned(
+                                            right: 0,
+                                            child: Image.asset(
+                                              "assets/images/edit.png",
+                                              height: 20,
+                                              width: 20,
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 16),
+                                          hintText: "Email ID",
+                                          hintStyle: CustomFonts.poppins14W500(
+                                            color: HexColor("#222425"),
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: emailConteoller,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 16),
+                                          hintText: "Phone Number",
+                                          hintStyle: CustomFonts.poppins14W500(
+                                              color: HexColor("#222425")),
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: phoneController,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 48,
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(30),
+                                    ),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16),
+                                      child: TextField(
+                                        decoration: InputDecoration(
+                                          contentPadding:
+                                              const EdgeInsets.symmetric(
+                                                  horizontal: 16),
+                                          hintText: "City",
+                                          hintStyle: CustomFonts.poppins14W500(
+                                            color: HexColor("#222425"),
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        controller: cityController,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      String emptyFields = '';
+                                      if (selectedBrandId.isEmpty ||
+                                          selectedSpecializationId.isEmpty ||
+                                          doctorController.text.isEmpty ||
+                                          emailConteoller.text.isEmpty ||
+                                          phoneController.text.isEmpty ||
+                                          cityController.text.isEmpty) {
+                                        if (selectedBrandId.isEmpty) {
+                                          emptyFields += ' Brand';
+                                        }
+                                        if (selectedSpecializationId.isEmpty) {
+                                          emptyFields += ' Specialization';
+                                        }
+                                        if (doctorController.text.isEmpty) {
+                                          emptyFields += ' Name';
+                                        }
+                                        if (emailConteoller.text.isEmpty) {
+                                          emptyFields += ' Email';
+                                        }
+                                        if (phoneController.text.isEmpty) {
+                                          emptyFields += ' Phone';
+                                        }
+                                        if (cityController.text.isEmpty) {
+                                          emptyFields += ' City';
+                                        }
+
+                                        showSnackbar(
+                                            '${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
+                                      } else {
+                                        sendInvitationController
+                                            .sendInvitationLink({
+                                          'name': doctorController.text,
+                                          'phone': phoneController.text,
+                                          'email': emailConteoller.text,
+                                          'brand': selectedBrandId,
+                                          'specialization':
+                                              selectedSpecializationId,
+                                          'city': cityController.text
+                                        }, context).then(
+                                          (value) {
+                                            setState(() {
+                                              doctorController.clear();
+                                              phoneController.clear();
+                                              emailConteoller.clear();
+                                              cityController.clear();
+                                              sendInvitationController
+                                                  .isFetching.value = true;
+                                              sendInvitationController
+                                                  .isFetching.value = false;
+                                            });
+                                          },
+                                        );
+                                        // ic.addInvitationLink({
+                                        //   'specializationId':
+                                        //       selectedSpecializationId,
+                                        //   'brandId': selectedBrandId,
+                                        //   // 'name': linkController.text,
+                                        //   'link': linkController.text
+                                        // }).then((_) {
+                                        //   setState(() {
+                                        //     linkController.text = '';
+                                        //     ic.isDataLoading.value = true;
+                                        //     ic.isDataLoading.value = false;
+                                        //   });
+                                        // });
+                                      }
+                                    },
+                                    child: Align(
+                                      alignment: Alignment.centerRight,
+                                      child: Container(
+                                        height: 37,
+                                        width: 160,
+                                        decoration: BoxDecoration(
+                                          color: HexColor("#FF724C"),
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            'Send Invitation',
+                                            style: CustomFonts.poppins14W700(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
+                            const SizedBox(
+                              height: 32,
                             ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "Email ID",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                    color: HexColor("#222425"),
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "Phone Number",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                      color: HexColor("#222425")),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 48,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(30),
-                            ),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
-                              child: TextField(
-                                decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "City",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                    color: HexColor("#222425"),
-                                  ),
-                                  border: InputBorder.none,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: Container(
-                              height: 37,
-                              width: 160,
-                              decoration: BoxDecoration(
-                                color: HexColor("#FF724C"),
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'Send Invitation',
-                                  style: CustomFonts.poppins14W700(
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 32,
-                    ),
-                    const Row(
-                      children: [
-                        SizedBox(
-                          width: 140,
-                          child: SingleSelect2(
-                            items: [
-                              "All Brands",
-                              "Orange Brand Dental",
-                              "Orange Brand Orthopedics",
-                              "Orange Brand Homeopathy",
-                              "Precilo Brand Dental",
-                              "Precilo Brand Orthopedics1",
-                              "Precilo Brand Orthopedics2",
-                              "Precilo Brand Orthopedics3"
-                            ],
-                            label: 'All Brands',
-                          ),
-                        ),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        SingleSelectFilter()
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            flex: 4,
-                            child: Text(
-                              "Doctor’s\nInvitation List (124)",
-                              style: CustomFonts.poppins20W600(),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 5,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            const Row(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 20, vertical: 3),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: HexColor("#2A2C41"),
+                                SizedBox(
+                                  width: 140,
+                                  child: SingleSelect2(
+                                    items: [
+                                      "All Brands",
+                                      "Orange Brand Dental",
+                                      "Orange Brand Orthopedics",
+                                      "Orange Brand Homeopathy",
+                                      "Precilo Brand Dental",
+                                      "Precilo Brand Orthopedics1",
+                                      "Precilo Brand Orthopedics2",
+                                      "Precilo Brand Orthopedics3"
+                                    ],
+                                    label: 'All Brands',
                                   ),
-                                  child: Text(
-                                    "Refresh",
-                                    style: CustomFonts.poppins10W700(
-                                        color: HexColor("#FF724C")),
-                                  ),
                                 ),
-                                const SizedBox(
-                                  height: 6,
+                                SizedBox(
+                                  width: 10,
                                 ),
-                                Pagination(
-                                  pagesLenght: 10,
-                                  currentPage: currentPage,
-                                  callback: callback,
-                                ),
+                                SingleSelectFilter()
                               ],
                             ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SingleChildScrollView(
-                      child: Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                            color: HexColor("#FFF7E9"),
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Column(
-                          children: [
-                            for (int index = 0; index < 5; index++)
-                              InvitationCard(index: index),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Text(
+                                      "Doctor’s\nInvitation List (${sendInvitationController.sendInvitationList.length})",
+                                      style: CustomFonts.poppins20W600(),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 5,
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 20, vertical: 3),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                            color: HexColor("#2A2C41"),
+                                          ),
+                                          child: Text(
+                                            "Refresh",
+                                            style: CustomFonts.poppins10W700(
+                                                color: HexColor("#FF724C")),
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          height: 6,
+                                        ),
+                                        Pagination(
+                                          pagesLenght: 10,
+                                          currentPage: currentPage,
+                                          callback: callback,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SingleChildScrollView(
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.all(16.0),
+                                decoration: BoxDecoration(
+                                    color: HexColor("#FFF7E9"),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: Column(
+                                  children: [
+                                    for (int index = 0; index < 5; index++)
+                                      InvitationCard(index: index),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ),
-          ),
-        ],
       ),
     );
   }
