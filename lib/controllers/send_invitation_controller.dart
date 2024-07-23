@@ -44,7 +44,7 @@ class SendInvitationController extends GetxController {
     // isFetching.value = false;
   }
 
-  Future<Map<String, dynamic>> sendInvitationLink(body, context) async {
+  Future<Map<String, dynamic>> sendInvitationLink(body, context, fToast) async {
     Map<String, dynamic> resp = {};
     try {
       var headers = {
@@ -58,12 +58,13 @@ class SendInvitationController extends GetxController {
       request.body = jsonEncode(body);
 
       http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 401) {
+      resp = await CommonMethods.decodeStreamedResponse(response);
+      if (resp["status"] == 401) {
+      } else if (resp["status"] == 403) {
+        showToast(fToast, resp["message"], true);
       } else {
-        if (response.statusCode == 200) {
-          resp = await CommonMethods.decodeStreamedResponse(response);
-          CommonMethods.showSnackbar(resp["messsage"], context);
+        if (resp["status"] == true) {
+          showToast(fToast, resp["messsage"], false);
           getListInvitation();
         } else {
           if (kDebugMode) {
@@ -118,7 +119,8 @@ class SendInvitationController extends GetxController {
     return resp;
   }
 
-  Future<Map<String, dynamic>> deleteInvitationLink(body, context) async {
+  Future<Map<String, dynamic>> deleteInvitationLink(
+      body, context, fToast) async {
     Map<String, dynamic> resp = {};
     try {
       var headers = {
@@ -137,8 +139,7 @@ class SendInvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          print(resp);
-          CommonMethods.showSnackbar(resp["data"], context);
+          showToast(fToast, resp["data"], false);
           getListInvitation();
         } else {
           if (kDebugMode) {

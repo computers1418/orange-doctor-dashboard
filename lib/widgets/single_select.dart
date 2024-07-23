@@ -59,7 +59,7 @@ class _SingleSelectState extends State<SingleSelect> {
         },
         items: widget.items
             .map((dynamic item) => DropdownMenuItem<String>(
-                  value: item['_id'],
+                  value: item['name'],
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -87,6 +87,7 @@ class _SingleSelectState extends State<SingleSelect> {
             .toList(),
         value: selectedValue,
         onChanged: (value) {
+          print("sdsdsd=======${value}");
           setState(() {
             selectedValue = value;
           });

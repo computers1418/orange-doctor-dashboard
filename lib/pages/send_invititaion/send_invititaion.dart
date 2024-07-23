@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
@@ -42,6 +43,15 @@ class _SendInvitationState extends State<SendInvitation> {
     setState(() {
       currentPage = page;
     });
+  }
+
+  FToast? fToast;
+
+  @override
+  void initState() {
+    super.initState();
+    fToast = FToast();
+    fToast?.init(context);
   }
 
   showSnackbar(data) => CommonMethods.showSnackbar(data, context);
@@ -296,74 +306,60 @@ class _SendInvitationState extends State<SendInvitation> {
                                     GestureDetector(
                                       onTap: () {
                                         String emptyFields = '';
-                                        if (selectedBrandId.isEmpty ||
-                                            selectedSpecializationId.isEmpty ||
-                                            doctorController.text.isEmpty ||
-                                            emailConteoller.text.isEmpty ||
-                                            phoneController.text.isEmpty ||
-                                            cityController.text.isEmpty) {
-                                          if (selectedBrandId.isEmpty) {
-                                            emptyFields += ' Brand';
-                                          }
-                                          if (selectedSpecializationId
-                                              .isEmpty) {
-                                            emptyFields += ' Specialization';
-                                          }
-                                          if (doctorController.text.isEmpty) {
-                                            emptyFields += ' Name';
-                                          }
-                                          if (emailConteoller.text.isEmpty) {
-                                            emptyFields += ' Email';
-                                          }
-                                          if (phoneController.text.isEmpty) {
-                                            emptyFields += ' Phone';
-                                          }
-                                          if (cityController.text.isEmpty) {
-                                            emptyFields += ' City';
-                                          }
-
-                                          showSnackbar(
-                                              '${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
-                                        } else {
-                                          sendInvitationController
-                                              .sendInvitationLink({
-                                            'name': doctorController.text,
-                                            'phone': phoneController.text,
-                                            'email': emailConteoller.text,
-                                            'brand': selectedBrandId,
-                                            'specialization':
-                                                selectedSpecializationId,
-                                            'city': cityController.text
-                                          }, context).then(
-                                            (value) {
-                                              setState(() {
-                                                selectedBrandId = '';
-                                                selectedSpecializationId = '';
-                                                doctorController.clear();
-                                                phoneController.clear();
-                                                emailConteoller.clear();
-                                                cityController.clear();
-                                                sendInvitationController
-                                                    .isFetching.value = true;
-                                                sendInvitationController
-                                                    .isFetching.value = false;
-                                              });
-                                            },
-                                          );
-                                          // ic.addInvitationLink({
-                                          //   'specializationId':
-                                          //       selectedSpecializationId,
-                                          //   'brandId': selectedBrandId,
-                                          //   // 'name': linkController.text,
-                                          //   'link': linkController.text
-                                          // }).then((_) {
-                                          //   setState(() {
-                                          //     linkController.text = '';
-                                          //     ic.isDataLoading.value = true;
-                                          //     ic.isDataLoading.value = false;
-                                          //   });
-                                          // });
-                                        }
+                                        // if (selectedBrandId.isEmpty ||
+                                        //     selectedSpecializationId.isEmpty ||
+                                        //     doctorController.text.isEmpty ||
+                                        //     emailConteoller.text.isEmpty ||
+                                        //     phoneController.text.isEmpty ||
+                                        //     cityController.text.isEmpty) {
+                                        //   if (selectedBrandId.isEmpty) {
+                                        //     emptyFields += ' Brand';
+                                        //   }
+                                        //   if (selectedSpecializationId
+                                        //       .isEmpty) {
+                                        //     emptyFields += ' Specialization';
+                                        //   }
+                                        //   if (doctorController.text.isEmpty) {
+                                        //     emptyFields += ' Name';
+                                        //   }
+                                        //   if (emailConteoller.text.isEmpty) {
+                                        //     emptyFields += ' Email';
+                                        //   }
+                                        //   if (phoneController.text.isEmpty) {
+                                        //     emptyFields += ' Phone';
+                                        //   }
+                                        //   if (cityController.text.isEmpty) {
+                                        //     emptyFields += ' City';
+                                        //   }
+                                        //
+                                        //   showSnackbar(
+                                        //       '${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
+                                        // } else {
+                                        sendInvitationController
+                                            .sendInvitationLink({
+                                          'name': doctorController.text,
+                                          'phone': phoneController.text,
+                                          'email': emailConteoller.text,
+                                          'brand': selectedBrandId,
+                                          'specialization':
+                                              selectedSpecializationId,
+                                          'city': cityController.text
+                                        }, context, fToast).then(
+                                          (value) {
+                                            setState(() {
+                                              // selectedBrandId = '';
+                                              // selectedSpecializationId = '';
+                                              doctorController.clear();
+                                              phoneController.clear();
+                                              emailConteoller.clear();
+                                              cityController.clear();
+                                              sendInvitationController
+                                                  .isFetching.value = true;
+                                              sendInvitationController
+                                                  .isFetching.value = false;
+                                            });
+                                          },
+                                        );
                                       },
                                       child: Align(
                                         alignment: Alignment.centerRight,
@@ -498,7 +494,8 @@ class _SendInvitationState extends State<SendInvitation> {
                                         sendInvitationController
                                             .deleteInvitationLink(
                                                 {"invitationId": data.id},
-                                                context);
+                                                context,
+                                                fToast);
                                       },
                                     );
                                   },

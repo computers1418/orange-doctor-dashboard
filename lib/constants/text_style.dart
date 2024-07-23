@@ -144,13 +144,16 @@ class CustomFonts {
         fontWeight: FontWeight.w500,
         color: color);
   }
-  
-  static TextStyle poppins12W600({Color? color = Colors.black}) {
+
+  static TextStyle poppins12W600(
+      {Color? color = Colors.black,
+      TextDecoration? decoration = TextDecoration.none}) {
     return TextStyle(
         fontFamily: "Poppins",
         fontSize: 12,
         fontWeight: FontWeight.w600,
-        color: color);
+        color: color,
+        decoration: decoration);
   }
 
   static TextStyle poppins10W600({Color? color = Colors.black}) {
@@ -208,7 +211,7 @@ class CustomFonts {
         fontWeight: FontWeight.w600,
         color: color);
   }
-  
+
   static TextStyle poppins18W700({Color? color = Colors.black}) {
     return TextStyle(
         fontFamily: "Poppins",
@@ -240,7 +243,6 @@ class CustomFonts {
         fontWeight: FontWeight.w800,
         color: color);
   }
-
 
   static TextStyle poppins14W800({Color? color = Colors.black}) {
     return TextStyle(
@@ -281,6 +283,7 @@ class CustomFonts {
         fontWeight: FontWeight.w300,
         color: color);
   }
+
   static TextStyle poppins10W500({Color? color = Colors.black}) {
     return TextStyle(
         fontFamily: "Poppins",
@@ -289,7 +292,7 @@ class CustomFonts {
         color: color);
   }
 
-    static TextStyle poppins6W500({Color? color = Colors.black}) {
+  static TextStyle poppins6W500({Color? color = Colors.black}) {
     return TextStyle(
         fontFamily: "Poppins",
         fontSize: 6,

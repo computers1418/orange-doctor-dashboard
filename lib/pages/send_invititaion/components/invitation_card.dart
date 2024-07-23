@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../constants/text_style.dart';
 import '../../../models/list_invitation_model.dart';
@@ -47,50 +48,67 @@ class InvitationCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Precilo',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#FF724C").withOpacity(.5)),
+                    model.brand,
+                    style:
+                        CustomFonts.poppins10W600(color: HexColor("#FF724C")),
                   ),
                   Text(
-                    'Homeopathy',
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                    model.specialization,
+                    style: CustomFonts.poppins12W600(
+                        color: HexColor("#222425"),
+                        decoration: TextDecoration.underline),
                   ),
                 ],
               ),
             ),
             Expanded(
-              flex: 4,
+              flex: 16,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Date',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
+                  Row(
+                    children: [
+                      Text(
+                        'Created - ',
+                        style: CustomFonts.poppins10W600(
+                            color: HexColor("#222425").withOpacity(.5)),
+                      ),
+                      Text(
+                        DateFormat('MMM d, yyyy at h:mm a')
+                            .format(model.createdAt),
+                        style: CustomFonts.poppins12W600(
+                            color: HexColor("#222425")),
+                      ),
+                    ],
                   ),
-                  Text(
-                    'Nov 21',
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                  Row(
+                    children: [
+                      Text(
+                        'Last Updated - ',
+                        style: CustomFonts.poppins10W600(
+                            color: HexColor("#222425").withOpacity(.5)),
+                      ),
+                      Text(
+                        DateFormat('MMM d, yyyy at h:mm a')
+                            .format(model.updatedAt),
+                        style: CustomFonts.poppins12W600(
+                            color: HexColor("#222425")),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Time',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    '12:34 pm',
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                  Row(
+                    children: [
+                      Text(
+                        'No. of Resent Invitation - ',
+                        style: CustomFonts.poppins10W600(
+                            color: HexColor("#222425").withOpacity(.5)),
+                      ),
+                      Text(
+                        model.sendCount.toString(),
+                        style: CustomFonts.poppins12W600(
+                            color: HexColor("#222425")),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -98,94 +116,177 @@ class InvitationCard extends StatelessWidget {
           ],
         ),
         const SizedBox(
-          height: 16,
+          height: 20,
         ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               flex: 7,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Doctor Name',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    model.name.isEmpty ? "-" : model.name,
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
-                  ),
-                ],
+              child: Text(
+                'Doctor Name',
+                style: CustomFonts.poppins10W600(
+                    color: HexColor("#222425").withOpacity(.5)),
               ),
             ),
             Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Phone Number',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    model.phone.isEmpty ? "-" : model.phone,
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
-                  ),
-                ],
+              flex: 10,
+              child: Text(
+                model.name.isEmpty ? "-" : model.name,
+                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
               ),
             ),
           ],
         ),
-        const SizedBox(
-          height: 16,
-        ),
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
               flex: 7,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Email',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    model.email.isEmpty ? "-" : model.email,
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
-                  ),
-                ],
+              child: Text(
+                'Email',
+                style: CustomFonts.poppins10W600(
+                    color: HexColor("#222425").withOpacity(.5)),
               ),
             ),
             Expanded(
-              flex: 5,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'City',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    model.city.isEmpty ? "-" : model.city,
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
-                  ),
-                ],
+              flex: 10,
+              child: Text(
+                model.email.isEmpty ? "-" : model.email,
+                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
               ),
             ),
           ],
         ),
-        const SizedBox(
-          height: 8,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: Text(
+                'Phone Number',
+                style: CustomFonts.poppins10W600(
+                    color: HexColor("#222425").withOpacity(.5)),
+              ),
+            ),
+            Expanded(
+              flex: 10,
+              child: Text(
+                model.phone.isEmpty ? "-" : model.phone,
+                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              ),
+            ),
+          ],
         ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 7,
+              child: Text(
+                'City',
+                style: CustomFonts.poppins10W600(
+                    color: HexColor("#222425").withOpacity(.5)),
+              ),
+            ),
+            Expanded(
+              flex: 10,
+              child: Text(
+                model.city.isEmpty ? "-" : model.city,
+                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 15,
+        ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       flex: 7,
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             'Doctor Name',
+        //             style: CustomFonts.poppins10W600(
+        //                 color: HexColor("#222425").withOpacity(.5)),
+        //           ),
+        //           Text(
+        //             model.name.isEmpty ? "-" : model.name,
+        //             style:
+        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     Expanded(
+        //       flex: 5,
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             'Phone Number',
+        //             style: CustomFonts.poppins10W600(
+        //                 color: HexColor("#222425").withOpacity(.5)),
+        //           ),
+        //           Text(
+        //             model.phone.isEmpty ? "-" : model.phone,
+        //             style:
+        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(
+        //   height: 16,
+        // ),
+        // Row(
+        //   children: [
+        //     Expanded(
+        //       flex: 7,
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             'Email',
+        //             style: CustomFonts.poppins10W600(
+        //                 color: HexColor("#222425").withOpacity(.5)),
+        //           ),
+        //           Text(
+        //             model.email.isEmpty ? "-" : model.email,
+        //             style:
+        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     Expanded(
+        //       flex: 5,
+        //       child: Column(
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             'City',
+        //             style: CustomFonts.poppins10W600(
+        //                 color: HexColor("#222425").withOpacity(.5)),
+        //           ),
+        //           Text(
+        //             model.city.isEmpty ? "-" : model.city,
+        //             style:
+        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //   ],
+        // ),
+        // const SizedBox(
+        //   height: 8,
+        // ),
         Row(
           children: [
             if (index == 0)
