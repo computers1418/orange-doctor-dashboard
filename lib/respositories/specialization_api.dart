@@ -6,7 +6,8 @@ import 'package:orange_doctor_dashboard/utility/networking.dart';
 class ApiMiddleWear extends APIInterface {
   String url;
   dynamic data;
-  ApiMiddleWear({required this.url, required this.data});
+
+  ApiMiddleWear({required this.url, this.data});
 
   DioService dio = DioService(
     dioClient: Dio(
@@ -22,8 +23,10 @@ class ApiMiddleWear extends APIInterface {
   );
 
   @override
-  Future<Response> delete() {
-    throw UnimplementedError();
+  Future<Response> delete() async {
+    // throw UnimplementedError();
+    final response = await dio.delete(endpoint: url);
+    return response;
   }
 
   @override

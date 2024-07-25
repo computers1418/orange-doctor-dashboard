@@ -7,6 +7,7 @@ class SingleSelect extends StatefulWidget {
   final String label;
   final bool invert;
   final ValueChanged<String> onTap;
+
   const SingleSelect({
     super.key,
     required this.items,
@@ -57,40 +58,40 @@ class _SingleSelectState extends State<SingleSelect> {
             );
           }).toList();
         },
-        items: widget.items
-            .map((dynamic item) => DropdownMenuItem<String>(
-                  value: item['name'],
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(
-                        height: 12,
-                      ),
-                      Text(
-                        item['name'],
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      const SizedBox(height: 12),
-                      if (widget.items.indexOf(item) < widget.items.length - 1)
-                        const Divider(
-                          height: 0,
-                          color: Color(0x33FFFFFF),
-                        )
-                    ],
+        items: widget.items.map((dynamic item) {
+          return DropdownMenuItem<String>(
+            value: item['_id'],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  item['name'],
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Colors.white,
                   ),
-                ))
-            .toList(),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 12),
+                if (widget.items.indexOf(item) < widget.items.length - 1)
+                  const Divider(
+                    height: 0,
+                    color: Color(0x33FFFFFF),
+                  )
+              ],
+            ),
+          );
+        }).toList(),
         value: selectedValue,
         onChanged: (value) {
-          print("sdsdsd=======${value}");
           setState(() {
             selectedValue = value;
           });
+
           widget.onTap(value!);
         },
         buttonStyleData: ButtonStyleData(

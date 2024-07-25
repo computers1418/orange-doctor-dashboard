@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/common_methods/common_methods.dart';
@@ -30,6 +31,7 @@ class _AddCityViewState extends State<AddCityView> {
   String? selectedSpecializationId;
   final TextEditingController _nameController = TextEditingController();
   CityController cityController = Get.put(CityController());
+  FToast? fToast;
 
   @override
   initState() {
@@ -44,6 +46,8 @@ class _AddCityViewState extends State<AddCityView> {
     cityController.getBrandsList();
     cityController.getSpecializatonList();
     cityController.getCitiesList();
+    fToast = FToast();
+    fToast?.init(context);
   }
 
   callback(page) {
@@ -160,7 +164,9 @@ class _AddCityViewState extends State<AddCityView> {
                               const SizedBox(
                                 height: 16,
                               ),
-                              const SingleSelectCity(),
+                              SingleSelectCity(
+                                fToast: fToast!,
+                              ),
                               const SizedBox(
                                 height: 16,
                               ),
@@ -200,45 +206,42 @@ class _AddCityViewState extends State<AddCityView> {
                                     ? const CircularProgressIndicator()
                                     : InkWell(
                                         onTap: () async {
-                                          if (selectedBrandId == null) {
-                                            CommonMethods.customSnackBar(
-                                              "Error",
-                                              "Please select Brand",
-                                            );
-                                            return;
-                                          }
-                                          if (selectedSpecializationId ==
-                                              null) {
-                                            CommonMethods.customSnackBar(
-                                              "Error",
-                                              "Please select Specialization",
-                                            );
-                                            return;
-                                          }
-                                          if (_nameController.text
-                                              .trim()
-                                              .isEmpty) {
-                                            CommonMethods.customSnackBar(
-                                              "Error",
-                                              "Please enter City Name",
-                                            );
-                                            return;
-                                          }
+                                          // if (selectedBrandId == null) {
+                                          //   CommonMethods.customSnackBar(
+                                          //     "Error",
+                                          //     "Please select Brand",
+                                          //   );
+                                          //   return;
+                                          // }
+                                          // if (selectedSpecializationId ==
+                                          //     null) {
+                                          //   CommonMethods.customSnackBar(
+                                          //     "Error",
+                                          //     "Please select Specialization",
+                                          //   );
+                                          //   return;
+                                          // }
+                                          // if (_nameController.text
+                                          //     .trim()
+                                          //     .isEmpty) {
+                                          //   CommonMethods.customSnackBar(
+                                          //     "Error",
+                                          //     "Please enter City Name",
+                                          //   );
+                                          //   return;
+                                          // }
 
                                           bool success =
                                               await cityController.createCity(
-                                            brandId: selectedBrandId!,
-                                            specializationId:
-                                                selectedSpecializationId!,
-                                            name: _nameController.text.trim(),
-                                          );
+                                                  brandId: selectedBrandId!,
+                                                  specializationId:
+                                                      selectedSpecializationId!,
+                                                  name: _nameController.text
+                                                      .trim(),
+                                                  fToast: fToast!);
                                           if (success) {
                                             _nameController.clear();
                                             setState(() {});
-                                            CommonMethods.successCustomSnackBar(
-                                              "Success",
-                                              "City Added Successfully",
-                                            );
                                           }
                                         },
                                         child: Container(
