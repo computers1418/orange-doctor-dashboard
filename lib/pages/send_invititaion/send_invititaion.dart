@@ -4,6 +4,8 @@ import 'package:flutter/widgets.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
+import 'package:orange_doctor_dashboard/common_methods/delete_dialog.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import 'package:orange_doctor_dashboard/controllers/send_invitation_controller.dart';
 import 'package:orange_doctor_dashboard/pages/send_invititaion/components/invitation_card.dart';
@@ -491,11 +493,21 @@ class _SendInvitationState extends State<SendInvitation> {
                                       index: originalIndex,
                                       model: data,
                                       onTap: () {
-                                        sendInvitationController
-                                            .deleteInvitationLink(
-                                                {"invitationId": data.id},
-                                                context,
-                                                fToast);
+                                        showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (context) {
+                                            return DeleteDialog(
+                                              onTap: () {
+                                                sendInvitationController
+                                                    .deleteInvitationLink({
+                                                  "invitationId": data.id
+                                                }, context, fToast);
+                                                Navigator.pop(context);
+                                              },
+                                            );
+                                          },
+                                        );
                                       },
                                     );
                                   },
