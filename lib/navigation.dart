@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import 'package:orange_doctor_dashboard/pages/city/create/add_city_view.dart';
+import 'package:orange_doctor_dashboard/pages/create_brand/brand_list.dart';
 import 'package:orange_doctor_dashboard/pages/resend_invitation/resend_invitation.dart';
 import 'package:orange_doctor_dashboard/pages/send_invititaion/send_invititaion.dart';
 import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
@@ -50,6 +51,25 @@ class Navigation extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
+              InkWell(
+                onTap: () {
+                  controller.getSpecializatonList().then((val) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const BrandList(),
+                      ),
+                    );
+                  });
+                },
+                child: Card(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    child: const Text("Create Brand"),
+                  ),
+                ),
+              ),
               InkWell(
                 onTap: () => Navigator.push(
                     context,

@@ -32,7 +32,7 @@ getColorCode(Color color) {
 
 showToast(FToast fToast, String text, bool error) {
   return fToast.showToast(
-    toastDuration: Duration(seconds: 3),
+    toastDuration: Duration(seconds: 2),
     child: Container(
       decoration: BoxDecoration(
           color: HexColor("#222425"), borderRadius: BorderRadius.circular(30)),
@@ -50,15 +50,10 @@ showToast(FToast fToast, String text, bool error) {
           SizedBox(
             width: 12,
           ),
-          GestureDetector(
-            onTap: () {
-              fToast.removeCustomToast();
-            },
-            child: Image.asset("assets/images/close.png",
-                width: 20,
-                height: 20,
-                color: error ? HexColor("#FF7171") : HexColor("#71FF7F")),
-          )
+          Image.asset("assets/images/close.png",
+              width: 20,
+              height: 20,
+              color: error ? HexColor("#FF7171") : HexColor("#71FF7F"))
         ],
       ),
     ),

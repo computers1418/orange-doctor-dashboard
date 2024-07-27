@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orange_doctor_dashboard/constants/initial_binding.dart';
 import 'package:orange_doctor_dashboard/navigation.dart';
 import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
+import 'package:orange_doctor_dashboard/pages/create_brand/brand_list.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
