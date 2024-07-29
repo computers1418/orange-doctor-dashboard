@@ -3,23 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:orange_doctor_dashboard/respositories/api.dart';
 import 'package:orange_doctor_dashboard/utility/networking.dart';
 
-class ApiMiddleWear extends APIInterface {
-  String url;
-  dynamic data;
-  ApiMiddleWear({required this.url, required this.data});
+class SpecializationAPI extends APIInterface {
+  DioService dio;
 
-  DioService dio = DioService(
-    dioClient: Dio(
-      BaseOptions(
-        baseUrl: "http://13.127.57.197/api/",
-        connectTimeout: const Duration(seconds: 5),
-        receiveTimeout: const Duration(seconds: 5),
-        validateStatus: (status) {
-          return true;
-        },
-      ),
-    ),
-  );
+  SpecializationAPI({required this.dio});
 
   @override
   Future<Response> delete() {
@@ -28,22 +15,19 @@ class ApiMiddleWear extends APIInterface {
 
   @override
   Future<Response> get() async {
-    final response = await dio.get(endpoint: url);
+    final response = await dio.get(endpoint: "specialization/list");
     return response;
   }
 
   @override
   Future<Response> patch() {
+    // TODO: implement patch
     throw UnimplementedError();
   }
 
   @override
-  Future<Response> post({Options? options}) async {
-    final response = await dio.post(
-      endpoint: url,
-      data: data,
-      options: options,
-    );
-    return response;
+  Future<Response> post() {
+    // TODO: implement post
+    throw UnimplementedError();
   }
 }

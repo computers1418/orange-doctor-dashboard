@@ -41,10 +41,12 @@ class SendInvitationController extends GetxController {
   Future getSpecializatonList() async {
     // isFetching.value = true;
     specializations.value = await getAllSepcilizations();
+
     // isFetching.value = false;
   }
 
   Future<Map<String, dynamic>> sendInvitationLink(body, context, fToast) async {
+    print("sdsdsd===${body}");
     Map<String, dynamic> resp = {};
     try {
       var headers = {

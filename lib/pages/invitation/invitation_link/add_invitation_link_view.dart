@@ -87,28 +87,32 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                                 child: Column(
                                   children: [
                                     SingleSelect(
-                                        label: "Brand",
-                                        items: ic.brands
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedBrandId = value;
-                                          });
-                                        }),
+                                      label: "Brand",
+                                      items: ic.brands
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedBrandId = value;
+                                        });
+                                      },
+                                      value: "name",
+                                    ),
                                     const SizedBox(
                                       height: 16,
                                     ),
                                     SingleSelect(
-                                        label: "Specialization",
-                                        items: ic.specializations
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedSpecializationId = value;
-                                          });
-                                        }),
+                                      label: "Specialization",
+                                      items: ic.specializations
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedSpecializationId = value;
+                                        });
+                                      },
+                                      value: "name",
+                                    ),
                                     const SizedBox(
                                       height: 16,
                                     ),

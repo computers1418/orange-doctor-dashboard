@@ -13,6 +13,7 @@ class DeleteFileDialog extends StatelessWidget {
   DeleteFileDialog({super.key, required this.id});
 
   final controller = Get.find<CreateSpecializationVC>();
+
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(

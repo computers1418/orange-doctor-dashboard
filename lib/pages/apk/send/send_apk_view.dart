@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -7,6 +8,7 @@ import '../../../widgets/custom_drawer.dart';
 import '../../../widgets/pagination.dart';
 import '../../../widgets/single_select.dart';
 import '../../../widgets/single_select2.dart';
+import '../../city/components/search_input.dart';
 import '../../send_invititaion/components/invitation_card.dart';
 
 class SendApkView extends StatefulWidget {
@@ -18,6 +20,7 @@ class SendApkView extends StatefulWidget {
 
 class _SendApkViewState extends State<SendApkView> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  TextEditingController _searchController = TextEditingController();
 
   int currentPage = 1;
 
@@ -138,6 +141,7 @@ class _SendApkViewState extends State<SendApkView> {
                                       {'name': 'Nutrelis', '_id': '4'}
                                     ],
                                     onTap: (String value) {},
+                                    value: "name",
                                   ),
                                   const SizedBox(
                                     height: 16,
@@ -151,6 +155,7 @@ class _SendApkViewState extends State<SendApkView> {
                                       {'name': 'Orthopedics', '_id': '4'},
                                     ],
                                     onTap: (String value) {},
+                                    value: "name",
                                   ),
                                   const SizedBox(
                                     height: 16,
@@ -339,6 +344,12 @@ class _SendApkViewState extends State<SendApkView> {
                                   ),
                                 )
                               ],
+                            ),
+                            const SizedBox(
+                              height: 15,
+                            ),
+                            SearchInput(
+                              controller: _searchController,
                             ),
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 16),

@@ -7,13 +7,15 @@ class SingleSelect extends StatefulWidget {
   final String label;
   final bool invert;
   final ValueChanged<String> onTap;
-  const SingleSelect({
-    super.key,
-    required this.items,
-    required this.label,
-    this.invert = false,
-    required this.onTap,
-  });
+  final String value;
+
+  const SingleSelect(
+      {super.key,
+      required this.items,
+      required this.label,
+      this.invert = false,
+      required this.onTap,
+      this.value = ""});
 
   @override
   State<SingleSelect> createState() => _SingleSelectState();
@@ -59,7 +61,7 @@ class _SingleSelectState extends State<SingleSelect> {
         },
         items: widget.items
             .map((dynamic item) => DropdownMenuItem<String>(
-                  value: item['name'],
+                  value: item["${widget.value}"],
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -87,7 +89,6 @@ class _SingleSelectState extends State<SingleSelect> {
             .toList(),
         value: selectedValue,
         onChanged: (value) {
-          print("sdsdsd=======${value}");
           setState(() {
             selectedValue = value;
           });

@@ -12,10 +12,12 @@ import 'package:orange_doctor_dashboard/widgets/single_select2.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select_filter.dart';
 
 import '../../common_methods/common_methods.dart';
+import '../../common_methods/delete_dialog.dart';
 import '../../models/list_invitation_model.dart';
 import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../widgets/pagination.dart';
+import '../city/components/search_input.dart';
 import '../invitation/invitation_link/add_invitation_link_view.dart';
 
 class SendInvitation extends StatefulWidget {
@@ -36,6 +38,7 @@ class _SendInvitationState extends State<SendInvitation> {
   TextEditingController emailConteoller = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController cityController = TextEditingController();
+  TextEditingController _searchController = TextEditingController();
 
   int currentPage = 0;
 
@@ -149,29 +152,33 @@ class _SendInvitationState extends State<SendInvitation> {
                                 child: Column(
                                   children: [
                                     SingleSelect(
-                                        label: "Brand",
-                                        items: sendInvitationController.brands
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedBrandId = value;
-                                          });
-                                        }),
+                                      label: "Brand",
+                                      items: sendInvitationController.brands
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedBrandId = value;
+                                        });
+                                      },
+                                      value: "name",
+                                    ),
                                     const SizedBox(
                                       height: 16,
                                     ),
                                     SingleSelect(
-                                        label: "Specialization",
-                                        items: sendInvitationController
-                                            .specializations
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedSpecializationId = value;
-                                          });
-                                        }),
+                                      label: "Specialization",
+                                      items: sendInvitationController
+                                          .specializations
+                                          .map((e) => e.toJson())
+                                          .toList(),
+                                      onTap: (String value) {
+                                        setState(() {
+                                          selectedSpecializationId = value;
+                                        });
+                                      },
+                                      value: "name",
+                                    ),
                                     const SizedBox(
                                       height: 16,
                                     ),
@@ -305,36 +312,6 @@ class _SendInvitationState extends State<SendInvitation> {
                                     ),
                                     GestureDetector(
                                       onTap: () {
-                                        String emptyFields = '';
-                                        // if (selectedBrandId.isEmpty ||
-                                        //     selectedSpecializationId.isEmpty ||
-                                        //     doctorController.text.isEmpty ||
-                                        //     emailConteoller.text.isEmpty ||
-                                        //     phoneController.text.isEmpty ||
-                                        //     cityController.text.isEmpty) {
-                                        //   if (selectedBrandId.isEmpty) {
-                                        //     emptyFields += ' Brand';
-                                        //   }
-                                        //   if (selectedSpecializationId
-                                        //       .isEmpty) {
-                                        //     emptyFields += ' Specialization';
-                                        //   }
-                                        //   if (doctorController.text.isEmpty) {
-                                        //     emptyFields += ' Name';
-                                        //   }
-                                        //   if (emailConteoller.text.isEmpty) {
-                                        //     emptyFields += ' Email';
-                                        //   }
-                                        //   if (phoneController.text.isEmpty) {
-                                        //     emptyFields += ' Phone';
-                                        //   }
-                                        //   if (cityController.text.isEmpty) {
-                                        //     emptyFields += ' City';
-                                        //   }
-                                        //
-                                        //   showSnackbar(
-                                        //       '${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
-                                        // } else {
                                         sendInvitationController
                                             .sendInvitationLink({
                                           'name': doctorController.text,
@@ -347,8 +324,6 @@ class _SendInvitationState extends State<SendInvitation> {
                                         }, context, fToast).then(
                                           (value) {
                                             setState(() {
-                                              // selectedBrandId = '';
-                                              // selectedSpecializationId = '';
                                               doctorController.clear();
                                               phoneController.clear();
                                               emailConteoller.clear();
@@ -412,6 +387,13 @@ class _SendInvitationState extends State<SendInvitation> {
                                   SingleSelectFilter()
                                 ],
                               ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              SearchInput(
+                                controller: _searchController,
+                              ),
+
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),
@@ -491,11 +473,21 @@ class _SendInvitationState extends State<SendInvitation> {
                                       index: originalIndex,
                                       model: data,
                                       onTap: () {
-                                        sendInvitationController
-                                            .deleteInvitationLink(
-                                                {"invitationId": data.id},
-                                                context,
-                                                fToast);
+                                        showModalBottomSheet(
+                                          barrierColor: Colors.transparent,
+                                          context: context,
+                                          builder: (context) {
+                                            return DeleteDialog(
+                                              onTap: () {
+                                                sendInvitationController
+                                                    .deleteInvitationLink({
+                                                  "invitationId": data.id
+                                                }, context, fToast);
+                                                Navigator.pop(context);
+                                              },
+                                            );
+                                          },
+                                        );
                                       },
                                     );
                                   },

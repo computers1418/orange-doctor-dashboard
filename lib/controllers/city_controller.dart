@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:orange_doctor_dashboard/common_methods/common_methods.dart';
 import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
@@ -7,6 +8,8 @@ import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/city_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
+
+import '../respositories/api_middle_wear_api.dart';
 
 class CityController extends GetxController {
   var rxGetList = RxStatus.empty().obs;
@@ -26,7 +29,7 @@ class CityController extends GetxController {
     rxGetList.value = RxStatus.loading();
     specializations.value = await getAllSepcilizations();
     rxGetList.value =
-        specializations.isEmpty ? RxStatus.empty() : RxStatus.success();
+    specializations.isEmpty ? RxStatus.empty() : RxStatus.success();
   }
 
   Future getCitiesList() async {
@@ -43,7 +46,7 @@ class CityController extends GetxController {
           cities.add(CityModel.fromJson(city));
         }
         rxGetList.value =
-            cities.isEmpty ? RxStatus.empty() : RxStatus.success();
+        cities.isEmpty ? RxStatus.empty() : RxStatus.success();
       } else {
         rxGetList.value = RxStatus.empty();
       }
@@ -52,18 +55,20 @@ class CityController extends GetxController {
     }
   }
 
-  Future<bool> createCity({
-    required String name,
-    required String brandId,
-    required String specializationId,
-  }) async {
+  Future<bool> createCity(
+      {required String name,
+        required String brandId,
+        required String specializationId,
+        required FToast fToast}) async {
     creatingCity.value = true;
     try {
       Map<String, dynamic> data = {
         "name": name,
         "brandId": brandId,
         "specializationId": specializationId,
+        "isActive": true
       };
+      // print("data==========${data}");
       final response = await ApiMiddleWear(
         url: 'city/create',
         data: data,
@@ -74,16 +79,18 @@ class CityController extends GetxController {
       );
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
+          showToast(fToast, response.data["message"], false);
           cities.add(CityModel.fromJson(response.data["data"]));
           rxGetList.value =
-              cities.isEmpty ? RxStatus.empty() : RxStatus.success();
+          cities.isEmpty ? RxStatus.empty() : RxStatus.success();
           return true;
         }
       } else {
-        CommonMethods.customSnackBar(
-          "Error",
-          response.data["message"],
-        );
+        showToast(fToast, response.data["message"], true);
+        // CommonMethods.customSnackBar(
+        //   "Error",
+        //   response.data["message"],
+        // );
       }
     } catch (e) {
       printC('error:$e');
@@ -93,10 +100,10 @@ class CityController extends GetxController {
     return false;
   }
 
-  Future<bool> updateCityName({
-    required String name,
-    required String cityId,
-  }) async {
+  Future<bool> updateCityName(
+      {required String name,
+        required String cityId,
+        required FToast fToast}) async {
     try {
       final response = await ApiMiddleWear(
         url: 'city/update/$cityId',
@@ -108,20 +115,52 @@ class CityController extends GetxController {
           contentType: Headers.jsonContentType,
         ),
       );
+      print("sdsdsd=======${response.data}");
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
           final index = cities.indexWhere((element) => element.id == cityId);
           if (index != -1) {
             cities[index] = CityModel.fromJson(response.data["data"]);
           }
+          showToast(fToast, response.data["message"], false);
           update();
           return true;
         }
       } else {
-        CommonMethods.customSnackBar(
-          "Error",
-          response.data["message"],
-        );
+        showToast(fToast, response.data["message"], true);
+      }
+    } catch (e) {
+      printC('error:$e');
+    } finally {}
+    update();
+    return false;
+  }
+
+  Future<bool> deleteCityName(
+      {required String cityId, required FToast fToast}) async {
+    try {
+      final response = await ApiMiddleWear(
+        url: 'city/delete/$cityId',
+      ).delete();
+
+      if (response.statusCode == 200) {
+        showToast(fToast, response.data["data"], false);
+        // getCitiesList();
+        // if (response.data["data"] != null) {
+        final index = cities.indexWhere((element) => element.id == cityId);
+        // if (index != -1) {
+        //   cities[index] = CityModel.fromJson(response.data["data"]);
+        // }
+        cities.removeAt(index);
+        update();
+        return true;
+        // }
+      } else {
+        // CommonMethods.customSnackBar(
+        //   "Error",
+        //   response.data["message"],
+        // );
+        showToast(fToast, response.data["message"], true);
       }
     } catch (e) {
       printC('error:$e');

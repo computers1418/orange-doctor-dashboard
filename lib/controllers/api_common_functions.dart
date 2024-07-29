@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
 import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
-import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
+import 'package:orange_doctor_dashboard/respositories/api_middle_wear_api.dart';
 
 Future<List<Specialization>> getAllSepcilizations() async {
   List<Specialization> specializations = [];
