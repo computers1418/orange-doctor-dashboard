@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -9,8 +10,9 @@ import '../create/create_specialization_view.dart';
 
 class DeleteFileDialog extends StatelessWidget {
   String id;
+  FToast fToast;
 
-  DeleteFileDialog({super.key, required this.id});
+  DeleteFileDialog({super.key, required this.id, required this.fToast});
 
   final controller = Get.find<CreateSpecializationVC>();
 
@@ -49,11 +51,9 @@ class DeleteFileDialog extends StatelessWidget {
                   children: [
                     GestureDetector(
                       onTap: () {
-                        controller
-                            .deleteSpecializaton(
-                          id,
-                        )
-                            .then((val) {
+                        controller.deleteSpecializaton(id, fToast).then((val) {
+                          Navigator.pop(context);
+                          Navigator.pop(context);
                           Navigator.pop(context);
                           controller.getSpecializatonList().then((val) {
                             Navigator.push(

@@ -16,6 +16,16 @@ class _BrandListState extends State<BrandList> {
   TextEditingController brandNameController = TextEditingController();
 
   BrandController brandController = Get.put(BrandController());
+  FToast? fToast;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -151,7 +161,7 @@ class _BrandListState extends State<BrandList> {
                                 brandName: listdata.name,
                                 createdOn: listdata.createdAt.toString(),
                                 deleteFun: () {
-                                  _delete(listdata.id);
+                                  _delete(listdata.id, fToast);
                                 },
                               );
                             },
@@ -167,21 +177,10 @@ class _BrandListState extends State<BrandList> {
   }
 
   void _submit() {
-    if (brandNameController.text.isEmpty) {
-      Fluttertoast.showToast(
-          msg: "All Field Required !",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
-    } else {
-      brandController.createBrandList(brandNameController.text);
-    }
+    brandController.createBrandList(brandNameController.text, fToast!);
   }
 
-  void _delete(brandId) {
-    brandController.deleteList(brandId);
+  void _delete(brandId, fToast) {
+    brandController.deleteList(brandId, fToast);
   }
 }

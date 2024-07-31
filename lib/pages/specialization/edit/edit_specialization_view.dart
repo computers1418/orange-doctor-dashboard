@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_state.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -18,6 +19,7 @@ import '../create/create_specialization_view.dart';
 
 class EditSpecializationView extends StatefulWidget {
   String id;
+
   EditSpecializationView({super.key, required this.id});
 
   @override
@@ -47,9 +49,18 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
   bool _userAborted = false;
   bool _multiPick = false;
   FileType _pickingType = FileType.image;
+  FToast? fToast;
 
   int selected = 0;
   bool tap = true;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+  }
 
   void _pickFiles() async {
     try {
@@ -78,7 +89,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
     });
   }
 
-  onDeleteClick() {
+  onDeleteClick(fToast) {
     showDialog(
         context: context,
         builder: (_) {
@@ -86,8 +97,11 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
             insetPadding: const EdgeInsets.symmetric(horizontal: 16),
             backgroundColor: Colors.white,
             shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-            child: DeleteFileDialog(id: widget.id),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+            child: DeleteFileDialog(
+              id: widget.id,
+              fToast: fToast,
+            ),
           );
         });
   }
@@ -151,12 +165,21 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                         ),
                                         Visibility(
                                           visible: tap,
-                                          child: Text(
-                                              specialization.name.toString() ??
-                                                  '',
-                                              style: CustomFonts.poppins12W600(
-                                                  color:
-                                                  HexColor("#FF222425"))),
+                                          child: Expanded(
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.horizontal,
+                                              child: Text(
+                                                specialization.name
+                                                        .toString() ??
+                                                    '',
+                                                style:
+                                                    CustomFonts.poppins12W600(
+                                                        color: HexColor(
+                                                            "#FF222425")),
+                                                maxLines: 1,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                         const SizedBox(
                                           width: 14,
@@ -172,7 +195,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                             child: CircleAvatar(
                                               radius: 11,
                                               backgroundColor:
-                                              HexColor("#FF724C"),
+                                                  HexColor("#FF724C"),
                                               child: const Icon(
                                                 Icons.edit,
                                                 size: 12,
@@ -189,14 +212,15 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                                 tap = true;
                                                 controller
                                                     .updateSpecializatonById(
-                                                    widget.id,
-                                                    specializationText.text
-                                                        .toString())
+                                                        widget.id,
+                                                        specializationText.text
+                                                            .toString(),
+                                                        fToast)
                                                     .then((val) {
                                                   controller
                                                       .getSpecializatonById(
-                                                      specialization.sId
-                                                          .toString())
+                                                          specialization.sId
+                                                              .toString())
                                                       .then((val) {
                                                     setState(() {});
                                                   });
@@ -207,7 +231,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                             child: CircleAvatar(
                                               radius: 11,
                                               backgroundColor:
-                                              HexColor("#FF724C"),
+                                                  HexColor("#FF724C"),
                                               child: const Icon(
                                                 Icons.done,
                                                 size: 19,
@@ -218,11 +242,11 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                         ),
                                         const Spacer(),
                                         GestureDetector(
-                                          onTap: () => onDeleteClick(),
+                                          onTap: () => onDeleteClick(fToast),
                                           child: CircleAvatar(
                                             radius: 16,
                                             backgroundColor:
-                                            HexColor("#E5D7BC"),
+                                                HexColor("#E5D7BC"),
                                             child: const Icon(
                                               Icons.close,
                                               color: Colors.white,
@@ -251,10 +275,10 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                     child: specialization.icons == null
                                         ? const SizedBox()
                                         : Text(
-                                        specialization.icons!.length
-                                            .toString(),
-                                        style: CustomFonts.poppins12W600(
-                                            color: HexColor("#FF222425"))),
+                                            specialization.icons!.length
+                                                .toString(),
+                                            style: CustomFonts.poppins12W600(
+                                                color: HexColor("#FF222425"))),
                                   )
                                 ],
                               ),
@@ -274,13 +298,13 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                     child: specialization.updatedAt == null
                                         ? SizedBox()
                                         : Text(
-                                        DateFormat("MMM dd yyyy").format(
-                                            DateTime.parse(specialization
-                                                .updatedAt ??
-                                                '')
-                                                .toLocal()),
-                                        style: CustomFonts.poppins12W600(
-                                            color: HexColor("#FF222425"))),
+                                            DateFormat("MMM dd yyyy").format(
+                                                DateTime.parse(specialization
+                                                            .updatedAt ??
+                                                        '')
+                                                    .toLocal()),
+                                            style: CustomFonts.poppins12W600(
+                                                color: HexColor("#FF222425"))),
                                   )
                                 ],
                               ),
@@ -300,13 +324,13 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                     child: specialization.updatedAt == null
                                         ? SizedBox()
                                         : Text(
-                                        DateFormat().add_jms().format(
-                                            DateTime.parse(specialization
-                                                .updatedAt ??
-                                                '')
-                                                .toLocal()),
-                                        style: CustomFonts.poppins12W600(
-                                            color: HexColor("#FF222425"))),
+                                            DateFormat().add_jms().format(
+                                                DateTime.parse(specialization
+                                                            .updatedAt ??
+                                                        '')
+                                                    .toLocal()),
+                                            style: CustomFonts.poppins12W600(
+                                                color: HexColor("#FF222425"))),
                                   )
                                 ],
                               ),
@@ -326,105 +350,102 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                               const SizedBox(
                                 height: 8,
                               ),
-                              Row(
-                                  children: [
-                                    SizedBox(
-                                        width:
+                              Row(children: [
+                                SizedBox(
+                                    width:
                                         MediaQuery.of(context).size.width / 1.3,
-                                        height: 60,
-                                        child: ListView.builder(
-                                            shrinkWrap: true,
-                                            padding: EdgeInsets.zero,
-                                            scrollDirection: Axis.horizontal,
-                                            // physics:
-                                            //     const NeverScrollableScrollPhysics(),
-                                            itemCount:
-                                            specialization.icons!.length+1,
-                                            itemBuilder: (_, idx) {
-                                              if(idx == specialization.icons!.length){
-                                                return
-                                                  Align(
-                                                    alignment: Alignment.center,
-                                                    child: GestureDetector(
-                                                        onTap: () {
-                                                          _pickFiles();
-                                                        },
-                                                        child: CircleAvatar(
-                                                            radius: 30,
-                                                            backgroundColor:
-                                                            Colors.white,
-                                                            child: Icon(Icons.add,
-                                                                color: HexColor(
-                                                                    "#FF724C")))),
-                                                  );
-                                              }
-                                              else {
-                                                return Padding(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                                  child: Align(
-                                                    alignment: Alignment.center,
-                                                    child: InkWell(
-                                                      onTap: () {
-                                                        if (idx != 6) {
-                                                          setState(() {
-                                                            selected = idx;
-                                                          });
-                                                        }
-                                                      },
-                                                      child: Stack(
-                                                        children: [
-                                                          CircleAvatar(
-                                                            radius: 25,
-                                                            backgroundColor:
+                                    height: 60,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        padding: EdgeInsets.zero,
+                                        scrollDirection: Axis.horizontal,
+                                        // physics:
+                                        //     const NeverScrollableScrollPhysics(),
+                                        itemCount:
+                                            specialization.icons!.length + 1,
+                                        itemBuilder: (_, idx) {
+                                          if (idx ==
+                                              specialization.icons!.length) {
+                                            return Align(
+                                              alignment: Alignment.center,
+                                              child: GestureDetector(
+                                                  onTap: () {
+                                                    _pickFiles();
+                                                  },
+                                                  child: CircleAvatar(
+                                                      radius: 30,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      child: Icon(Icons.add,
+                                                          color: HexColor(
+                                                              "#FF724C")))),
+                                            );
+                                          } else {
+                                            return Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: InkWell(
+                                                  onTap: () {
+                                                    if (idx != 6) {
+                                                      setState(() {
+                                                        selected = idx;
+                                                      });
+                                                    }
+                                                  },
+                                                  child: Stack(
+                                                    children: [
+                                                      CircleAvatar(
+                                                        radius: 25,
+                                                        backgroundColor:
                                                             selected == idx
                                                                 ? HexColor(
-                                                                "#FF724C")
-                                                                : Colors
-                                                                .white,
-                                                            child: specialization
-                                                                .icons ==
+                                                                    "#FF724C")
+                                                                : Colors.white,
+                                                        child: specialization
+                                                                    .icons ==
                                                                 null
-                                                                ? const SizedBox()
-                                                                : Image.network(
-                                                              specialization
-                                                                  .icons![
-                                                              idx]
-                                                                  .url
-                                                                  .toString(),
-                                                            ),
-                                                          ),
-                                                          Positioned(
-                                                            top: 0,
-                                                            right: 0,
-                                                            child: Visibility(
-                                                              visible:
+                                                            ? const SizedBox()
+                                                            : Image.network(
+                                                                specialization
+                                                                    .icons![idx]
+                                                                    .url
+                                                                    .toString(),
+                                                              ),
+                                                      ),
+                                                      Positioned(
+                                                        top: 0,
+                                                        right: 0,
+                                                        child: Visibility(
+                                                          visible:
                                                               selected == idx,
-                                                              child: InkWell(
-                                                                onTap: () {},
-                                                                child:
-                                                                CircleAvatar(
-                                                                  radius: 8,
-                                                                  backgroundColor:
+                                                          child: InkWell(
+                                                            onTap: () {},
+                                                            child: CircleAvatar(
+                                                              radius: 8,
+                                                              backgroundColor:
                                                                   HexColor(
                                                                       "#2A2C41"),
-                                                                  child:
-                                                                  const Icon(
-                                                                    Icons.close,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    size: 8,
-                                                                  ),
-                                                                ),
+                                                              child: const Icon(
+                                                                Icons.close,
+                                                                color: Colors
+                                                                    .white,
+                                                                size: 8,
                                                               ),
                                                             ),
                                                           ),
-                                                        ],
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
-                                                );}
-                                            }))
-                                  ]),
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        }))
+                              ]),
                               const SizedBox(height: 24),
                             ],
                           ),

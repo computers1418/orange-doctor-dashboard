@@ -6,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import '../../../controllers/create_specialization_vc.dart';
 import '../edit/edit_specialization_view.dart';
-Widget specializationCard(index,context) {
+
+Widget specializationCard(index, context) {
   final controller = Get.find<CreateSpecializationVC>();
   final specialization = controller.specializations[index];
   return Column(
@@ -26,8 +27,7 @@ Widget specializationCard(index,context) {
                 ),
                 Text(
                   '${index + 1}',
-                  style:
-                  CustomFonts.poppins12W600(color: HexColor("#222425")),
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
             ),
@@ -44,8 +44,7 @@ Widget specializationCard(index,context) {
                 ),
                 Text(
                   specialization.name.toString(),
-                  style:
-                  CustomFonts.poppins12W600(color: HexColor("#222425")),
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
             ),
@@ -62,8 +61,7 @@ Widget specializationCard(index,context) {
                 ),
                 Text(
                   (specialization.icons?.length ?? 0).toString(),
-                  style:
-                  CustomFonts.poppins12W600(color: HexColor("#222425")),
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
             ),
@@ -88,12 +86,12 @@ Widget specializationCard(index,context) {
                 specialization.updatedAt == null
                     ? Container()
                     : Text(
-                  DateFormat("MMM dd yyyy").format(
-                      DateTime.parse(specialization.updatedAt!)
-                          .toLocal()),
-                  style: CustomFonts.poppins12W600(
-                      color: HexColor("#222425")),
-                ),
+                        DateFormat("MMM dd yyyy").format(
+                            DateTime.parse(specialization.updatedAt!)
+                                .toLocal()),
+                        style: CustomFonts.poppins12W600(
+                            color: HexColor("#222425")),
+                      ),
               ],
             ),
           ),
@@ -110,22 +108,32 @@ Widget specializationCard(index,context) {
                 specialization.updatedAt == null
                     ? Container()
                     : Text(
-                  DateFormat().add_jms().format(
-                      DateTime.parse(specialization.updatedAt!)
-                          .toLocal()),
-                  style:
-                  CustomFonts.poppins12W600(color: HexColor("#222425")),
-                ),
+                        DateFormat().add_jms().format(
+                            DateTime.parse(specialization.updatedAt!)
+                                .toLocal()),
+                        style: CustomFonts.poppins12W600(
+                            color: HexColor("#222425")),
+                      ),
               ],
             ),
           ),
           Expanded(
             flex: 4,
             child: GestureDetector(
-              onTap: (){
-                controller.getSpecializatonById(specialization.sId.toString()).then((val){  Navigator.push(context, MaterialPageRoute(
-                    builder: (context) =>  EditSpecializationView(id:specialization.sId.toString())));});
-
+              onTap: () {
+                controller
+                    .getSpecializatonById(specialization.sId.toString())
+                    .then((val) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => EditSpecializationView(
+                              id: specialization.sId.toString()))).then(
+                    (value) {
+                      controller.getSpecializatonList();
+                    },
+                  );
+                });
               },
               child: Container(
                 height: 22,
@@ -144,11 +152,10 @@ Widget specializationCard(index,context) {
           )
         ],
       ),
-      if (index < 9)
-        Divider(
-          color: HexColor("#F8E3BD"),
-          height: 32,
-        )
+      Divider(
+        color: HexColor("#F8E3BD"),
+        height: 32,
+      )
     ],
   );
 }

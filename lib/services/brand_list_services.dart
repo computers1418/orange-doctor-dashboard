@@ -5,6 +5,7 @@ import 'package:orange_doctor_dashboard/services/api/api.dart';
 
 class BrandListServices {
   Api api = Api();
+
   Future<BrandListModel> fetchBrandList() async {
     try {
       Response response = await api.sendRequest.get(UrlConst.brandList);
@@ -17,8 +18,12 @@ class BrandListServices {
 
   Future<Response> createBrandList(brandName) async {
     try {
-      Response response = await api.sendRequest
-          .post(UrlConst.createBrand, data: {"name": brandName});
+      var response = await api.sendRequest.post(UrlConst.createBrand, data: {
+        "name": brandName,
+        "createdBy": "668fe0a5f368b564f171e85e",
+        "updatedBy": "668fe0a5f368b564f171e85e"
+      });
+
       return response;
     } catch (e) {
       rethrow;
@@ -28,8 +33,7 @@ class BrandListServices {
   Future<Response> deleteList(brandId) async {
     try {
       Response response =
-          await api.sendRequest.get("${UrlConst.deleteBrand}/$brandId");
-      print("${UrlConst.deleteBrand}/$brandId");
+          await api.sendRequest.delete("${UrlConst.deleteBrand}/$brandId");
       return response;
     } catch (e) {
       rethrow;

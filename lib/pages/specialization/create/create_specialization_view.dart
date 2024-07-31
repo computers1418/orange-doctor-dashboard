@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -28,6 +29,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   final _dialogTitleController = TextEditingController();
   final _initialDirectoryController = TextEditingController();
+  final specializationController = TextEditingController();
   String? _fileName;
   String? _saveAsFileName;
   List<PlatformFile> _paths = [];
@@ -38,6 +40,15 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   bool _userAborted = false;
   bool _multiPick = false;
   FileType _pickingType = FileType.image;
+  FToast? fToast;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+  }
 
   void _pickFiles() async {
     _resetState();
@@ -105,8 +116,8 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
         children: [
           CustomAppbar(showback: false, scaffoldKey: scaffoldKey),
           Expanded(
-            flex: 1,
             child: SingleChildScrollView(
+              primary: true,
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,6 +145,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                           child: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: TextField(
+                              controller: specializationController,
                               decoration: InputDecoration(
                                   contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 16),
@@ -183,8 +195,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                             width: 60,
                                             child: ClipRRect(
                                                 borderRadius:
-                                                BorderRadius.circular(
-                                                    50.0),
+                                                    BorderRadius.circular(50.0),
                                                 child: Image.file(
                                                     fit: BoxFit.fill,
                                                     File(_paths[idx]
@@ -221,34 +232,40 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                                       borderRadius: BorderRadius.circular(30)),
                                   child: controller.rxGetList.isLoading
                                       ? const Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 8),
-                                    child: Center(
-                                        child: SizedBox(
-                                            width: 20,
-                                            height: 20,
-                                            child:
-                                            CircularProgressIndicator(
-                                              color: Colors.white,
-                                            ))),
-                                  )
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 8.0, horizontal: 8),
+                                          child: Center(
+                                              child: SizedBox(
+                                                  width: 20,
+                                                  height: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                  ))),
+                                        )
                                       : GestureDetector(
-                                    onTap: () {
-                                      print('Tapped Send');
-                                      // controller.sendSpecializatonList(_paths);
-                                      controller.uploadImage(
-                                          _paths.first.xFile.path,
-                                          _paths.first.xFile.name);
-                                      // controller.deleteSpecializatonIconById('668d6b77b1e15c3b7368f968',_paths?.first);
-                                    },
-                                    child: Center(
-                                      child: Text(
-                                        'Save',
-                                        style: CustomFonts.poppins14W700(
-                                            color: Colors.white),
-                                      ),
-                                    ),
-                                  ),
+                                          onTap: () {
+                                            print('Tapped Send');
+                                            // controller.sendSpecializatonList(_paths);
+                                            // controller.uploadImage(
+                                            //     _paths.first.xFile.path,
+                                            //     _paths.first.xFile.name);
+                                            controller.uploadImage(
+                                                context,
+                                                _paths.first.xFile.path,
+                                                _paths.first.xFile.name,
+                                                specializationController.text,
+                                                fToast);
+                                            // controller.deleteSpecializatonIconById('668d6b77b1e15c3b7368f968',_paths?.first);
+                                          },
+                                          child: Center(
+                                            child: Text(
+                                              'Save',
+                                              style: CustomFonts.poppins14W700(
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                        ),
                                 );
                               },
                             )
@@ -265,11 +282,11 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                     style: CustomFonts.poppins20W600(),
                   ),
                   const SizedBox(height: 15),
-                  GetBuilder(
+                  GetBuilder<CreateSpecializationVC>(
                       init: CreateSpecializationVC(),
-                      initState: (state) async {
-                        state.controller?.refresh();
-                      },
+                      // initState: (state) async {
+                      //   state.controller?.refresh();
+                      // },
                       builder: (c) {
                         return Container(
                           width: double.infinity,
@@ -277,13 +294,22 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                           decoration: BoxDecoration(
                               color: HexColor("#FFF7E9"),
                               borderRadius: BorderRadius.circular(30)),
-                          child: Column(
-                            children: [
-                              for (int index = 0;
-                              index < c.specializations.length;
-                              index++)
-                                specializationCard(index, context),
-                            ],
+                          // child: Column(
+                          //   children: [
+                          //     for (int index = 0;
+                          //     index < c.specializations.length;
+                          //     index++)
+                          //       specializationCard(index, context),
+                          //   ],
+                          // ),
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            primary: false,
+                            shrinkWrap: true,
+                            itemCount: c.specializations.length,
+                            itemBuilder: (context, index) {
+                              return specializationCard(index, context);
+                            },
                           ),
                         );
                       })
