@@ -9,38 +9,46 @@ class Filters extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     var items = [
-      "View Doctor", "View Appointment", "View Doctor", "View Appointment"
+      "View Doctor",
+      "View Appointment",
+      "View Doctor",
+      "View Appointment"
     ];
 
     var appointments = [
-      "Default", "Today", "Yesterday", "Last Week", "Last Month", "3 Months", "6 Months", "1 Year", "All Time"
+      "Default",
+      "Today",
+      "Yesterday",
+      "Last Week",
+      "Last Month",
+      "3 Months",
+      "6 Months",
+      "1 Year",
+      "All Time"
     ];
 
     return GridView.builder(
-      shrinkWrap: true,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        crossAxisSpacing: 15,
-        childAspectRatio: 0.8
-      ), 
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: 4,
-      itemBuilder: (_, idx){
-        if(items[idx]=='View Appointment'){
-          return SingleSelectAppointment(items: appointments, label: items[idx]);
-        }
-        return Container(
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: HexColor("#2A2C41"),
-            borderRadius: BorderRadius.circular(20)
-          ),
-          child: Text(items[idx], textAlign: TextAlign.center, style: CustomFonts.poppins8W600(
-            color: Colors.white
-          )),
-        );
-      });
+        shrinkWrap: true,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4, crossAxisSpacing: 15, childAspectRatio: 0.8),
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: 4,
+        itemBuilder: (_, idx) {
+          // if (items[idx] == 'View Appointment') {
+          //   return SingleSelectAppointment(
+          //       items: appointments, label: items[idx]);
+          // }
+          return Container(
+            alignment: Alignment.center,
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            decoration: BoxDecoration(
+                color: HexColor("#2A2C41"),
+                borderRadius: BorderRadius.circular(20)),
+            child: Text(items[idx],
+                textAlign: TextAlign.center,
+                style: CustomFonts.poppins8W600(color: Colors.white)),
+          );
+        });
   }
 }

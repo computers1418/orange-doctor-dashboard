@@ -8,7 +8,6 @@ import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/city_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
-
 import '../respositories/api_middle_wear_api.dart';
 
 class CityController extends GetxController {
@@ -29,37 +28,50 @@ class CityController extends GetxController {
     rxGetList.value = RxStatus.loading();
     specializations.value = await getAllSepcilizations();
     rxGetList.value =
-    specializations.isEmpty ? RxStatus.empty() : RxStatus.success();
+        specializations.isEmpty ? RxStatus.empty() : RxStatus.success();
   }
 
-  Future getCitiesList() async {
-    rxGetList.value = RxStatus.loading();
-    update();
-    cities.clear();
-    final response = await ApiMiddleWear(
-      url: 'city/list',
-      data: FormData(),
-    ).get();
-    if (response.statusCode == 200) {
-      if (response.data["data"] != null) {
-        for (var city in response.data["data"]) {
-          cities.add(CityModel.fromJson(city));
+  Future getCitiesList(String brandId, String specializationId) async {
+    Dio dio = Dio();
+
+    try {
+      rxGetList.value = RxStatus.loading();
+      update();
+      cities.clear();
+      Map<String, dynamic> data = {
+        "brandId": brandId,
+        "specializationId": specializationId,
+      };
+
+      var response = await dio.request(
+        "http://13.127.57.197/api/city/by-brand-specialization",
+        data: data,
+        options: Options(
+          method: 'GET',
+        ),
+      );
+      if (response.statusCode == 200) {
+        if (response.data["data"] != null) {
+          for (var city in response.data["data"]) {
+            cities.add(CityModel.fromJson(city));
+          }
+          rxGetList.value = RxStatus.success();
+        } else {
+          // rxGetList.value = RxStatus.loading();
+          rxGetList.value = RxStatus.success();
         }
-        rxGetList.value =
-        cities.isEmpty ? RxStatus.empty() : RxStatus.success();
       } else {
-        rxGetList.value = RxStatus.empty();
+        rxGetList.value = RxStatus.success();
       }
-    } else {
-      rxGetList.value = RxStatus.error();
-    }
+    } on DioException catch (e) {
+    } catch (e) {}
   }
 
   Future<bool> createCity(
       {required String name,
-        required String brandId,
-        required String specializationId,
-        required FToast fToast}) async {
+      required String brandId,
+      required String specializationId,
+      required FToast fToast}) async {
     creatingCity.value = true;
     try {
       Map<String, dynamic> data = {
@@ -82,7 +94,7 @@ class CityController extends GetxController {
           showToast(fToast, response.data["message"], false);
           cities.add(CityModel.fromJson(response.data["data"]));
           rxGetList.value =
-          cities.isEmpty ? RxStatus.empty() : RxStatus.success();
+              cities.isEmpty ? RxStatus.empty() : RxStatus.success();
           return true;
         }
       } else {
@@ -102,8 +114,8 @@ class CityController extends GetxController {
 
   Future<bool> updateCityName(
       {required String name,
-        required String cityId,
-        required FToast fToast}) async {
+      required String cityId,
+      required FToast fToast}) async {
     try {
       final response = await ApiMiddleWear(
         url: 'city/update/$cityId',

@@ -4,6 +4,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import 'package:orange_doctor_dashboard/pages/city/create/add_city_view.dart';
 import 'package:orange_doctor_dashboard/pages/create_brand/brand_list.dart';
+import 'package:orange_doctor_dashboard/pages/doctor_details/doctor_create.dart';
 import 'package:orange_doctor_dashboard/pages/resend_invitation/resend_invitation.dart';
 import 'package:orange_doctor_dashboard/pages/send_invititaion/send_invititaion.dart';
 import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
@@ -34,6 +35,7 @@ import 'package:orange_doctor_dashboard/pages/sub_admin_list/sub_admin_list.dart
 // ignore: must_be_immutable
 class Navigation extends StatelessWidget {
   final CreateSpecializationVC controller = Get.find<CreateSpecializationVC>();
+
   Navigation({Key? key}) : super(key: key);
 
   List popItems = [
@@ -67,6 +69,25 @@ class Navigation extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(16),
                     child: const Text("Create Brand"),
+                  ),
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  controller.getSpecializatonList().then((val) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DoctorCreate(),
+                      ),
+                    );
+                  });
+                },
+                child: Card(
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(16),
+                    child: const Text("Create Doctor"),
                   ),
                 ),
               ),

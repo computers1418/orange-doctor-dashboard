@@ -393,7 +393,6 @@ class _SendInvitationState extends State<SendInvitation> {
                               SearchInput(
                                 controller: _searchController,
                               ),
-
                               Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 16),

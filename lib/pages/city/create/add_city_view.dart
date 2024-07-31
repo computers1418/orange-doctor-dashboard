@@ -45,7 +45,7 @@ class _AddCityViewState extends State<AddCityView> {
 
     cityController.getBrandsList();
     cityController.getSpecializatonList();
-    cityController.getCitiesList();
+    cityController.getCitiesList("", "");
     fToast = FToast();
     fToast?.init(context);
   }
@@ -114,20 +114,21 @@ class _AddCityViewState extends State<AddCityView> {
                   ),
                   if (_viewAddCity) ...[
                     Obx(
-                          () {
-                        if (cityController.rxGetList.value.isError) {
-                          return const Center(
-                            child: Text("Error"),
-                          );
-                        } else if (cityController.rxGetList.value.isEmpty) {
-                          return const Center(
-                            child: Text("Empty"),
-                          );
-                        } else if (cityController.rxGetList.value.isLoading) {
-                          return const Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        }
+                      () {
+                        // if (cityController.rxGetList.value.isError) {
+                        //   return const Center(
+                        //     child: Text("Error"),
+                        //   );
+                        // } else if (cityController.rxGetList.value.isEmpty) {
+                        //   return const Center(
+                        //     child: Text("Empty"),
+                        //   );
+                        // } else if (cityController.rxGetList.value.isLoading) {
+                        //   return const Center(
+                        //     child: CircularProgressIndicator(),
+                        //   );
+                        // }
+                        // return
                         return Container(
                           padding: const EdgeInsets.all(16),
                           decoration: BoxDecoration(
@@ -145,6 +146,11 @@ class _AddCityViewState extends State<AddCityView> {
                                   setState(() {
                                     selectedBrandId = value;
                                   });
+                                  if (selectedSpecializationId != null) {
+                                    cityController.getCitiesList(
+                                        selectedBrandId!,
+                                        selectedSpecializationId!);
+                                  }
                                 },
                                 value: "_id",
                               ),
@@ -160,6 +166,11 @@ class _AddCityViewState extends State<AddCityView> {
                                   setState(() {
                                     selectedSpecializationId = value;
                                   });
+                                  if (selectedBrandId != null) {
+                                    cityController.getCitiesList(
+                                        selectedBrandId!,
+                                        selectedSpecializationId!);
+                                  }
                                 },
                                 value: "_id",
                               ),
@@ -187,7 +198,7 @@ class _AddCityViewState extends State<AddCityView> {
                                     controller: _nameController,
                                     decoration: InputDecoration(
                                       contentPadding:
-                                      const EdgeInsets.symmetric(
+                                          const EdgeInsets.symmetric(
                                         horizontal: 16,
                                       ),
                                       hintText: "Add City",
@@ -207,63 +218,38 @@ class _AddCityViewState extends State<AddCityView> {
                                 child: cityController.creatingCity.value
                                     ? const CircularProgressIndicator()
                                     : InkWell(
-                                  onTap: () async {
-                                    // if (selectedBrandId == null) {
-                                    //   CommonMethods.customSnackBar(
-                                    //     "Error",
-                                    //     "Please select Brand",
-                                    //   );
-                                    //   return;
-                                    // }
-                                    // if (selectedSpecializationId ==
-                                    //     null) {
-                                    //   CommonMethods.customSnackBar(
-                                    //     "Error",
-                                    //     "Please select Specialization",
-                                    //   );
-                                    //   return;
-                                    // }
-                                    // if (_nameController.text
-                                    //     .trim()
-                                    //     .isEmpty) {
-                                    //   CommonMethods.customSnackBar(
-                                    //     "Error",
-                                    //     "Please enter City Name",
-                                    //   );
-                                    //   return;
-                                    // }
-
-                                    bool success =
-                                    await cityController.createCity(
-                                        brandId: selectedBrandId!,
-                                        specializationId:
-                                        selectedSpecializationId!,
-                                        name: _nameController.text
-                                            .trim(),
-                                        fToast: fToast!);
-                                    if (success) {
-                                      _nameController.clear();
-                                      setState(() {});
-                                    }
-                                  },
-                                  child: Container(
-                                    height: 37,
-                                    width: 100,
-                                    decoration: BoxDecoration(
-                                      color: HexColor("#FF724C"),
-                                      borderRadius:
-                                      BorderRadius.circular(30),
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        'Done',
-                                        style: CustomFonts.poppins14W700(
-                                          color: Colors.white,
+                                        onTap: () async {
+                                          bool success =
+                                              await cityController.createCity(
+                                                  brandId: selectedBrandId!,
+                                                  specializationId:
+                                                      selectedSpecializationId!,
+                                                  name: _nameController.text
+                                                      .trim(),
+                                                  fToast: fToast!);
+                                          if (success) {
+                                            _nameController.clear();
+                                            setState(() {});
+                                          }
+                                        },
+                                        child: Container(
+                                          height: 37,
+                                          width: 100,
+                                          decoration: BoxDecoration(
+                                            color: HexColor("#FF724C"),
+                                            borderRadius:
+                                                BorderRadius.circular(30),
+                                          ),
+                                          child: Center(
+                                            child: Text(
+                                              'Done',
+                                              style: CustomFonts.poppins14W700(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                ),
                               ),
                             ],
                           ),
