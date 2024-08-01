@@ -5,6 +5,8 @@ import 'package:orange_doctor_dashboard/constants/text_style.dart';
 import 'package:orange_doctor_dashboard/controllers/brand_controller.dart';
 import 'package:orange_doctor_dashboard/pages/create_brand/components/brand_list_card.dart';
 
+import '../../common_methods/delete_dialog.dart';
+
 class BrandList extends StatefulWidget {
   const BrandList({super.key});
 
@@ -161,7 +163,18 @@ class _BrandListState extends State<BrandList> {
                                 brandName: listdata.name,
                                 createdOn: listdata.createdAt.toString(),
                                 deleteFun: () {
-                                  _delete(listdata.id, fToast);
+                                  showModalBottomSheet(
+                                    barrierColor: Colors.transparent,
+                                    context: context,
+                                    builder: (context) {
+                                      return DeleteDialog(
+                                        onTap: () {
+                                          _delete(listdata.id, fToast);
+                                          Navigator.pop(context);
+                                        },
+                                      );
+                                    },
+                                  );
                                 },
                               );
                             },

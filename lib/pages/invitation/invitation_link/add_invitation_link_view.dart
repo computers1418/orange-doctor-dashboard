@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
@@ -6,6 +7,8 @@ import 'package:orange_doctor_dashboard/controllers/invitation_controller.dart';
 import 'package:orange_doctor_dashboard/widgets/single_select.dart';
 import 'package:get/get.dart';
 import '../../../common_methods/common_methods.dart';
+import '../../../common_methods/delete_dialog.dart';
+import '../../../models/invitation_model.dart';
 import '../../../widgets/custom_appbar.dart';
 import '../../../widgets/custom_drawer.dart';
 import '../../../widgets/pagination.dart';
@@ -24,10 +27,11 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
 
   final linkController = TextEditingController();
 
-  int currentPage = 1;
+  int currentPage = 0;
 
   String selectedBrandId = '';
   String selectedSpecializationId = '';
+  FToast? fToast;
 
   callback(page) {
     setState(() {
@@ -38,6 +42,10 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
   @override
   void initState() {
     super.initState();
+    fToast = FToast();
+    fToast!.init(context);
+    ic.getBrands();
+    ic.getSpecialization();
   }
 
   showSnackbar(data) => CommonMethods.showSnackbar(data, context);
@@ -50,301 +58,351 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
           scaffoldKey: scaffoldKey,
         ),
         body: Obx(
-          () => ic.isDataLoading.value
-              ? const Center(
-                  child: CircularProgressIndicator(
-                  color: Colors.orange,
-                ))
-              : Column(
-                  children: [
-                    CustomAppbar(
-                      showback: true,
-                      scaffoldKey: scaffoldKey,
-                    ),
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              Text(
-                                "Add Invitation Link",
-                                style: CustomFonts.poppins20W600(),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Container(
-                                padding: const EdgeInsets.all(16),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: HexColor("#FFE8BF"),
+          () {
+            int totalPages = 1;
+            List<InvitationModel> paginatedItems = [];
+            if (ic.invitationsList.isNotEmpty) {
+              int totalItems = ic.invitationsList.length;
+              totalPages = (totalItems / 10).ceil();
+
+              int start = currentPage * 10;
+
+              int end = start + 10;
+              paginatedItems = ic.invitationsList
+                  .sublist(start, end > totalItems ? totalItems : end);
+            }
+            return ic.isDataLoading.value
+                ? const Center(
+                    child: CircularProgressIndicator(
+                    color: Colors.orange,
+                  ))
+                : Column(
+                    children: [
+                      CustomAppbar(
+                        showback: true,
+                        scaffoldKey: scaffoldKey,
+                      ),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  height: 20,
                                 ),
-                                child: Column(
-                                  children: [
-                                    SingleSelect(
-                                      label: "Brand",
-                                      items: ic.brands
-                                          .map((e) => e.toJson())
-                                          .toList(),
-                                      onTap: (String value) {
-                                        setState(() {
-                                          selectedBrandId = value;
-                                        });
-                                      },
-                                      value: "name",
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    SingleSelect(
-                                      label: "Specialization",
-                                      items: ic.specializations
-                                          .map((e) => e.toJson())
-                                          .toList(),
-                                      onTap: (String value) {
-                                        setState(() {
-                                          selectedSpecializationId = value;
-                                        });
-                                      },
-                                      value: "name",
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 98,
-                                      decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius: BorderRadius.circular(30),
+                                Text(
+                                  "Add Invitation Link",
+                                  style: CustomFonts.poppins20W600(),
+                                ),
+                                const SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.all(16),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: HexColor("#FFE8BF"),
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      SingleSelect(
+                                        label: "Brand",
+                                        items: ic.brands
+                                            .map((e) => e.toJson())
+                                            .toList(),
+                                        onTap: (String value) {
+                                          setState(() {
+                                            selectedBrandId = value;
+                                          });
+                                        },
+                                        value: "_id",
                                       ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 16),
-                                        child: Stack(
-                                          alignment: Alignment.center,
-                                          children: [
-                                            TextField(
-                                              maxLines: 3,
-                                              controller: linkController,
-                                              decoration: InputDecoration(
-                                                contentPadding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 16),
-                                                hintText: "Add Link URL",
-                                                hintStyle:
-                                                    CustomFonts.poppins14W500(
-                                                  color: HexColor("#222425"),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      SingleSelect(
+                                        label: "Specialization",
+                                        items: ic.specializations
+                                            .map((e) => e.toJson())
+                                            .toList(),
+                                        onTap: (String value) {
+                                          setState(() {
+                                            selectedSpecializationId = value;
+                                          });
+                                        },
+                                        value: "_id",
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 98,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: Stack(
+                                            alignment: Alignment.center,
+                                            children: [
+                                              TextField(
+                                                maxLines: 3,
+                                                controller: linkController,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 16),
+                                                  hintText: "Add Link URL",
+                                                  hintStyle:
+                                                      CustomFonts.poppins14W500(
+                                                    color: HexColor("#222425"),
+                                                  ),
+                                                  border: InputBorder.none,
                                                 ),
-                                                border: InputBorder.none,
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 16,
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerRight,
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          String emptyFields = '';
-                                          if (selectedBrandId.isEmpty ||
-                                              selectedSpecializationId
-                                                  .isEmpty ||
-                                              linkController.text.isEmpty) {
-                                            if (selectedBrandId.isEmpty) {
-                                              emptyFields += ' Brand';
-                                            }
-                                            if (selectedSpecializationId
-                                                .isEmpty) {
-                                              emptyFields += ' Specialization';
-                                            }
-                                            if (linkController.text.isEmpty) {
-                                              emptyFields += ' Link';
-                                            }
-
-                                            showSnackbar(
-                                                '${emptyFields.trim().replaceAll(' ', ', ')} is empty !');
-                                          } else {
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerRight,
+                                        child: GestureDetector(
+                                          onTap: () {
                                             ic.addInvitationLink({
                                               'specializationId':
                                                   selectedSpecializationId,
                                               'brandId': selectedBrandId,
-                                              // 'name': linkController.text,
                                               'link': linkController.text
-                                            }).then((_) {
+                                            }, fToast).then((_) {
                                               setState(() {
                                                 linkController.text = '';
                                                 ic.isDataLoading.value = true;
                                                 ic.isDataLoading.value = false;
                                               });
                                             });
-                                          }
-                                        },
-                                        child: Container(
-                                          height: 37,
-                                          width: 120,
-                                          decoration: BoxDecoration(
-                                              color: HexColor("#FF724C"),
-                                              borderRadius:
-                                                  BorderRadius.circular(30)),
-                                          child: Center(
-                                            child: Text(
-                                              'Save',
-                                              style: CustomFonts.poppins14W700(
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 32,
-                              ),
-                              Row(
-                                children: [
-                                  Container(
-                                    width: 132,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                      color: HexColor("#222425"),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "All Brands",
-                                          style: CustomFonts.poppins14W600(
-                                              color: Colors.white),
-                                        ),
-                                        const Icon(
-                                          Icons.keyboard_arrow_down_outlined,
-                                          color: Colors.white,
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    width: 120,
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 8),
-                                    decoration: BoxDecoration(
-                                        color: HexColor("#FF724C"),
-                                        borderRadius:
-                                            BorderRadius.circular(30)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Filter",
-                                          style: CustomFonts.poppins14W600(
-                                              color: Colors.white),
-                                        ),
-                                        const Icon(
-                                          Icons.keyboard_arrow_down_outlined,
-                                          color: Colors.white,
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 16),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Expanded(
-                                      flex: 4,
-                                      child: Text(
-                                        "URL List (${ic.invitationsList.length})",
-                                        style: CustomFonts.poppins20W600(),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 5,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 20, vertical: 3),
+                                          },
+                                          child: Container(
+                                            height: 37,
+                                            width: 120,
                                             decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                              color: HexColor("#2A2C41"),
-                                            ),
-                                            child: Text(
-                                              "Refresh",
-                                              style: CustomFonts.poppins10W700(
                                                 color: HexColor("#FF724C"),
+                                                borderRadius:
+                                                    BorderRadius.circular(30)),
+                                            child: Center(
+                                              child: Text(
+                                                'Save',
+                                                style:
+                                                    CustomFonts.poppins14W700(
+                                                        color: Colors.white),
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(
-                                            height: 6,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 32,
+                                ),
+                                Row(
+                                  children: [
+                                    Container(
+                                      width: 132,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: HexColor("#222425"),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "All Brands",
+                                            style: CustomFonts.poppins14W600(
+                                                color: Colors.white),
                                           ),
-                                          Pagination(
-                                            pagesLenght: 10,
-                                            currentPage: currentPage,
-                                            callback: callback,
-                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_down_outlined,
+                                            color: Colors.white,
+                                          )
                                         ],
                                       ),
                                     ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    Container(
+                                      width: 120,
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      decoration: BoxDecoration(
+                                          color: HexColor("#FF724C"),
+                                          borderRadius:
+                                              BorderRadius.circular(30)),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Filter",
+                                            style: CustomFonts.poppins14W600(
+                                                color: Colors.white),
+                                          ),
+                                          const Icon(
+                                            Icons.keyboard_arrow_down_outlined,
+                                            color: Colors.white,
+                                          )
+                                        ],
+                                      ),
+                                    )
                                   ],
                                 ),
-                              ),
-                              SingleChildScrollView(
-                                child: Container(
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 16),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Expanded(
+                                        flex: 4,
+                                        child: Text(
+                                          "URL List (${ic.invitationsList.length})",
+                                          style: CustomFonts.poppins20W600(),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 5,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 20,
+                                                      vertical: 3),
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(30),
+                                                color: HexColor("#2A2C41"),
+                                              ),
+                                              child: Text(
+                                                "Refresh",
+                                                style:
+                                                    CustomFonts.poppins10W700(
+                                                  color: HexColor("#FF724C"),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 6,
+                                            ),
+                                            // Pagination(
+                                            //   pagesLenght: 10,
+                                            //   currentPage: currentPage,
+                                            //   callback: callback,
+                                            // ),
+                                            Pagination(
+                                              pagesLenght: totalPages - 1,
+                                              currentPage: currentPage,
+                                              callback: callback,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // SingleChildScrollView(
+                                //   child: Container(
+                                //     width: double.infinity,
+                                //     padding: const EdgeInsets.all(16.0),
+                                //     decoration: BoxDecoration(
+                                //         color: HexColor("#FFF7E9"),
+                                //         borderRadius:
+                                //             BorderRadius.circular(30)),
+                                //     child: Column(
+                                //       children: [
+                                //         for (int index = 0;
+                                //             index < ic.invitationsList.length;
+                                //             index++)
+                                //           card(index),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),
+                                Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(16.0),
                                   decoration: BoxDecoration(
                                       color: HexColor("#FFF7E9"),
                                       borderRadius: BorderRadius.circular(30)),
-                                  child: Column(
-                                    children: [
-                                      for (int index = 0;
-                                          index < ic.invitationsList.length;
-                                          index++)
-                                        card(index),
-                                    ],
+                                  child: ListView.builder(
+                                    padding: EdgeInsets.zero,
+                                    primary: false,
+                                    itemCount: paginatedItems.length,
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, index) {
+                                      InvitationModel data =
+                                          paginatedItems[index];
+                                      int originalIndex =
+                                          currentPage * 10 + index;
+                                      return card(
+                                        originalIndex,
+                                        data,
+                                        () {
+                                          showModalBottomSheet(
+                                            barrierColor: Colors.transparent,
+                                            context: context,
+                                            builder: (context) {
+                                              return DeleteDialog(
+                                                onTap: () {
+                                                  ic.deleteInvitationLink({
+                                                    'specializationId': ic
+                                                        .invitationsList[index]
+                                                        .specializationId,
+                                                    'brandId': ic
+                                                        .invitationsList[index]
+                                                        .brandId
+                                                        ?.id,
+                                                  }, fToast);
+                                                  Navigator.pop(context);
+                                                },
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
                                   ),
-                                ),
-                              ),
-                            ],
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  );
+          },
         ));
   }
 
-  Widget card(index) {
+  Widget card(int index, InvitationModel data, VoidCallback onTap) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -374,7 +432,6 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    // 'Precilo',
                     ic.invitationsList[index].brandId?.name ?? "Brand Name",
                     style: CustomFonts.poppins10W600(
                         color: HexColor("#FF724C").withOpacity(.5)),
@@ -466,13 +523,7 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             GestureDetector(
-              onTap: () {
-                ic.deleteInvitationLink({
-                  'specializationId':
-                      ic.invitationsList[index].specializationId,
-                  'brandId': ic.invitationsList[index].brandId?.id,
-                });
-              },
+              onTap: onTap,
               child: Container(
                 height: 22,
                 width: 66,
@@ -490,11 +541,10 @@ class _AddInvitationLinkViewState extends State<AddInvitationLinkView> {
             ),
           ],
         ),
-        if (index < 9)
-          Divider(
-            color: HexColor("#F8E3BD"),
-            height: 32,
-          )
+        Divider(
+          color: HexColor("#F8E3BD"),
+          height: 32,
+        )
       ],
     );
   }

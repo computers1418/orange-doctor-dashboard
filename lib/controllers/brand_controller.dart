@@ -55,13 +55,13 @@ class BrandController extends GetxController {
     }
   }
 
-  void deleteList(String brandId,fToast) async {
+  void deleteList(String brandId, fToast) async {
     try {
       isLoading(true);
-       await BrandListServices().deleteList(brandId).then((val) {
+      await BrandListServices().deleteList(brandId).then((val) {
         isLoading(false);
         if (val.statusCode == 200) {
-          showToast(fToast, val.data['message'].toString(), false);
+          showToast(fToast, "Brand name has been successfully deleted.", false);
           fetchBrandList();
         } else {
           showToast(fToast, val.data['message'].toString(), true);
