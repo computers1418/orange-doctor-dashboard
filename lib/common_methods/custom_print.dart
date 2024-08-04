@@ -32,7 +32,7 @@ getColorCode(Color color) {
 
 showToast(FToast fToast, String text, bool error) {
   return fToast.showToast(
-    toastDuration: Duration(seconds: 2),
+    toastDuration: Duration(seconds: 3),
     child: Container(
       decoration: BoxDecoration(
           color: HexColor("#222425"), borderRadius: BorderRadius.circular(30)),

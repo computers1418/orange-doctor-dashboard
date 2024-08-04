@@ -153,14 +153,14 @@ class Navigation extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  controller.getSpecializatonList().then((val) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CreateSpecializationView(),
-                      ),
-                    );
-                  });
+                  // controller.getSpecializatonList().then((val) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const CreateSpecializationView(),
+                    ),
+                  );
+                  // });
                 },
                 child: Card(
                   child: Container(

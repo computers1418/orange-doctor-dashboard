@@ -9,13 +9,14 @@ class SingleSelect extends StatefulWidget {
   final ValueChanged<String> onTap;
   final String value;
 
-  const SingleSelect(
-      {super.key,
-      required this.items,
-      required this.label,
-      this.invert = false,
-      required this.onTap,
-      this.value = ""});
+  const SingleSelect({
+    super.key,
+    required this.items,
+    required this.label,
+    this.invert = false,
+    required this.onTap,
+    this.value = "",
+  });
 
   @override
   State<SingleSelect> createState() => _SingleSelectState();
@@ -23,6 +24,7 @@ class SingleSelect extends StatefulWidget {
 
 class _SingleSelectState extends State<SingleSelect> {
   String? selectedValue;
+
 
   @override
   Widget build(BuildContext context) {

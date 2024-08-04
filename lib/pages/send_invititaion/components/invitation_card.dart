@@ -9,13 +9,14 @@ class InvitationCard extends StatelessWidget {
   final int index;
   final ListInvitationModel model;
   final VoidCallback onTap;
+  final VoidCallback onResend;
 
-  const InvitationCard({
-    super.key,
-    required this.index,
-    required this.model,
-    required this.onTap,
-  });
+  const InvitationCard(
+      {super.key,
+      required this.index,
+      required this.model,
+      required this.onTap,
+      required this.onResend});
 
   @override
   Widget build(BuildContext context) {
@@ -24,91 +25,98 @@ class InvitationCard extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(
-              flex: 2,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'No.',
-                    style: CustomFonts.poppins10W600(
-                        color: HexColor("#222425").withOpacity(.5)),
-                  ),
-                  Text(
-                    '${index + 1}',
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
-                  ),
-                ],
-              ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'No.',
+                  style: CustomFonts.poppins10W600(
+                      color: HexColor("#222425").withOpacity(.5)),
+                ),
+                Text(
+                  '${index + 1}',
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  model.brandName,
+                  style: CustomFonts.poppins10W600(color: HexColor("#FF724C")),
+                ),
+                Text(
+                  model.specializationName,
+                  style: CustomFonts.poppins12W600(
+                      color: HexColor("#222425"),
+                      decoration: TextDecoration.underline),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 30,
             ),
             Expanded(
-              flex: 5,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    model.brand,
-                    style:
-                        CustomFonts.poppins10W600(color: HexColor("#FF724C")),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Created - ',
+                          style: CustomFonts.poppins10W600(
+                              color: HexColor("#222425").withOpacity(.5)),
+                        ),
+                        Text(
+                          DateFormat('MMM d, yyyy at h:mm a')
+                              .format(model.timeSent),
+                          style: CustomFonts.poppins12W600(
+                              color: HexColor("#222425")),
+                        ),
+                      ],
+                    ),
                   ),
-                  Text(
-                    model.specialization,
-                    style: CustomFonts.poppins12W600(
-                        color: HexColor("#222425"),
-                        decoration: TextDecoration.underline),
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text(
+                          'Last Updated - ',
+                          style: CustomFonts.poppins10W600(
+                              color: HexColor("#222425").withOpacity(.5)),
+                        ),
+                        Text(
+                          DateFormat('MMM d, yyyy at h:mm a')
+                              .format(model.timeUpdated),
+                          style: CustomFonts.poppins12W600(
+                              color: HexColor("#222425")),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-            Expanded(
-              flex: 16,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        'Created - ',
-                        style: CustomFonts.poppins10W600(
-                            color: HexColor("#222425").withOpacity(.5)),
-                      ),
-                      Text(
-                        DateFormat('MMM d, yyyy at h:mm a')
-                            .format(model.createdAt),
-                        style: CustomFonts.poppins12W600(
-                            color: HexColor("#222425")),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'Last Updated - ',
-                        style: CustomFonts.poppins10W600(
-                            color: HexColor("#222425").withOpacity(.5)),
-                      ),
-                      Text(
-                        DateFormat('MMM d, yyyy at h:mm a')
-                            .format(model.updatedAt),
-                        style: CustomFonts.poppins12W600(
-                            color: HexColor("#222425")),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        'No. of Resent Invitation - ',
-                        style: CustomFonts.poppins10W600(
-                            color: HexColor("#222425").withOpacity(.5)),
-                      ),
-                      Text(
-                        model.sendCount.toString(),
-                        style: CustomFonts.poppins12W600(
-                            color: HexColor("#222425")),
-                      ),
-                    ],
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        Text(
+                          'No. of Resent Invitation - ',
+                          style: CustomFonts.poppins10W600(
+                              color: HexColor("#222425").withOpacity(.5)),
+                        ),
+                        Text(
+                          "",
+                          // model.sendCount.toString(),
+                          style: CustomFonts.poppins12W600(
+                              color: HexColor("#222425")),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -131,9 +139,12 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 10,
-              child: Text(
-                model.name.isEmpty ? "-" : model.name,
-                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  model.doctorName,
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+                ),
               ),
             ),
           ],
@@ -151,9 +162,12 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 10,
-              child: Text(
-                model.email.isEmpty ? "-" : model.email,
-                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  model.email.isEmpty ? "-" : model.email,
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+                ),
               ),
             ),
           ],
@@ -171,9 +185,12 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 10,
-              child: Text(
-                model.phone.isEmpty ? "-" : model.phone,
-                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  model.phone.isEmpty ? "-" : model.phone,
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+                ),
               ),
             ),
           ],
@@ -191,9 +208,12 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 10,
-              child: Text(
-                model.city.isEmpty ? "-" : model.city,
-                style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Text(
+                  model.city.isEmpty ? "-" : model.city,
+                  style: CustomFonts.poppins12W600(color: HexColor("#222425")),
+                ),
               ),
             ),
           ],
@@ -201,92 +221,7 @@ class InvitationCard extends StatelessWidget {
         SizedBox(
           height: 15,
         ),
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       flex: 7,
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             'Doctor Name',
-        //             style: CustomFonts.poppins10W600(
-        //                 color: HexColor("#222425").withOpacity(.5)),
-        //           ),
-        //           Text(
-        //             model.name.isEmpty ? "-" : model.name,
-        //             style:
-        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     Expanded(
-        //       flex: 5,
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             'Phone Number',
-        //             style: CustomFonts.poppins10W600(
-        //                 color: HexColor("#222425").withOpacity(.5)),
-        //           ),
-        //           Text(
-        //             model.phone.isEmpty ? "-" : model.phone,
-        //             style:
-        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // const SizedBox(
-        //   height: 16,
-        // ),
-        // Row(
-        //   children: [
-        //     Expanded(
-        //       flex: 7,
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             'Email',
-        //             style: CustomFonts.poppins10W600(
-        //                 color: HexColor("#222425").withOpacity(.5)),
-        //           ),
-        //           Text(
-        //             model.email.isEmpty ? "-" : model.email,
-        //             style:
-        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     Expanded(
-        //       flex: 5,
-        //       child: Column(
-        //         crossAxisAlignment: CrossAxisAlignment.start,
-        //         children: [
-        //           Text(
-        //             'City',
-        //             style: CustomFonts.poppins10W600(
-        //                 color: HexColor("#222425").withOpacity(.5)),
-        //           ),
-        //           Text(
-        //             model.city.isEmpty ? "-" : model.city,
-        //             style:
-        //                 CustomFonts.poppins12W600(color: HexColor("#222425")),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //   ],
-        // ),
-        // const SizedBox(
-        //   height: 8,
-        // ),
+
         Row(
           children: [
             if (index == 0)
@@ -445,16 +380,19 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 3,
-              child: Container(
-                height: 22,
-                // width: 66,
-                decoration: BoxDecoration(
-                    color: HexColor("#FF724C"),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Center(
-                  child: Text(
-                    'Resend',
-                    style: CustomFonts.poppins10W700(color: Colors.white),
+              child: GestureDetector(
+                onTap: onResend,
+                child: Container(
+                  height: 22,
+                  // width: 66,
+                  decoration: BoxDecoration(
+                      color: HexColor("#FF724C"),
+                      borderRadius: BorderRadius.circular(30)),
+                  child: Center(
+                    child: Text(
+                      'Resend',
+                      style: CustomFonts.poppins10W700(color: Colors.white),
+                    ),
                   ),
                 ),
               ),

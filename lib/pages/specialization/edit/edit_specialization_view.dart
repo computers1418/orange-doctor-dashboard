@@ -28,6 +28,8 @@ class EditSpecializationView extends StatefulWidget {
 
 class _EditSpecializationViewState extends State<EditSpecializationView> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  CreateSpecializationVC createSpecializationVC =
+      Get.put(CreateSpecializationVC());
 
   final TextEditingController specializationText = TextEditingController();
   final controller = Get.find<CreateSpecializationVC>();
@@ -62,7 +64,7 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
     fToast!.init(context);
   }
 
-  void _pickFiles() async {
+  Future<void> _pickFiles() async {
     try {
       _directoryPath = null;
       _paths = (await FilePicker.platform.pickFiles(
@@ -359,8 +361,6 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                         shrinkWrap: true,
                                         padding: EdgeInsets.zero,
                                         scrollDirection: Axis.horizontal,
-                                        // physics:
-                                        //     const NeverScrollableScrollPhysics(),
                                         itemCount:
                                             specialization.icons!.length + 1,
                                         itemBuilder: (_, idx) {
@@ -370,7 +370,41 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                               alignment: Alignment.center,
                                               child: GestureDetector(
                                                   onTap: () {
-                                                    _pickFiles();
+                                                    _pickFiles().then(
+                                                      (value) {
+                                                        if (_paths.isNotEmpty) {
+                                                          createSpecializationVC
+                                                              .addIconById(
+                                                                  context,
+                                                                  _paths
+                                                                      .map(
+                                                                        (e) => e
+                                                                            .path!,
+                                                                      )
+                                                                      .toList(),
+                                                                  _paths
+                                                                      .map(
+                                                                        (e) => e
+                                                                            .name,
+                                                                      )
+                                                                      .toList(),
+                                                                  fToast,
+                                                                  widget.id)
+                                                              .then(
+                                                            (value) {
+                                                              controller
+                                                                  .getSpecializatonById(
+                                                                      specialization
+                                                                          .sId
+                                                                          .toString())
+                                                                  .then((val) {
+                                                                setState(() {});
+                                                              });
+                                                            },
+                                                          );
+                                                        }
+                                                      },
+                                                    );
                                                   },
                                                   child: CircleAvatar(
                                                       radius: 30,
@@ -397,32 +431,59 @@ class _EditSpecializationViewState extends State<EditSpecializationView> {
                                                   },
                                                   child: Stack(
                                                     children: [
-                                                      CircleAvatar(
-                                                        radius: 25,
-                                                        backgroundColor:
-                                                            selected == idx
+                                                      Container(
+                                                        height: 60,
+                                                        width: 60,
+                                                        decoration: BoxDecoration(
+                                                            color: selected ==
+                                                                    idx
                                                                 ? HexColor(
                                                                     "#FF724C")
                                                                 : Colors.white,
-                                                        child: specialization
-                                                                    .icons ==
-                                                                null
-                                                            ? const SizedBox()
-                                                            : Image.network(
-                                                                specialization
-                                                                    .icons![idx]
-                                                                    .url
-                                                                    .toString(),
-                                                              ),
+                                                            shape:
+                                                                BoxShape.circle,
+                                                            image: DecorationImage(
+                                                                image: NetworkImage(
+                                                                    specialization
+                                                                        .icons![
+                                                                            idx]
+                                                                        .url
+                                                                        .toString()),
+                                                                fit: BoxFit
+                                                                    .fill)),
                                                       ),
                                                       Positioned(
                                                         top: 0,
                                                         right: 0,
                                                         child: Visibility(
-                                                          visible:
-                                                              selected == idx,
+                                                          // visible:
+                                                          //     selected == idx,
                                                           child: InkWell(
-                                                            onTap: () {},
+                                                            onTap: () {
+                                                              createSpecializationVC
+                                                                  .deleteIconById(
+                                                                      context,
+                                                                      widget.id,
+                                                                      specialization
+                                                                          .icons![
+                                                                              idx]
+                                                                          .sId
+                                                                          .toString(),
+                                                                      fToast)
+                                                                  .then(
+                                                                (value) {
+                                                                  controller
+                                                                      .getSpecializatonById(specialization
+                                                                          .sId
+                                                                          .toString())
+                                                                      .then(
+                                                                          (val) {
+                                                                    setState(
+                                                                        () {});
+                                                                  });
+                                                                },
+                                                              );
+                                                            },
                                                             child: CircleAvatar(
                                                               radius: 8,
                                                               backgroundColor:

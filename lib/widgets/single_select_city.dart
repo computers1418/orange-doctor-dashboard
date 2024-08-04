@@ -10,9 +10,13 @@ import '../constants/text_style.dart';
 class SingleSelectCity extends StatefulWidget {
   final bool invert;
   final FToast fToast;
+  final ValueChanged<CityModel> onTap;
 
   const SingleSelectCity(
-      {super.key, this.invert = false, required this.fToast});
+      {super.key,
+      this.invert = false,
+      required this.fToast,
+      required this.onTap});
 
   @override
   State<SingleSelectCity> createState() => _SingleSelectCityState();
@@ -86,6 +90,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                     selectedValue = item;
                                     _currentEditIndex = -1;
                                   });
+                                  widget.onTap(item);
                                   _removeOverlay();
                                 },
                                 child: Container(
@@ -105,74 +110,74 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                       Expanded(
                                         child: _currentEditIndex == itemIndex
                                             ? TextFormField(
-                                          focusNode: node,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
-                                          onChanged: (value) {
-                                            _cities[itemIndex] = value;
-                                          },
-                                          initialValue: item.name,
-                                          autofocus: true,
-                                          decoration: InputDecoration(
-                                            contentPadding:
-                                            const EdgeInsets
-                                                .symmetric(
-                                              vertical: 2,
-                                              horizontal: 10,
-                                            ),
-                                            isDense: true,
-                                            // white round border
-                                            border: OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                30,
-                                              ),
-                                              borderSide:
-                                              const BorderSide(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            focusedBorder:
-                                            OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  30),
-                                              borderSide:
-                                              const BorderSide(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                            enabledBorder:
-                                            OutlineInputBorder(
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  30),
-                                              borderSide:
-                                              const BorderSide(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        )
+                                                focusNode: node,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                                onChanged: (value) {
+                                                  _cities[itemIndex] = value;
+                                                },
+                                                initialValue: item.name,
+                                                autofocus: true,
+                                                decoration: InputDecoration(
+                                                  contentPadding:
+                                                      const EdgeInsets
+                                                          .symmetric(
+                                                    vertical: 2,
+                                                    horizontal: 10,
+                                                  ),
+                                                  isDense: true,
+                                                  // white round border
+                                                  border: OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                      30,
+                                                    ),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  focusedBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                  enabledBorder:
+                                                      OutlineInputBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            30),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              )
                                             : Text(
-                                          item.name,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.white,
-                                          ),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
+                                                item.name,
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white,
+                                                ),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                       ),
                                       GestureDetector(
                                         child: Container(
                                           decoration: BoxDecoration(
                                             color: HexColor("#222425"),
                                             borderRadius:
-                                            BorderRadius.circular(30),
+                                                BorderRadius.circular(30),
                                           ),
                                           padding: const EdgeInsets.symmetric(
                                             vertical: 8,
@@ -197,63 +202,63 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
                                       controller.updatingCity == itemIndex
                                           ? const CircularProgressIndicator()
                                           : GestureDetector(
-                                        onTap: () async {
-                                          if (_currentEditIndex ==
-                                              itemIndex) {
-                                            controller.updatingCity =
-                                                itemIndex;
-                                            await controller
-                                                .updateCityName(
-                                                name: _cities[
-                                                itemIndex],
-                                                cityId: item.id,
-                                                fToast:
-                                                widget.fToast);
-                                            controller.updatingCity = -1;
-                                          }
-                                          node.requestFocus();
-                                          setState2(() {
-                                            _currentEditIndex =
-                                            _currentEditIndex ==
-                                                itemIndex
-                                                ? -1
-                                                : itemIndex;
-                                            if (_currentEditIndex ==
-                                                itemIndex) {
-                                              _cities[itemIndex] =
-                                                  item.name;
-                                            }
-                                          });
-                                        },
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            color: HexColor("#222425"),
-                                            borderRadius:
-                                            BorderRadius.circular(30),
-                                          ),
-                                          padding:
-                                          const EdgeInsets.symmetric(
-                                            vertical: 8,
-                                            horizontal: 16,
-                                          ),
-                                          margin:
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 10,
-                                          ),
-                                          child: Center(
-                                            child: Text(
-                                              _currentEditIndex ==
-                                                  itemIndex
-                                                  ? 'Save'
-                                                  : "Edit",
-                                              style: CustomFonts
-                                                  .poppins8W600(
-                                                  color:
-                                                  Colors.white),
+                                              onTap: () async {
+                                                if (_currentEditIndex ==
+                                                    itemIndex) {
+                                                  controller.updatingCity =
+                                                      itemIndex;
+                                                  await controller
+                                                      .updateCityName(
+                                                          name: _cities[
+                                                              itemIndex],
+                                                          cityId: item.id,
+                                                          fToast:
+                                                              widget.fToast);
+                                                  controller.updatingCity = -1;
+                                                }
+                                                node.requestFocus();
+                                                setState2(() {
+                                                  _currentEditIndex =
+                                                      _currentEditIndex ==
+                                                              itemIndex
+                                                          ? -1
+                                                          : itemIndex;
+                                                  if (_currentEditIndex ==
+                                                      itemIndex) {
+                                                    _cities[itemIndex] =
+                                                        item.name;
+                                                  }
+                                                });
+                                              },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: HexColor("#222425"),
+                                                  borderRadius:
+                                                      BorderRadius.circular(30),
+                                                ),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  vertical: 8,
+                                                  horizontal: 16,
+                                                ),
+                                                margin:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 10,
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    _currentEditIndex ==
+                                                            itemIndex
+                                                        ? 'Save'
+                                                        : "Edit",
+                                                    style: CustomFonts
+                                                        .poppins8W600(
+                                                            color:
+                                                                Colors.white),
+                                                  ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                      ),
                                     ],
                                   ),
                                 ),

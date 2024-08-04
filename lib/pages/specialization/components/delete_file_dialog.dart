@@ -55,14 +55,15 @@ class DeleteFileDialog extends StatelessWidget {
                           Navigator.pop(context);
                           Navigator.pop(context);
                           Navigator.pop(context);
-                          controller.getSpecializatonList().then((val) {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const CreateSpecializationView()));
-                          });
+                          // controller.clearSpecialization();
+                          // controller.getSpecializatonList().then((val) {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                      const CreateSpecializationView()));
                         });
+                        // });
                       },
                       child: Container(
                         height: 42,

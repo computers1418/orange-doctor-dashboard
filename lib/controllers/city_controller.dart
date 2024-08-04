@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart' hide FormData;
 import 'package:orange_doctor_dashboard/common_methods/common_methods.dart';
@@ -6,17 +7,22 @@ import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
 import 'package:orange_doctor_dashboard/controllers/api_common_functions.dart';
 import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/city_model.dart';
+import 'package:orange_doctor_dashboard/models/doctor_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
+import '../constants/constants.dart';
 import '../respositories/api_middle_wear_api.dart';
+import 'package:http/http.dart' as http;
 
 class CityController extends GetxController {
   var rxGetList = RxStatus.empty().obs;
+  var isFetching = false.obs;
   var brands = <BrandsModel>[].obs;
   var specializations = <Specialization>[].obs;
   var cities = <CityModel>[].obs;
   var creatingCity = false.obs;
   var updatingCity = -1.obs;
+  RxList<DoctorModel> doctorList = <DoctorModel>[].obs;
 
   Future getBrandsList() async {
     rxGetList.value = RxStatus.loading();
@@ -29,6 +35,24 @@ class CityController extends GetxController {
     specializations.value = await getAllSepcilizations();
     rxGetList.value =
         specializations.isEmpty ? RxStatus.empty() : RxStatus.success();
+  }
+
+  Future getDoctorListByCity(formData) async {
+    isFetching.value = true;
+    doctorList.value = await getDoctorByCity(formData);
+    isFetching.value = false;
+  }
+
+  Future getAllDoctorList() async {
+    isFetching.value = true;
+    doctorList.value = await getAllDoctorData();
+    isFetching.value = false;
+  }
+
+  Future getDoctorListBySearch(body) async {
+    // isFetching.value = true;
+    doctorList.value = await getDoctorBySearch(body);
+    // isFetching.value = false;
   }
 
   Future getCitiesList(String brandId, String specializationId) async {
@@ -80,7 +104,6 @@ class CityController extends GetxController {
         "specializationId": specializationId,
         "isActive": true
       };
-      // print("data==========${data}");
       final response = await ApiMiddleWear(
         url: 'city/create',
         data: data,
@@ -91,7 +114,7 @@ class CityController extends GetxController {
       );
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
-          showToast(fToast, response.data["message"], false);
+          showToast(fToast, "City has been created successfully.", false);
           cities.add(CityModel.fromJson(response.data["data"]));
           rxGetList.value =
               cities.isEmpty ? RxStatus.empty() : RxStatus.success();
@@ -99,10 +122,6 @@ class CityController extends GetxController {
         }
       } else {
         showToast(fToast, response.data["message"], true);
-        // CommonMethods.customSnackBar(
-        //   "Error",
-        //   response.data["message"],
-        // );
       }
     } catch (e) {
       printC('error:$e');

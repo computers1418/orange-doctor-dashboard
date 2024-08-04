@@ -5,10 +5,9 @@ import '../../../constants/text_style.dart';
 
 class SearchInput extends StatelessWidget {
   final TextEditingController controller;
-  const SearchInput({
-    super.key,
-    required this.controller,
-  });
+  final ValueChanged<String>? onChanged;
+
+  const SearchInput({super.key, required this.controller, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +32,7 @@ class SearchInput extends StatelessWidget {
                 border: InputBorder.none,
               ),
               controller: controller,
+              onChanged: onChanged,
             ),
             Positioned(
               right: 0,

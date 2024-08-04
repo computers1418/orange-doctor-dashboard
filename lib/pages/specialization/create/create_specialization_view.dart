@@ -25,7 +25,8 @@ class CreateSpecializationView extends StatefulWidget {
 
 class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+  CreateSpecializationVC createSpecializationVC =
+      Get.put(CreateSpecializationVC());
   final _scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
   final _dialogTitleController = TextEditingController();
   final _initialDirectoryController = TextEditingController();
@@ -46,15 +47,16 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    createSpecializationVC.getSpecializatonList();
     fToast = FToast();
     fToast!.init(context);
   }
 
   void _pickFiles() async {
-    _resetState();
+    // _resetState();
     try {
       _directoryPath = null;
-      _paths = (await FilePicker.platform.pickFiles(
+      _paths.addAll((await FilePicker.platform.pickFiles(
         compressionQuality: 30,
         type: _pickingType,
         allowMultiple: true,
@@ -66,7 +68,7 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
         initialDirectory: _initialDirectoryController.text,
         lockParentWindow: _lockParentWindow,
       ))!
-          .files;
+          .files);
     } on PlatformException catch (e) {
       _logException('Unsupported operation' + e.toString());
     } catch (e) {
@@ -112,212 +114,183 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        children: [
-          CustomAppbar(showback: false, scaffoldKey: scaffoldKey),
-          Expanded(
-            child: SingleChildScrollView(
-              primary: true,
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Create Specialization",
-                    style: CustomFonts.poppins20W600(),
-                  ),
-                  const SizedBox(height: 15),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(30),
-                      color: HexColor("#FFE8BF"),
+      body: GetBuilder<CreateSpecializationVC>(
+        init: CreateSpecializationVC(),
+        builder: (controller) => Column(
+          children: [
+            CustomAppbar(showback: false, scaffoldKey: scaffoldKey),
+            Expanded(
+              child: SingleChildScrollView(
+                primary: true,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Create Specialization",
+                      style: CustomFonts.poppins20W600(),
                     ),
-                    child: Column(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          height: 48,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            child: TextField(
-                              controller: specializationController,
-                              decoration: InputDecoration(
-                                  contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 16),
-                                  hintText: "Specialization Name",
-                                  hintStyle: CustomFonts.poppins14W500(
-                                      color: HexColor("#222425")),
-                                  border: InputBorder.none),
+                    const SizedBox(height: 15),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: HexColor("#FFE8BF"),
+                      ),
+                      child: Column(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16),
+                              child: TextField(
+                                controller: specializationController,
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    hintText: "Specialization Name",
+                                    hintStyle: CustomFonts.poppins14W500(
+                                        color: HexColor("#222425")),
+                                    border: InputBorder.none),
+                              ),
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          children: [
-                            Row(children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                height: 60,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    padding: EdgeInsets.zero,
-                                    scrollDirection: Axis.horizontal,
-                                    // physics:
-                                    //     const NeverScrollableScrollPhysics(),
-                                    itemCount: _paths.length > 1
-                                        ? _paths.length + 1
-                                        : 1,
-                                    itemBuilder: (_, idx) {
-                                      if (idx == _paths.length) {
-                                        return Align(
-                                          alignment: Alignment.center,
-                                          child: GestureDetector(
-                                              onTap: () {
-                                                _pickFiles();
-                                              },
-                                              child: CircleAvatar(
-                                                  radius: 30,
-                                                  backgroundColor: Colors.white,
-                                                  child: Icon(Icons.add,
-                                                      color: HexColor(
-                                                          "#FF724C")))),
-                                        );
-                                      } else {
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 4.0),
-                                          child: SizedBox(
-                                            width: 60,
-                                            child: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(50.0),
-                                                child: Image.file(
-                                                    fit: BoxFit.fill,
-                                                    File(_paths[idx]
-                                                        .path
-                                                        .toString()))),
-                                          ),
-                                        );
-                                      }
-                                    }),
-                              ),
-                            ]),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 16,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Text("${_paths.length} Icons Added",
-                                style: CustomFonts.poppins14W500()),
-                            const SizedBox(width: 20),
-                            GetBuilder(
-                              init: CreateSpecializationVC(),
-                              initState: (state) async {
-                                state.controller?.refresh();
-                              },
-                              builder: (CreateSpecializationVC controller) {
-                                return Container(
-                                  height: 37,
-                                  width: 120,
-                                  decoration: BoxDecoration(
-                                      color: HexColor("#FF724C"),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: controller.rxGetList.isLoading
-                                      ? const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 8.0, horizontal: 8),
-                                          child: Center(
-                                              child: SizedBox(
-                                                  width: 20,
-                                                  height: 20,
-                                                  child:
-                                                      CircularProgressIndicator(
-                                                    color: Colors.white,
-                                                  ))),
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            print('Tapped Send');
-                                            // controller.sendSpecializatonList(_paths);
-                                            // controller.uploadImage(
-                                            //     _paths.first.xFile.path,
-                                            //     _paths.first.xFile.name);
-                                            controller.uploadImage(
-                                                context,
-                                                _paths.first.xFile.path,
-                                                _paths.first.xFile.name,
-                                                specializationController.text,
-                                                fToast);
-                                            // controller.deleteSpecializatonIconById('668d6b77b1e15c3b7368f968',_paths?.first);
-                                          },
-                                          child: Center(
-                                            child: Text(
-                                              'Save',
-                                              style: CustomFonts.poppins14W700(
-                                                  color: Colors.white),
+                          const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              Row(children: [
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width / 1.2,
+                                  height: 60,
+                                  child: ListView.builder(
+                                      shrinkWrap: true,
+                                      padding: EdgeInsets.zero,
+                                      scrollDirection: Axis.horizontal,
+                                      itemCount: _paths.length + 1,
+                                      itemBuilder: (_, idx) {
+                                        if (idx == _paths.length) {
+                                          return Align(
+                                            alignment: Alignment.center,
+                                            child: GestureDetector(
+                                                onTap: () {
+                                                  _pickFiles();
+                                                },
+                                                child: CircleAvatar(
+                                                    radius: 30,
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    child: Icon(Icons.add,
+                                                        color: HexColor(
+                                                            "#FF724C")))),
+                                          );
+                                        } else {
+                                          return Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 4.0),
+                                            child: SizedBox(
+                                              width: 60,
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          50.0),
+                                                  child: Image.file(
+                                                      fit: BoxFit.fill,
+                                                      File(_paths[idx]
+                                                          .path
+                                                          .toString()))),
                                             ),
-                                          ),
-                                        ),
-                                );
-                              },
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 40,
-                  ),
-                  Text(
-                    "List of Specialization",
-                    style: CustomFonts.poppins20W600(),
-                  ),
-                  const SizedBox(height: 15),
-                  GetBuilder<CreateSpecializationVC>(
-                      init: CreateSpecializationVC(),
-                      // initState: (state) async {
-                      //   state.controller?.refresh();
-                      // },
-                      builder: (c) {
-                        return Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16.0),
-                          decoration: BoxDecoration(
-                              color: HexColor("#FFF7E9"),
-                              borderRadius: BorderRadius.circular(30)),
-                          // child: Column(
-                          //   children: [
-                          //     for (int index = 0;
-                          //     index < c.specializations.length;
-                          //     index++)
-                          //       specializationCard(index, context),
-                          //   ],
-                          // ),
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            primary: false,
-                            shrinkWrap: true,
-                            itemCount: c.specializations.length,
-                            itemBuilder: (context, index) {
-                              return specializationCard(index, context);
-                            },
+                                          );
+                                        }
+                                      }),
+                                ),
+                              ]),
+                            ],
                           ),
-                        );
-                      })
-                ],
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text("${_paths.length} Icons Added",
+                                  style: CustomFonts.poppins14W500()),
+                              const SizedBox(width: 20),
+                              Container(
+                                height: 37,
+                                width: 120,
+                                decoration: BoxDecoration(
+                                    color: HexColor("#FF724C"),
+                                    borderRadius: BorderRadius.circular(30)),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (_paths.isNotEmpty) {
+                                      controller.uploadImage(
+                                          context,
+                                          _paths
+                                              .map(
+                                                (e) => e.path!,
+                                              )
+                                              .toList(),
+                                          _paths
+                                              .map(
+                                                (e) => e.name,
+                                              )
+                                              .toList(),
+                                          specializationController.text,
+                                          fToast);
+                                    }
+                                  },
+                                  child: Center(
+                                    child: Text(
+                                      'Save',
+                                      style: CustomFonts.poppins14W700(
+                                          color: Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Text(
+                      "List of Specialization",
+                      style: CustomFonts.poppins20W600(),
+                    ),
+                    const SizedBox(height: 15),
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                          color: HexColor("#FFF7E9"),
+                          borderRadius: BorderRadius.circular(30)),
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        primary: false,
+                        shrinkWrap: true,
+                        itemCount: controller.specializations.length,
+                        itemBuilder: (context, index) {
+                          return specializationCard(index, context);
+                        },
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }
