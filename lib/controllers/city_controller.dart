@@ -38,15 +38,15 @@ class CityController extends GetxController {
   }
 
   Future getDoctorListByCity(formData) async {
-    isFetching.value = true;
+    // isFetching.value = true;
     doctorList.value = await getDoctorByCity(formData);
-    isFetching.value = false;
+    // isFetching.value = false;
   }
 
   Future getAllDoctorList() async {
-    isFetching.value = true;
+    // isFetching.value = true;
     doctorList.value = await getAllDoctorData();
-    isFetching.value = false;
+    // isFetching.value = false;
   }
 
   Future getDoctorListBySearch(body) async {

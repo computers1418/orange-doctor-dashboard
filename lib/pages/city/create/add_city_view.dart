@@ -1,3 +1,4 @@
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -30,6 +31,7 @@ class _AddCityViewState extends State<AddCityView> {
   bool _viewAddCity = true;
   String? selectedBrandId;
   String? selectedSpecializationId;
+  String? selectedDoctorId;
   String? selectCityId;
   final TextEditingController _nameController = TextEditingController();
   CityController cityController = Get.put(CityController());
@@ -171,6 +173,19 @@ class _AddCityViewState extends State<AddCityView> {
                                                 selectedBrandId!,
                                                 selectedSpecializationId!);
                                           }
+                                          if (selectCityId == null ||
+                                              selectedSpecializationId ==
+                                                  null ||
+                                              selectedBrandId == null) {
+                                            cityController.getAllDoctorList();
+                                          } else {
+                                            cityController.getDoctorListByCity({
+                                              'cityId': selectCityId,
+                                              'brandId': selectedBrandId,
+                                              'specializationId':
+                                                  selectedSpecializationId,
+                                            });
+                                          }
                                         },
                                         value: "_id",
                                       ),
@@ -191,6 +206,19 @@ class _AddCityViewState extends State<AddCityView> {
                                                 selectedBrandId!,
                                                 selectedSpecializationId!);
                                           }
+                                          if (selectCityId == null ||
+                                              selectedSpecializationId ==
+                                                  null ||
+                                              selectedBrandId == null) {
+                                            cityController.getAllDoctorList();
+                                          } else {
+                                            cityController.getDoctorListByCity({
+                                              'cityId': selectCityId,
+                                              'brandId': selectedBrandId,
+                                              'specializationId':
+                                                  selectedSpecializationId,
+                                            });
+                                          }
                                         },
                                         value: "_id",
                                       ),
@@ -203,6 +231,19 @@ class _AddCityViewState extends State<AddCityView> {
                                           setState(() {
                                             selectCityId = value.id;
                                           });
+                                          if (selectCityId == null ||
+                                              selectedSpecializationId ==
+                                                  null ||
+                                              selectedBrandId == null) {
+                                            cityController.getAllDoctorList();
+                                          } else {
+                                            cityController.getDoctorListByCity({
+                                              'cityId': selectCityId,
+                                              'brandId': selectedBrandId,
+                                              'specializationId':
+                                                  selectedSpecializationId,
+                                            });
+                                          }
                                         },
                                       ),
                                       const SizedBox(
@@ -234,6 +275,190 @@ class _AddCityViewState extends State<AddCityView> {
                                               ),
                                               border: InputBorder.none,
                                             ),
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
+                                      // SingleSelect(
+                                      //   label: "Select Doctor",
+                                      //   items: cityController.doctorList.isEmpty
+                                      //       ? []
+                                      //       : cityController.doctorList
+                                      //           .map((e) => e.toJson())
+                                      //           .toList(),
+                                      //   onTap: (String value) {
+                                      //     setState(() {
+                                      //       selectedDoctorId = value;
+                                      //     });
+                                      //     // if (selectedBrandId != null) {
+                                      //     //   cityController.getCitiesList(
+                                      //     //       selectedBrandId!,
+                                      //     //       selectedSpecializationId!);
+                                      //     // }
+                                      //   },
+                                      //   value: "_id",
+                                      // ),
+                                      DropdownButtonHideUnderline(
+                                        child: DropdownButton2<String>(
+                                          isExpanded: true,
+                                          hint: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Text(
+                                                  "Select Doctor",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: const Color(
+                                                          0xFF222425)),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          selectedItemBuilder: (_) {
+                                            return cityController.doctorList
+                                                .map((e) => e.toJson())
+                                                .toList()
+                                                .map((e) {
+                                              return Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Text(
+                                                  e["personalInfo"]['name'] ??
+                                                      '',
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyLarge
+                                                      ?.copyWith(
+                                                          color: HexColor(
+                                                              "#222425")),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              );
+                                            }).toList();
+                                          },
+                                          items: cityController
+                                                  .doctorList.isEmpty
+                                              ? []
+                                              : cityController.doctorList
+                                                  .map((e) => e.toJson())
+                                                  .toList()
+                                                  .map((dynamic item) =>
+                                                      DropdownMenuItem<String>(
+                                                        value: item["_id"],
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const SizedBox(
+                                                              height: 12,
+                                                            ),
+                                                            Text(
+                                                              item == null
+                                                                  ? ''
+                                                                  : (item["personalInfo"]
+                                                                          [
+                                                                          'name'] ??
+                                                                      ''),
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 12),
+                                                            if (cityController
+                                                                    .doctorList
+                                                                    .map((e) => e
+                                                                        .toJson())
+                                                                    .toList()
+                                                                    .indexOf(
+                                                                        item) <
+                                                                cityController
+                                                                        .doctorList
+                                                                        .map((e) =>
+                                                                            e.toJson())
+                                                                        .toList()
+                                                                        .length -
+                                                                    1)
+                                                              const Divider(
+                                                                height: 0,
+                                                                color: Color(
+                                                                    0x33FFFFFF),
+                                                              )
+                                                          ],
+                                                        ),
+                                                      ))
+                                                  .toList(),
+                                          value: selectedDoctorId,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              selectedDoctorId = value;
+                                            });
+                                            // widget.onTap(value!);
+                                          },
+                                          buttonStyleData: ButtonStyleData(
+                                            height: 48,
+                                            padding: const EdgeInsets.only(
+                                                left: 0, right: 16),
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(30),
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                          iconStyleData: IconStyleData(
+                                            icon: const Icon(
+                                              Icons
+                                                  .keyboard_arrow_down_outlined,
+                                            ),
+                                            iconSize: 24,
+                                            iconEnabledColor: Colors.black,
+                                            iconDisabledColor: Colors.grey,
+                                          ),
+                                          dropdownStyleData: DropdownStyleData(
+                                            maxHeight: 200,
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 16, vertical: 10),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(25),
+                                                color: const Color(0xEFFF724C),
+                                                boxShadow: const [
+                                                  BoxShadow(
+                                                      offset: Offset(0, 10),
+                                                      blurRadius: 20,
+                                                      color: Color(0x1A000000)),
+                                                ]),
+                                            offset: const Offset(0, 0),
+                                            scrollbarTheme: ScrollbarThemeData(
+                                              radius: const Radius.circular(40),
+                                              thickness:
+                                                  MaterialStateProperty.all(6),
+                                              thumbVisibility:
+                                                  MaterialStateProperty.all(
+                                                      true),
+                                            ),
+                                          ),
+                                          menuItemStyleData:
+                                              const MenuItemStyleData(
+                                            height: 42,
+                                            padding: EdgeInsets.only(
+                                                left: 14, right: 14),
                                           ),
                                         ),
                                       ),

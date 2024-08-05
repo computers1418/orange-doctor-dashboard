@@ -94,7 +94,7 @@ class DoctorController extends GetxController {
         // isLoading(false);
 
         if (val.statusCode == 200) {
-          showToast(fToast, "Doctor has been successfully deleted.", false);
+          showToast(fToast, "Doctor has been successfully created.", false);
           // fetchBrandList();
           getAllDoctorList();
         } else {

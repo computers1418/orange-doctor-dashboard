@@ -10,6 +10,7 @@ import '../../widgets/custom_appbar.dart';
 import '../../widgets/custom_drawer.dart';
 import '../../widgets/pagination.dart';
 import '../../widgets/single_select.dart';
+import '../../widgets/single_select2.dart';
 import '../city/components/doctor_info_card.dart';
 import '../city/components/filters.dart';
 import '../city/components/search_input.dart';
@@ -27,12 +28,11 @@ class _DoctorCreateState extends State<DoctorCreate> {
   TextEditingController doctorNameController = TextEditingController();
   TextEditingController emailConteoller = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  TextEditingController cityController = TextEditingController();
   String selectedBrandId = '';
   String selectBrandName = '';
   String selectedSpecializationId = '';
   String selectedSpecializationName = '';
-  String selectedCityId = '';
-  String selectedCityName = '';
   FToast? fToast;
   int currentPage = 0;
   final TextEditingController _searchController = TextEditingController();
@@ -45,17 +45,17 @@ class _DoctorCreateState extends State<DoctorCreate> {
     fToast!.init(context);
     doctorController.getBrandsList();
     doctorController.getSpecializatonList();
-    if (selectedCityId.isEmpty ||
-        selectedSpecializationId.isEmpty ||
-        selectedBrandId.isEmpty) {
-      doctorController.getAllDoctorList();
-    } else {
-      doctorController.getDoctorListByCity({
-        'cityId': '',
-        'brandId': '',
-        'specializationId': '',
-      });
-    }
+    // if (selectedCityId.isEmpty ||
+    //     selectedSpecializationId.isEmpty ||
+    //     selectedBrandId.isEmpty) {
+    doctorController.getAllDoctorList();
+    // } else {
+    //   doctorController.getDoctorListByCity({
+    //     'cityId': '',
+    //     'brandId': '',
+    //     'specializationId': '',
+    //   });
+    // }
   }
 
   callback(page) {
@@ -98,6 +98,7 @@ class _DoctorCreateState extends State<DoctorCreate> {
                     ),
                     Expanded(
                       child: ListView(
+                        padding: EdgeInsets.zero,
                         primary: true,
                         shrinkWrap: false,
                         children: [
@@ -106,14 +107,14 @@ class _DoctorCreateState extends State<DoctorCreate> {
                             child: Column(
                               children: [
                                 const SizedBox(
-                                  height: 20,
+                                  height: 30,
                                 ),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      "Create Doctor",
+                                      "Add Doctor",
                                       style: CustomFonts.poppins20W600(),
                                     ),
                                   ],
@@ -146,12 +147,6 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                                     )
                                                     .name;
                                           });
-                                          if (selectedSpecializationId
-                                              .isNotEmpty) {
-                                            doctorController.getCitiesList(
-                                                selectedBrandId,
-                                                selectedSpecializationId);
-                                          }
                                         },
                                         value: "_id",
                                       ),
@@ -175,11 +170,6 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                                     )
                                                     .name!;
                                           });
-                                          if (selectedBrandId.isNotEmpty) {
-                                            doctorController.getCitiesList(
-                                                selectedBrandId,
-                                                selectedSpecializationId);
-                                          }
                                         },
                                         value: "_id",
                                       ),
@@ -291,25 +281,52 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                       const SizedBox(
                                         height: 16,
                                       ),
-                                      SingleSelect(
-                                        label: "View City",
-                                        items: doctorController.cities
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedCityId = value;
-                                            selectedCityName =
-                                                doctorController.cities
-                                                    .firstWhere(
-                                                      (element) =>
-                                                          element.id ==
-                                                          selectedCityId,
-                                                    )
-                                                    .name;
-                                          });
-                                        },
-                                        value: "_id",
+                                      // SingleSelect(
+                                      //   label: "View City",
+                                      //   items: doctorController.cities
+                                      //       .map((e) => e.toJson())
+                                      //       .toList(),
+                                      //   onTap: (String value) {
+                                      //     setState(() {
+                                      //       selectedCityId = value;
+                                      //       selectedCityName =
+                                      //           doctorController.cities
+                                      //               .firstWhere(
+                                      //                 (element) =>
+                                      //                     element.id ==
+                                      //                     selectedCityId,
+                                      //               )
+                                      //               .name;
+                                      //     });
+                                      //   },
+                                      //   value: "_id",
+                                      // ),
+                                      Container(
+                                        width: double.infinity,
+                                        height: 48,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 16),
+                                          child: TextField(
+                                            decoration: InputDecoration(
+                                              contentPadding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 16),
+                                              hintText: "City",
+                                              hintStyle:
+                                                  CustomFonts.poppins14W500(
+                                                      color:
+                                                          HexColor("#222425")),
+                                              border: InputBorder.none,
+                                            ),
+                                            controller: cityController,
+                                          ),
+                                        ),
                                       ),
                                       const SizedBox(
                                         height: 16,
@@ -318,7 +335,7 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                         onTap: () {
                                           doctorController
                                               .creatDoctorList(
-                                                  selectedCityId.isEmpty
+                                                  cityController.text.isEmpty
                                                       ? {
                                                           "personalInfo": {
                                                             "name":
@@ -360,10 +377,8 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                                               selectedSpecializationId,
                                                           "specializationName":
                                                               selectedSpecializationName,
-                                                          "cityId":
-                                                              selectedCityId,
-                                                          "city":
-                                                              selectedCityName
+                                                          "city": cityController
+                                                              .text
                                                         },
                                                   fToast!)
                                               .then(
@@ -385,7 +400,7 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                             ),
                                             child: Center(
                                               child: Text(
-                                                'Create Doctor',
+                                                'Add Doctor',
                                                 style:
                                                     CustomFonts.poppins14W700(
                                                   color: Colors.white,
@@ -406,21 +421,56 @@ class _DoctorCreateState extends State<DoctorCreate> {
                           ),
                           Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
-                            child: Column(
+                            child: Row(
                               children: [
-                                Filters(
-                                  viewDoctor: () {
-                                    doctorController.getDoctorListByCity({
-                                      'cityId': selectedCityId,
-                                      'brandId': selectedBrandId,
-                                      'specializationId':
-                                          selectedSpecializationId,
-                                    });
-                                  },
+                                const SizedBox(
+                                  width: 140,
+                                  child: SingleSelect2(items: [
+                                    "All Brands",
+                                    "Orange Brand Dental",
+                                    "Orange Brand Orthopedics",
+                                    "Orange Brand Homeopathy",
+                                    "Precilo Brand Dental",
+                                    "Precilo Brand Orthopedics1",
+                                    "Precilo Brand Orthopedics2",
+                                    "Precilo Brand Orthopedics3"
+                                  ], label: 'All Brands'),
                                 ),
                                 const SizedBox(
-                                  height: 15,
+                                  width: 10,
                                 ),
+                                Container(
+                                  width: 120,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 16, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      color: HexColor("#FF724C"),
+                                      borderRadius: BorderRadius.circular(30)),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Filter",
+                                        style: CustomFonts.poppins14W600(
+                                            color: Colors.white),
+                                      ),
+                                      const Icon(
+                                        Icons.keyboard_arrow_down_outlined,
+                                        color: Colors.white,
+                                      )
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 16,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            child: Column(
+                              children: [
                                 SearchInput(
                                   controller: _searchController,
                                   onChanged: (value) {
@@ -429,120 +479,50 @@ class _DoctorCreateState extends State<DoctorCreate> {
                                   },
                                 ),
                                 const SizedBox(
-                                  height: 20,
+                                  height: 14,
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        flex: 6,
-                                        child: Text(
-                                          "Doctor Details(147)",
-                                          style: CustomFonts.poppins20W600(),
-                                        ),
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      doctorController.getAllDoctorList();
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 20, vertical: 3),
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          color: HexColor("#2A2C41")),
+                                      child: Text(
+                                        "Refresh",
+                                        style: CustomFonts.poppins10W700(
+                                            color: HexColor("#FF724C")),
                                       ),
-                                      Expanded(
-                                        flex: 8,
-                                        child: Pagination(
-                                          pagesLenght: totalPages - 1,
-                                          currentPage: currentPage,
-                                          callback: callback,
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
-                                const SizedBox(height: 10),
+                                const SizedBox(
+                                  height: 4,
+                                ),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
-                                      child: Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 30,
-                                            backgroundColor:
-                                                HexColor("#FFE8E1"),
-                                            child: Image.asset(
-                                              "assets/images/user.png",
-                                              width: 25,
-                                              height: 25,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Total Patients Treated",
-                                                  style:
-                                                      CustomFonts.poppins10W500(
-                                                          color: HexColor(
-                                                              "#80222425")),
-                                                ),
-                                                Text(
-                                                  "371",
-                                                  style: CustomFonts
-                                                      .poppins32W800(),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
+                                      child: Text(
+                                        "Doctor’s List (${doctorController.doctorList.length.toString()})",
+                                        style: CustomFonts.poppins20W600(),
                                       ),
                                     ),
-                                    const SizedBox(
-                                      width: 20,
+                                    Pagination(
+                                      pagesLenght: totalPages - 1,
+                                      currentPage: currentPage,
+                                      callback: callback,
                                     ),
-                                    Expanded(
-                                      child: Row(
-                                        children: [
-                                          CircleAvatar(
-                                            radius: 30,
-                                            backgroundColor:
-                                                HexColor("#FFE8E1"),
-                                            child: Image.asset(
-                                              "assets/images/doctor.png",
-                                              width: 25,
-                                              height: 25,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            width: 10,
-                                          ),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  "Total Doctors",
-                                                  style:
-                                                      CustomFonts.poppins10W500(
-                                                          color: HexColor(
-                                                              "#80222425")),
-                                                ),
-                                                Text(
-                                                  doctorController
-                                                      .doctorList.length
-                                                      .toString(),
-                                                  style: CustomFonts
-                                                      .poppins32W800(),
-                                                )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    )
                                   ],
                                 ),
-                                const SizedBox(height: 16),
+                                const SizedBox(height: 10),
                                 Container(
                                   width: double.infinity,
                                   padding: const EdgeInsets.all(16.0),

@@ -1,22 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:intl/intl.dart';
 
-import '../../../../constants/text_style.dart';
-import '../../../models/list_invitation_model.dart';
+import '../../../constants/text_style.dart';
 
-class InvitationCard extends StatelessWidget {
+class SendApkInvitationcard extends StatelessWidget {
   final int index;
-  final ListInvitationModel model;
-  final VoidCallback onTap;
-  final VoidCallback onResend;
 
-  const InvitationCard(
-      {super.key,
-      required this.index,
-      required this.model,
-      required this.onTap,
-      required this.onResend});
+  const SendApkInvitationcard({
+    super.key,
+    required this.index,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +52,7 @@ class InvitationCard extends StatelessWidget {
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Text(
-                            model.brandName,
+                            "Precilo",
                             style: CustomFonts.poppins12W600(
                               color: HexColor("#222425"),
                             ),
@@ -86,9 +79,10 @@ class InvitationCard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    model.specializationName,
-                    style:
-                        CustomFonts.poppins12W600(color: HexColor("#222425")),
+                    "Homeopathy",
+                    style: CustomFonts.poppins12W600(
+                        color: HexColor("#222425"),
+                        decoration: TextDecoration.underline),
                   ),
                 ],
               ),
@@ -109,7 +103,7 @@ class InvitationCard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  DateFormat('MMM d, yyyy at h:mm a').format(model.timeSent),
+                  "Nov 21, 2024 at 12:37 PM",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -125,7 +119,7 @@ class InvitationCard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  DateFormat('MMM d, yyyy at h:mm a').format(model.timeUpdated),
+                  "Nov 21, 2024 at 12:37 PM",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -141,8 +135,7 @@ class InvitationCard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  "",
-                  // model.sendCount.toString(),
+                  "05",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -168,7 +161,7 @@ class InvitationCard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  model.doctorName,
+                  "Dr. Arnold Nilson",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -191,7 +184,7 @@ class InvitationCard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  model.email.isEmpty ? "-" : model.email,
+                  "Drnilson89@gmail.com",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -214,7 +207,7 @@ class InvitationCard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  model.phone.isEmpty ? "-" : model.phone,
+                  "+91 9087654321",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -237,7 +230,7 @@ class InvitationCard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  model.city.isEmpty ? "-" : model.city,
+                  "Delhi",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -327,7 +320,7 @@ class InvitationCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(30)),
                 child: Center(
                   child: Text(
-                    'Moved to APK Page',
+                    'APK Logged In',
                     style: CustomFonts.poppins10W700(color: Colors.white),
                   ),
                 ),
@@ -344,10 +337,13 @@ class InvitationCard extends StatelessWidget {
               flex: 2,
               child: SizedBox(),
             ),
+            const Expanded(
+              flex: 3,
+              child: SizedBox(),
+            ),
             Expanded(
               flex: 3,
               child: GestureDetector(
-                onTap: onTap,
                 child: Container(
                   height: 22,
                   // width: 66,
@@ -387,27 +383,7 @@ class InvitationCard extends StatelessWidget {
             ),
             Expanded(
               flex: 3,
-              child: Container(
-                height: 22,
-                // width: 66,
-                decoration: BoxDecoration(
-                    color: HexColor("#FF724C"),
-                    borderRadius: BorderRadius.circular(30)),
-                child: Center(
-                  child: Text(
-                    'Register',
-                    style: CustomFonts.poppins10W700(color: Colors.white),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              width: 4,
-            ),
-            Expanded(
-              flex: 3,
               child: GestureDetector(
-                onTap: onResend,
                 child: Container(
                   height: 22,
                   // width: 66,
@@ -416,7 +392,7 @@ class InvitationCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30)),
                   child: Center(
                     child: Text(
-                      'Resend',
+                      'Resend(2)',
                       style: CustomFonts.poppins10W700(color: Colors.white),
                     ),
                   ),

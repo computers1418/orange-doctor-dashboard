@@ -118,7 +118,6 @@ Future<List<DoctorModel>> getDoctorBySearch(body) async {
       contentType: Headers.jsonContentType,
     ),
   );
-
   if (response.statusCode == 200) {
     if (response.data["data"] != null) {
       for (var brand in response.data["data"]) {

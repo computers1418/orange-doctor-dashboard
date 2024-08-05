@@ -772,49 +772,46 @@ class _SendInvitationState extends State<SendInvitation> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Expanded(
-                                  flex: 4,
+                                  // flex: 4,
                                   child: Text(
                                     "Doctor’s\nInvitation List (${sendInvitationController.sendInvitationList.length})",
                                     style: CustomFonts.poppins20W600(),
                                   ),
                                 ),
-                                Expanded(
-                                  flex: 5,
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      GestureDetector(
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 20, vertical: 3),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(30),
-                                            color: HexColor("#2A2C41"),
-                                          ),
-                                          child: Text(
-                                            "Refresh",
-                                            style: CustomFonts.poppins10W700(
-                                                color: HexColor("#FF724C")),
-                                          ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 20, vertical: 3),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(30),
+                                          color: HexColor("#2A2C41"),
                                         ),
-                                        onTap: () {
-                                          sendInvitationController
-                                              .getListInvitation();
-                                        },
+                                        child: Text(
+                                          "Refresh",
+                                          style: CustomFonts.poppins10W700(
+                                              color: HexColor("#FF724C")),
+                                        ),
                                       ),
-                                      const SizedBox(
-                                        height: 6,
-                                      ),
-                                      Pagination(
-                                        pagesLenght: totalPages - 1,
-                                        currentPage: currentPage,
-                                        callback: callback,
-                                      ),
-                                    ],
-                                  ),
+                                      onTap: () {
+                                        sendInvitationController
+                                            .getListInvitation();
+                                      },
+                                    ),
+                                    const SizedBox(
+                                      height: 6,
+                                    ),
+                                    Pagination(
+                                      pagesLenght: totalPages - 1,
+                                      currentPage: currentPage,
+                                      callback: callback,
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),

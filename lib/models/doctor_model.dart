@@ -23,7 +23,7 @@ class DoctorModel {
   late final PersonalInfo personalInfo;
   late final ExpertiseField expertiseField;
   late final Address address;
-  late final String createdAt;
+  late final DateTime createdAt;
   late final bool isDeleted;
   late final String id;
   late final String cityId;
@@ -34,7 +34,7 @@ class DoctorModel {
   late final List<dynamic> test;
   late final List<dynamic> review;
   late final List<dynamic> guidelines;
-  late final String updatedAt;
+  late final DateTime updatedAt;
   late final String firstName;
   late final String lastName;
   late final int V;
@@ -43,7 +43,8 @@ class DoctorModel {
     personalInfo = PersonalInfo.fromJson(json['personalInfo']);
     expertiseField = ExpertiseField.fromJson(json['expertiseField']);
     address = Address.fromJson(json['address']);
-    createdAt = json['createdAt'];
+    createdAt = DateTime.parse(json["createdAt"]);
+
     isDeleted = json['isDeleted'];
     id = json['_id'];
     cityId = json['cityId'] ?? "";
@@ -54,7 +55,7 @@ class DoctorModel {
     test = List.castFrom<dynamic, dynamic>(json['test']);
     review = List.castFrom<dynamic, dynamic>(json['review']);
     guidelines = List.castFrom<dynamic, dynamic>(json['guidelines']);
-    updatedAt = json['updatedAt'];
+    updatedAt = DateTime.parse(json["updatedAt"]);
     firstName = json['firstName'];
     lastName = json['lastName'];
     V = json['__v'];
@@ -65,7 +66,8 @@ class DoctorModel {
     _data['personalInfo'] = personalInfo.toJson();
     _data['expertiseField'] = expertiseField.toJson();
     _data['address'] = address.toJson();
-    _data['createdAt'] = createdAt;
+    // _data['createdAt'] = createdAt;
+    _data['createdAt'] = createdAt.toIso8601String();
     _data['isDeleted'] = isDeleted;
     _data['_id'] = id;
     _data['cityId'] = cityId;
@@ -76,7 +78,8 @@ class DoctorModel {
     _data['test'] = test;
     _data['review'] = review;
     _data['guidelines'] = guidelines;
-    _data['updatedAt'] = updatedAt;
+    // _data['updatedAt'] = updatedAt;
+    _data['updatedAt'] = updatedAt.toIso8601String();
     _data['firstName'] = firstName;
     _data['lastName'] = lastName;
     _data['__v'] = V;
@@ -96,9 +99,9 @@ class PersonalInfo {
   late final String phone;
 
   PersonalInfo.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-    phone = json['phone'];
+    name = json['name'] ?? "";
+    email = json['email'] ?? "";
+    phone = json['phone'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
