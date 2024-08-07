@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
+import 'package:orange_doctor_dashboard/models/send_apk_model.dart';
 
 import '../../../constants/text_style.dart';
 
 class SendApkInvitationcard extends StatelessWidget {
   final int index;
+  final SendApkModel model;
+  final VoidCallback onResend;
 
-  const SendApkInvitationcard({
-    super.key,
-    required this.index,
-  });
+  SendApkInvitationcard(
+      {super.key,
+      required this.index,
+      required this.model,
+      required this.onResend});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +57,7 @@ class SendApkInvitationcard extends StatelessWidget {
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Text(
-                            "Precilo",
+                            model.brand,
                             style: CustomFonts.poppins12W600(
                               color: HexColor("#222425"),
                             ),
@@ -79,10 +84,9 @@ class SendApkInvitationcard extends StatelessWidget {
                         color: HexColor("#222425").withOpacity(.5)),
                   ),
                   Text(
-                    "Homeopathy",
-                    style: CustomFonts.poppins12W600(
-                        color: HexColor("#222425"),
-                        decoration: TextDecoration.underline),
+                    model.specialization,
+                    style:
+                        CustomFonts.poppins12W600(color: HexColor("#222425")),
                   ),
                 ],
               ),
@@ -103,7 +107,7 @@ class SendApkInvitationcard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  "Nov 21, 2024 at 12:37 PM",
+                  DateFormat('MMM d, yyyy at h:mm a').format(model.createdAt),
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -119,7 +123,7 @@ class SendApkInvitationcard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  "Nov 21, 2024 at 12:37 PM",
+                  DateFormat('MMM d, yyyy at h:mm a').format(model.updatedAt),
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -135,7 +139,7 @@ class SendApkInvitationcard extends StatelessWidget {
                       color: HexColor("#222425").withOpacity(.5)),
                 ),
                 Text(
-                  "05",
+                  model.sendApkCount.toString(),
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ],
@@ -161,7 +165,7 @@ class SendApkInvitationcard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  "Dr. Arnold Nilson",
+                  model.name,
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -184,7 +188,7 @@ class SendApkInvitationcard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  "Drnilson89@gmail.com",
+                  model.email ?? "-",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -207,7 +211,7 @@ class SendApkInvitationcard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  "+91 9087654321",
+                  model.phone ?? "-",
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -230,7 +234,7 @@ class SendApkInvitationcard extends StatelessWidget {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Text(
-                  "Delhi",
+                  model.city,
                   style: CustomFonts.poppins12W600(color: HexColor("#222425")),
                 ),
               ),
@@ -384,6 +388,7 @@ class SendApkInvitationcard extends StatelessWidget {
             Expanded(
               flex: 3,
               child: GestureDetector(
+                onTap: onResend,
                 child: Container(
                   height: 22,
                   // width: 66,
@@ -392,7 +397,7 @@ class SendApkInvitationcard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30)),
                   child: Center(
                     child: Text(
-                      'Resend(2)',
+                      'Resend(${model.sendApkCount})',
                       style: CustomFonts.poppins10W700(color: Colors.white),
                     ),
                   ),

@@ -163,19 +163,6 @@ class _SendInvitationState extends State<SendInvitation> {
                             ),
                             child: Column(
                               children: [
-                                // SingleSelect(
-                                //   label: "Brand",
-                                //   items: sendInvitationController.brands
-                                //       .map((e) => e.toJson())
-                                //       .toList(),
-                                //   onTap: (String value) {
-                                //     setState(() {
-                                //       selectedBrandId.value = value;
-                                //     });
-                                //   },
-                                //   value: "_id",
-                                //   selectValue: selectedBrandId.value,
-                                // ),
                                 DropdownButtonHideUnderline(
                                   child: DropdownButton2<String>(
                                     isExpanded: true,

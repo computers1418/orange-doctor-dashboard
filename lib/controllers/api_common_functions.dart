@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
 import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/doctor_model.dart';
+import 'package:orange_doctor_dashboard/models/send_apk_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/api_middle_wear_api.dart';
 import 'package:http/http.dart' as http;
@@ -97,6 +98,33 @@ Future<List<DoctorModel>> getAllDoctorData() async {
     if (jsonResponse["data"] != null) {
       for (var brand in jsonResponse["data"]) {
         doctors.add(DoctorModel.fromJson(brand));
+      }
+      return doctors;
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+}
+
+Future<List<SendApkModel>> sendApkListData() async {
+  List<SendApkModel> doctors = [];
+
+  var url = Uri.parse('$baseUrl/api/doctor/send-apk/list');
+
+  var headers = {
+    'Content-Type': 'application/json',
+  };
+
+  var request = http.Request('GET', url)..headers.addAll(headers);
+  http.StreamedResponse response = await request.send();
+  if (response.statusCode == 200) {
+    var responseData = await response.stream.bytesToString();
+    var jsonResponse = jsonDecode(responseData);
+    if (jsonResponse["data"] != null) {
+      for (var brand in jsonResponse["data"]) {
+        doctors.add(SendApkModel.fromJson(brand));
       }
       return doctors;
     } else {
