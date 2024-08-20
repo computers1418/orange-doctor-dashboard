@@ -269,22 +269,27 @@ class _CreateSpecializationViewState extends State<CreateSpecializationView> {
                       style: CustomFonts.poppins20W600(),
                     ),
                     const SizedBox(height: 15),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                          color: HexColor("#FFF7E9"),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: ListView.builder(
-                        padding: EdgeInsets.zero,
-                        primary: false,
-                        shrinkWrap: true,
-                        itemCount: controller.specializations.length,
-                        itemBuilder: (context, index) {
-                          return specializationCard(index, context);
-                        },
-                      ),
-                    )
+                    controller.isFetching.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: Colors.orange,
+                          ))
+                        : Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(16.0),
+                            decoration: BoxDecoration(
+                                color: HexColor("#FFF7E9"),
+                                borderRadius: BorderRadius.circular(30)),
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              primary: false,
+                              shrinkWrap: true,
+                              itemCount: controller.specializations.length,
+                              itemBuilder: (context, index) {
+                                return specializationCard(index, context);
+                              },
+                            ),
+                          )
                   ],
                 ),
               ),

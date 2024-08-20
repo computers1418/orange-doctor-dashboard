@@ -57,133 +57,137 @@ class _BrandListState extends State<BrandList> {
       ),
       body: SafeArea(
         child: Obx(
-          () => brandController.isLoading.value
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+          () => SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 25.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 30.0),
+                    child: Text(
+                      "Create Brand",
+                      style: CustomFonts.poppins24W700(
+                          color: const Color(0XFF222425)),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 15),
+                    decoration: const BoxDecoration(
+                        color: Color(0XFFFFE8BF),
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
-                          child: Text(
-                            "Create Brand",
-                            style: CustomFonts.poppins24W700(
-                                color: const Color(0XFF222425)),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          decoration: const BoxDecoration(
-                              color: Color(0XFFFFE8BF),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30))),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25, horizontal: 20),
-                                child: TextFormField(
-                                  controller: brandNameController,
-                                  decoration: InputDecoration(
-                                      hintText: "Brand Name",
-                                      filled: true,
-                                      fillColor: Colors.white,
-                                      focusedBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.white),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      enabledBorder: UnderlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.white),
-                                        borderRadius: BorderRadius.circular(30),
-                                      ),
-                                      border: const OutlineInputBorder(
-                                          borderSide:
-                                              BorderSide(color: Colors.white),
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(30)))),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 25, horizontal: 20),
+                          child: TextFormField(
+                            controller: brandNameController,
+                            decoration: InputDecoration(
+                                hintText: "Brand Name",
+                                filled: true,
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 10.0, right: 20, bottom: 20),
-                                child: ElevatedButton(
-                                  onPressed: () {
-                                    _submit();
-                                  },
-                                  style: ElevatedButton.styleFrom(
-                                      foregroundColor: const Color(0XFFFFFFFF),
-                                      backgroundColor: const Color(0XFFFF724C),
-                                      padding: EdgeInsets.zero),
-                                  child: const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 40),
-                                    child: Text("Save"),
-                                  ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      const BorderSide(color: Colors.white),
+                                  borderRadius: BorderRadius.circular(30),
                                 ),
-                              )
-                            ],
+                                border: const OutlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.white),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(30)))),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 40.0),
-                          child: Text(
-                            "Brand Name List (${brandController.brandModel.value.data.length})",
-                            style: CustomFonts.poppins24W700(
-                                color: const Color(0XFF222425)),
-                          ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(top: 15),
-                          padding: const EdgeInsets.only(top: 15, bottom: 43),
-                          decoration: const BoxDecoration(
-                            color: Color(0XFFFFF7E9),
-                            border: Border(
-                              bottom: BorderSide(
-                                  width: 1, color: Color(0XFFF8E3BD)),
+                          padding: const EdgeInsets.only(
+                              top: 10.0, right: 20, bottom: 20),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _submit();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                foregroundColor: const Color(0XFFFFFFFF),
+                                backgroundColor: const Color(0XFFFF724C),
+                                padding: EdgeInsets.zero),
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40),
+                              child: Text("Save"),
                             ),
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
                           ),
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemCount:
-                                brandController.brandModel.value.data.length,
-                            itemBuilder: (context, index) {
-                              var listdata =
-                                  brandController.brandModel.value.data[index];
-                              return BrandListCard(
-                                brandId: (index + 1).toString(),
-                                brandName: listdata.name,
-                                createdOn: listdata.createdAt.toString(),
-                                deleteFun: () {
-                                  showModalBottomSheet(
-                                    barrierColor: Colors.transparent,
-                                    context: context,
-                                    builder: (context) {
-                                      return DeleteDialog(
-                                        onTap: () {
-                                          _delete(listdata.id, fToast);
-                                          Navigator.pop(context);
+                        )
+                      ],
+                    ),
+                  ),
+                  brandController.isLoading.value
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(top: 40.0),
+                              child: Text(
+                                "Brand Name List (${brandController.brandModel.value.data.length})",
+                                style: CustomFonts.poppins24W700(
+                                    color: const Color(0XFF222425)),
+                              ),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(top: 15),
+                              padding:
+                                  const EdgeInsets.only(top: 15, bottom: 43),
+                              decoration: const BoxDecoration(
+                                color: Color(0XFFFFF7E9),
+                                border: Border(
+                                  bottom: BorderSide(
+                                      width: 1, color: Color(0XFFF8E3BD)),
+                                ),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(30)),
+                              ),
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: brandController
+                                    .brandModel.value.data.length,
+                                itemBuilder: (context, index) {
+                                  var listdata = brandController
+                                      .brandModel.value.data[index];
+                                  return BrandListCard(
+                                    brandId: (index + 1).toString(),
+                                    brandName: listdata.name,
+                                    createdOn: listdata.createdAt.toString(),
+                                    deleteFun: () {
+                                      showModalBottomSheet(
+                                        barrierColor: Colors.transparent,
+                                        context: context,
+                                        builder: (context) {
+                                          return DeleteDialog(
+                                            onTap: () {
+                                              _delete(listdata.id, fToast);
+                                              Navigator.pop(context);
+                                            },
+                                          );
                                         },
                                       );
                                     },
                                   );
                                 },
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                              ),
+                            ),
+                          ],
+                        )
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );

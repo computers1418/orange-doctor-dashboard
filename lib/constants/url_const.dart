@@ -1,5 +1,5 @@
 class UrlConst {
-  static String baseUrl = "http://13.127.57.197/api/";
+  static String baseUrl = "https://162.240.106.108:9091/api/";
   static String brandList = "brand/list";
   static String createBrand = "brand/create";
   static String deleteBrand = "brand/delete";

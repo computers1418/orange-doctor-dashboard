@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:dio/dio.dart' as dio;
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,9 +13,12 @@ import 'package:orange_doctor_dashboard/models/city_model.dart';
 import 'package:orange_doctor_dashboard/models/doctor_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/constants.dart';
 import '../respositories/api_middle_wear_api.dart';
 import 'package:http/http.dart' as http;
+
+import '../services/api/api.dart';
 
 class CityController extends GetxController {
   var rxGetList = RxStatus.empty().obs;
@@ -56,7 +62,7 @@ class CityController extends GetxController {
   }
 
   Future getCitiesList(String brandId, String specializationId) async {
-    Dio dio = Dio();
+    // Dio dio = Dio();
 
     try {
       rxGetList.value = RxStatus.loading();
@@ -66,17 +72,29 @@ class CityController extends GetxController {
         "brandId": brandId,
         "specializationId": specializationId,
       };
-
-      var response = await dio.request(
-        "http://13.127.57.197/api/city/by-brand-specialization",
-        data: data,
-        options: Options(
-          method: 'GET',
-        ),
-      );
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
+      };
+      // var response = await dio.request(
+      //   "https://162.240.106.108:9091/api/city/by-brand-specialization",
+      //   data: jsonEncode(data),
+      //   options: Options(method: 'GET', headers: headers),
+      // );
+      String jsonBody = jsonEncode(data);
+      var request = http.Request(
+          'GET',
+          Uri.parse(
+              "https://162.240.106.108:9091/api/city/by-brand-specialization"))
+        ..headers.addAll(headers)
+        ..body = jsonBody;
+      var response = await request.send();
       if (response.statusCode == 200) {
-        if (response.data["data"] != null) {
-          for (var city in response.data["data"]) {
+        String responseBody = await response.stream.bytesToString();
+        var jsonResponse = jsonDecode(responseBody);
+        if (jsonResponse["data"] != null) {
+          for (var city in jsonResponse["data"]) {
             cities.add(CityModel.fromJson(city));
           }
           rxGetList.value = RxStatus.success();
@@ -98,30 +116,38 @@ class CityController extends GetxController {
       required FToast fToast}) async {
     creatingCity.value = true;
     try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
+      };
       Map<String, dynamic> data = {
         "name": name,
         "brandId": brandId,
         "specializationId": specializationId,
         "isActive": true
       };
-      final response = await ApiMiddleWear(
-        url: 'city/create',
-        data: data,
-      ).post(
-        options: Options(
-          contentType: Headers.jsonContentType,
-        ),
-      );
+      // final response =
+      //     await ApiMiddleWear(url: 'city/create', data: data, headers: headers)
+      //         .post();
+      String jsonBody = jsonEncode(data);
+      var request = http.Request(
+          'POST', Uri.parse("https://162.240.106.108:9091/api/city/create"))
+        ..headers.addAll(headers)
+        ..body = jsonBody;
+      var response = await request.send();
+      String responseBody = await response.stream.bytesToString();
+      var jsonResponse = jsonDecode(responseBody);
       if (response.statusCode == 200) {
-        if (response.data["data"] != null) {
+        if (jsonResponse["data"] != null) {
           showToast(fToast, "City has been created successfully.", false);
-          cities.add(CityModel.fromJson(response.data["data"]));
+          cities.add(CityModel.fromJson(jsonResponse["data"]));
           rxGetList.value =
               cities.isEmpty ? RxStatus.empty() : RxStatus.success();
           return true;
         }
       } else {
-        showToast(fToast, response.data["message"], true);
+        showToast(fToast, jsonResponse["message"], true);
       }
     } catch (e) {
       printC('error:$e');
@@ -136,17 +162,15 @@ class CityController extends GetxController {
       required String cityId,
       required FToast fToast}) async {
     try {
-      final response = await ApiMiddleWear(
-        url: 'city/update/$cityId',
-        data: {
-          "name": name,
-        },
-      ).post(
-        options: Options(
-          contentType: Headers.jsonContentType,
-        ),
-      );
-      print("sdsdsd=======${response.data}");
+      Api api = Api();
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      api.dio.options.headers['Authorization'] =
+          'Bearer ${shared.getString("access_token")}';
+
+      dio.Response response =
+          await api.sendRequest.post("city/update/$cityId", data: {
+        "name": name,
+      });
       if (response.statusCode == 200) {
         if (response.data["data"] != null) {
           final index = cities.indexWhere((element) => element.id == cityId);
@@ -170,9 +194,15 @@ class CityController extends GetxController {
   Future<bool> deleteCityName(
       {required String cityId, required FToast fToast}) async {
     try {
-      final response = await ApiMiddleWear(
-        url: 'city/delete/$cityId',
-      ).delete();
+      Api api = Api();
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      api.dio.options.headers['Authorization'] =
+          'Bearer ${shared.getString("access_token")}';
+      // final response =
+      //     await ApiMiddleWear(url: 'city/delete/$cityId', headers: headers)
+      //         .delete();
+      dio.Response response =
+          await api.sendRequest.delete("city/delete/$cityId");
 
       if (response.statusCode == 200) {
         showToast(fToast, response.data["data"], false);

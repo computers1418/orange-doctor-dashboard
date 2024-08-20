@@ -9,12 +9,14 @@ class SendApkInvitationcard extends StatelessWidget {
   final int index;
   final SendApkModel model;
   final VoidCallback onResend;
+  final VoidCallback onDelete;
 
   SendApkInvitationcard(
       {super.key,
       required this.index,
       required this.model,
-      required this.onResend});
+      required this.onResend,
+      required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
@@ -348,6 +350,7 @@ class SendApkInvitationcard extends StatelessWidget {
             Expanded(
               flex: 3,
               child: GestureDetector(
+                onTap: onDelete,
                 child: Container(
                   height: 22,
                   // width: 66,

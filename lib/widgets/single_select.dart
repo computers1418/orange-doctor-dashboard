@@ -25,7 +25,6 @@ class SingleSelect extends StatefulWidget {
 class _SingleSelectState extends State<SingleSelect> {
   String? selectedValue;
 
-
   @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
@@ -56,7 +55,8 @@ class _SingleSelectState extends State<SingleSelect> {
                     .textTheme
                     .bodyLarge
                     ?.copyWith(color: widget.invert ? Colors.white : null),
-                overflow: TextOverflow.ellipsis,
+                // overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             );
           }).toList();
@@ -97,13 +97,11 @@ class _SingleSelectState extends State<SingleSelect> {
           widget.onTap(value!);
         },
         buttonStyleData: ButtonStyleData(
-          height: 48,
+          height: widget.invert ? 42 : 48,
           padding: const EdgeInsets.only(left: 0, right: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(30),
-            color: widget.invert
-                ? HexColor("#F7F8FC").withOpacity(0.1)
-                : Colors.white,
+            color: widget.invert ? HexColor("#FF724C") : Colors.white,
           ),
         ),
         iconStyleData: IconStyleData(
@@ -112,11 +110,11 @@ class _SingleSelectState extends State<SingleSelect> {
           ),
           iconSize: 24,
           iconEnabledColor: widget.invert ? Colors.white : Colors.black,
-          iconDisabledColor: Colors.grey,
+          iconDisabledColor: widget.invert ? Colors.white : Colors.black,
         ),
         dropdownStyleData: DropdownStyleData(
           maxHeight: 200,
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          // padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(25),
               color: const Color(0xEFFF724C),

@@ -1,57 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:orange_doctor_dashboard/controllers/admin_controller.dart';
 
 import '../../constants/text_style.dart';
 
-class AdminLogin extends StatefulWidget {
-  const AdminLogin({Key? key}) : super(key: key);
+class ChangePassword extends StatefulWidget {
+  const ChangePassword({super.key});
 
   @override
-  State<AdminLogin> createState() => _AdminLoginState();
+  State<ChangePassword> createState() => _ChangePasswordState();
 }
 
-class _AdminLoginState extends State<AdminLogin> {
-  AdminController adminController = Get.put(AdminController());
-  FToast? fToast;
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    fToast = FToast();
-    fToast!.init(context);
-  }
-
+class _ChangePasswordState extends State<ChangePassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
+          // Stack(
+          //   alignment: Alignment.centerLeft,
+          //   children: [
+          //     Image.asset(
+          //       "lib/pages/admin_login/assets/bg.png",
+          //       fit: BoxFit.fill,
+          //     ),
+          //     Padding(
+          //       padding: const EdgeInsets.only(top: 20, left: 40),
+          //       child: const Text(
+          //         "Admin\nLogin",
+          //         style: TextStyle(
+          //             fontSize: 40,
+          //             fontWeight: FontWeight.w800,
+          //             color: Colors.white),
+          //       ),
+          //     ),
+          //   ],
+          // ),
+          Container(
+            width: double.infinity,
+            height: 320,
             alignment: Alignment.centerLeft,
-            children: [
-              Image.asset(
-                "lib/pages/admin_login/assets/bg.png",
-                fit: BoxFit.fill,
+            decoration: BoxDecoration(
+                color: HexColor("#FF724C"),
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.circular(40))),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 20, left: 40),
+              child: const Text(
+                "Change\nPassword",
+                style: TextStyle(
+                    fontSize: 40,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 20, left: 40),
-                child: const Text(
-                  "Admin\nLogin",
-                  style: TextStyle(
-                      fontSize: 40,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white),
-                ),
-              ),
-            ],
+            ),
           ),
           const SizedBox(
             height: 50,
@@ -59,7 +61,7 @@ class _AdminLoginState extends State<AdminLogin> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              "Admin Login",
+              "Change Password",
               style: CustomFonts.poppins20W600(),
             ),
           ),
@@ -86,11 +88,10 @@ class _AdminLoginState extends State<AdminLogin> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TextField(
-                        controller: usernameController,
                         decoration: InputDecoration(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 16),
-                            hintText: "Username",
+                            hintText: "Previous Password",
                             hintStyle: CustomFonts.poppins14W500(
                                 color: HexColor("#222425")),
                             border: InputBorder.none),
@@ -110,12 +111,10 @@ class _AdminLoginState extends State<AdminLogin> {
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: TextField(
-                        controller: passwordController,
-                        obscureText: true,
                         decoration: InputDecoration(
                             contentPadding:
                                 const EdgeInsets.symmetric(horizontal: 16),
-                            hintText: "Password",
+                            hintText: "New Password",
                             hintStyle: CustomFonts.poppins14W500(
                                 color: HexColor("#222425")),
                             border: InputBorder.none),
@@ -125,21 +124,39 @@ class _AdminLoginState extends State<AdminLogin> {
                   const SizedBox(
                     height: 16,
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      adminController.adminLogin(usernameController.text,
-                          passwordController.text, fToast!);
-                    },
-                    child: Container(
-                      height: 50,
-                      decoration: BoxDecoration(
-                          color: HexColor("#FF724C"),
-                          borderRadius: BorderRadius.circular(30)),
-                      child: Center(
-                        child: Text(
-                          'Submit',
-                          style: CustomFonts.poppins24W700(color: Colors.white),
-                        ),
+                  Container(
+                    width: double.infinity,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                            contentPadding:
+                                const EdgeInsets.symmetric(horizontal: 16),
+                            hintText: "Retack New Password",
+                            hintStyle: CustomFonts.poppins14W500(
+                                color: HexColor("#222425")),
+                            border: InputBorder.none),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  Container(
+                    height: 50,
+                    decoration: BoxDecoration(
+                        color: HexColor("#FF724C"),
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Center(
+                      child: Text(
+                        'Submit',
+                        style: CustomFonts.poppins24W700(color: Colors.white),
                       ),
                     ),
                   ),

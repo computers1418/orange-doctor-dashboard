@@ -297,7 +297,7 @@ class _SingleSelectCityState extends State<SingleSelectCity> {
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.only(
-            left: 32,
+            left: 16,
             right: 16,
             top: 12,
             bottom: 12,

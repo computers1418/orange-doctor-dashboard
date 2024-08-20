@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:orange_doctor_dashboard/constants/text_style.dart';
+import 'package:orange_doctor_dashboard/pages/change_password/change_password.dart';
 import 'package:orange_doctor_dashboard/pages/city/create/add_city_view.dart';
 import 'package:orange_doctor_dashboard/pages/create_brand/brand_list.dart';
 import 'package:orange_doctor_dashboard/pages/doctor_details/doctor_create.dart';
@@ -55,14 +56,14 @@ class Navigation extends StatelessWidget {
             children: [
               InkWell(
                 onTap: () {
-                  controller.getSpecializatonList().then((val) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const BrandList(),
-                      ),
-                    );
-                  });
+                  // controller.getSpecializatonList().then((val) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const BrandList(),
+                    ),
+                  );
+                  // });
                 },
                 child: Card(
                   child: Container(
@@ -74,14 +75,14 @@ class Navigation extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  controller.getSpecializatonList().then((val) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DoctorCreate(),
-                      ),
-                    );
-                  });
+                  // controller.getSpecializatonList().then((val) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DoctorCreate(),
+                    ),
+                  );
+                  // });
                 },
                 child: Card(
                   child: Container(
@@ -404,6 +405,18 @@ class Navigation extends StatelessWidget {
                       width: double.infinity,
                       padding: const EdgeInsets.all(16),
                       child: const Text("Admin Login")),
+                ),
+              ),
+              InkWell(
+                onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ChangePassword())),
+                child: Card(
+                  child: Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      child: const Text("Change Password")),
                 ),
               ),
               InkWell(

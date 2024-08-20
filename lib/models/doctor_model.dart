@@ -135,14 +135,14 @@ class ExpertiseField {
   late final String membershipBrief;
 
   ExpertiseField.fromJson(Map<String, dynamic> json) {
-    degree = json['degree'];
+    degree = json['degree'] ?? "";
     specialization = json['specialization'] ?? "";
     bio = json['bio'] ?? "";
     educationBrief = json['educationBrief'] ?? "";
     specializationBrief = json['specializationBrief'];
-    experienceBrief = json['experienceBrief'];
-    achievementBrief = json['achievementBrief'];
-    membershipBrief = json['membershipBrief'];
+    experienceBrief = json['experienceBrief'] ?? "";
+    achievementBrief = json['achievementBrief'] ?? "";
+    membershipBrief = json['membershipBrief'] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -181,14 +181,14 @@ class Address {
   late final String identityProof;
 
   Address.fromJson(Map<String, dynamic> json) {
-    addressLine1 = json['addressLine1'];
-    addressLine2 = json['addressLine2'];
-    addressLine3 = json['addressLine3'];
+    addressLine1 = json['addressLine1'] ?? "";
+    addressLine2 = json['addressLine2'] ?? "";
+    addressLine3 = json['addressLine3'] ?? "";
     city = json['city'] ?? "";
     state = json['state'] ?? "";
     country = json['country'] ?? "";
     zipCode = null;
-    identityProof = json['identityProof'];
+    identityProof = json['identityProof'] ?? "";
   }
 
   Map<String, dynamic> toJson() {

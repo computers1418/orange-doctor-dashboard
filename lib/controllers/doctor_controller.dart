@@ -15,7 +15,8 @@ class DoctorController extends GetxController {
   var isFetching = false.obs;
   RxList<BrandsModel> brands = <BrandsModel>[].obs;
   RxList<Specialization> specializations = <Specialization>[].obs;
-  var cities = <CityModel>[].obs;
+
+  // var cities = <CityModel>[].obs;
   RxList<DoctorModel> doctorList = <DoctorModel>[].obs;
 
   @override
@@ -59,31 +60,6 @@ class DoctorController extends GetxController {
     specializations.value = await getAllSepcilizations();
 
     // isFetching.value = false;
-  }
-
-  Future getCitiesList(String brandId, String specializationId) async {
-    Dio dio = Dio();
-
-    cities.clear();
-    Map<String, dynamic> data = {
-      "brandId": brandId,
-      "specializationId": specializationId,
-    };
-
-    var response = await dio.request(
-      "http://13.127.57.197/api/city/by-brand-specialization",
-      data: data,
-      options: Options(
-        method: 'GET',
-      ),
-    );
-    if (response.statusCode == 200) {
-      if (response.data["data"] != null) {
-        for (var city in response.data["data"]) {
-          cities.add(CityModel.fromJson(city));
-        }
-      } else {}
-    } else {}
   }
 
   Future<void> creatDoctorList(data, FToast fToast) async {

@@ -8,12 +8,15 @@ import 'package:orange_doctor_dashboard/models/list_invitation_model.dart';
 import 'package:orange_doctor_dashboard/models/resend_invitation_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common_methods/common_methods.dart';
 import '../common_methods/custom_print.dart';
 import '../constants/constants.dart';
+import '../services/api/api.dart';
 
 class SendInvitationController extends GetxController {
+  Api api = Api();
   var isFetching = false.obs;
   var isSending = false.obs;
   var isResending = false.obs;
@@ -45,11 +48,11 @@ class SendInvitationController extends GetxController {
     updatedAt: DateTime.now(),
   ).obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    setData();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   setData();
+  // }
 
   setData() {
     isFetching.value = true;
@@ -71,10 +74,17 @@ class SendInvitationController extends GetxController {
   }
 
   Future<void> fetchInvitationById(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/subadmin//getIinvitation/$id'));
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${shared.getString("access_token")}'
+    };
+    final response = await http.get(
+        Uri.parse('$baseUrl/api/subadmin/getIinvitation/$id'),
+        headers: headers);
 
     if (response.statusCode == 200) {
+      print("dsdsdsd======${response.body}");
       final Map<String, dynamic> data = jsonDecode(response.body);
       invitationData.value = ResendInvitationModel.fromJson(data["data"]);
     } else {
@@ -86,9 +96,12 @@ class SendInvitationController extends GetxController {
   Future<Map<String, dynamic>> sendInvitationLink(body, context, fToast) async {
     Map<String, dynamic> resp = {};
     try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
+
       var request = http.Request(
           'POST', Uri.parse('$baseUrl/api/subadmin/sendInvitation'));
 
@@ -98,20 +111,6 @@ class SendInvitationController extends GetxController {
 
       http.StreamedResponse response = await request.send();
       resp = await CommonMethods.decodeStreamedResponse(response);
-      // if (resp["status"] == 401) {
-      // } else if (resp["status"] == 403) {
-      //   showToast(fToast, resp["message"], true);
-      // } else {
-      //   if (resp["status"] == true) {
-      //     showToast(fToast, resp["messsage"], false);
-      //     getListInvitation();
-      //   } else {
-      //     showToast(fToast, resp["message"], true);
-      //     if (kDebugMode) {
-      //       print(response.reasonPhrase);
-      //     }
-      //   }
-      // }
       if (response.statusCode == 401) {
       } else if (response.statusCode == 403) {
         showToast(fToast, resp["message"], true);
@@ -134,8 +133,10 @@ class SendInvitationController extends GetxController {
       body, context, fToast) async {
     Map<String, dynamic> resp = {};
     try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
           'PUT', Uri.parse('$baseUrl/api/subadmin/resendInvitation'));
@@ -145,9 +146,7 @@ class SendInvitationController extends GetxController {
       request.body = jsonEncode(body);
 
       http.StreamedResponse response = await request.send();
-      print("sdsd=====${body}");
       resp = await CommonMethods.decodeStreamedResponse(response);
-
       if (response.statusCode == 401) {
       } else if (response.statusCode == 403) {
         showToast(fToast, resp["message"], true);
@@ -166,12 +165,21 @@ class SendInvitationController extends GetxController {
     return resp;
   }
 
+  Future getInvitationSearch(body) async {
+    isFetching.value = true;
+    sendInvitationList.value = await invitaionSearch(body);
+    isFetching.value = false;
+  }
+
   Future<Map<String, dynamic>> getListInvitation() async {
+    SharedPreferences shared = await SharedPreferences.getInstance();
     sendInvitationList.value = [];
+    isFetching.value = true;
     Map<String, dynamic> resp = {};
     try {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
           'GET', Uri.parse('$baseUrl/api/subadmin/listInvitation'));
@@ -203,6 +211,7 @@ class SendInvitationController extends GetxController {
     } catch (e) {
       printC("getInvitationLinkList error $e");
     }
+    isFetching.value = false;
     return resp;
   }
 
@@ -210,8 +219,10 @@ class SendInvitationController extends GetxController {
       body, context, fToast) async {
     Map<String, dynamic> resp = {};
     try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
           'DELETE', Uri.parse('$baseUrl/api/subadmin/deleteInvitation'));

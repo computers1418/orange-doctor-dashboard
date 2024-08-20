@@ -85,389 +85,365 @@ class _DoctorCreateState extends State<DoctorCreate> {
             paginatedItems = doctorController.doctorList
                 .sublist(start, end > totalItems ? totalItems : end);
           }
-          return doctorController.isFetching.value
-              ? const Center(
-                  child: CircularProgressIndicator(
-                  color: Colors.orange,
-                ))
-              : Column(
+          return Column(
+            children: [
+              CustomAppbar(
+                showback: true,
+                scaffoldKey: scaffoldKey,
+              ),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  primary: true,
+                  shrinkWrap: false,
                   children: [
-                    CustomAppbar(
-                      showback: true,
-                      scaffoldKey: scaffoldKey,
-                    ),
-                    Expanded(
-                      child: ListView(
-                        padding: EdgeInsets.zero,
-                        primary: true,
-                        shrinkWrap: false,
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Column(
                         children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          const SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Add Doctor",
+                                style: CustomFonts.poppins20W600(),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(30),
+                              color: HexColor("#FFE8BF"),
+                            ),
                             child: Column(
                               children: [
-                                const SizedBox(
-                                  height: 30,
+                                SingleSelect(
+                                  label: "Brand",
+                                  items: doctorController.brands
+                                      .map((e) => e.toJson())
+                                      .toList(),
+                                  onTap: (String value) {
+                                    setState(() {
+                                      selectedBrandId = value;
+                                      selectBrandName = doctorController.brands
+                                          .firstWhere(
+                                            (element) =>
+                                                element.id == selectedBrandId,
+                                          )
+                                          .name;
+                                    });
+                                  },
+                                  value: "_id",
                                 ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Add Doctor",
-                                      style: CustomFonts.poppins20W600(),
-                                    ),
-                                  ],
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                SingleSelect(
+                                  label: "Specialization",
+                                  items: doctorController.specializations
+                                      .map((e) => e.toJson())
+                                      .toList(),
+                                  onTap: (String value) {
+                                    setState(() {
+                                      selectedSpecializationId = value;
+                                      selectedSpecializationName =
+                                          doctorController.specializations
+                                              .firstWhere(
+                                                (element) =>
+                                                    element.sId ==
+                                                    selectedSpecializationId,
+                                              )
+                                              .name!;
+                                    });
+                                  },
+                                  value: "_id",
                                 ),
                                 const SizedBox(
-                                  height: 10,
+                                  height: 16,
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.all(16),
+                                  width: double.infinity,
+                                  height: 48,
                                   decoration: BoxDecoration(
+                                    color: Colors.white,
                                     borderRadius: BorderRadius.circular(30),
-                                    color: HexColor("#FFE8BF"),
                                   ),
-                                  child: Column(
-                                    children: [
-                                      SingleSelect(
-                                        label: "Brand",
-                                        items: doctorController.brands
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedBrandId = value;
-                                            selectBrandName =
-                                                doctorController.brands
-                                                    .firstWhere(
-                                                      (element) =>
-                                                          element.id ==
-                                                          selectedBrandId,
-                                                    )
-                                                    .name;
-                                          });
-                                        },
-                                        value: "_id",
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      SingleSelect(
-                                        label: "Specialization",
-                                        items: doctorController.specializations
-                                            .map((e) => e.toJson())
-                                            .toList(),
-                                        onTap: (String value) {
-                                          setState(() {
-                                            selectedSpecializationId = value;
-                                            selectedSpecializationName =
-                                                doctorController.specializations
-                                                    .firstWhere(
-                                                      (element) =>
-                                                          element.sId ==
-                                                          selectedSpecializationId,
-                                                    )
-                                                    .name!;
-                                          });
-                                        },
-                                        value: "_id",
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        TextField(
+                                          decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 16),
+                                            hintText: "Doctor Name",
+                                            hintStyle:
+                                                CustomFonts.poppins14W500(
+                                              color: HexColor("#222425"),
+                                            ),
+                                            border: InputBorder.none,
+                                          ),
+                                          controller: doctorNameController,
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              TextField(
-                                                decoration: InputDecoration(
-                                                  contentPadding:
-                                                      const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 16),
-                                                  hintText: "Doctor Name",
-                                                  hintStyle:
-                                                      CustomFonts.poppins14W500(
-                                                    color: HexColor("#222425"),
-                                                  ),
-                                                  border: InputBorder.none,
-                                                ),
-                                                controller:
-                                                    doctorNameController,
-                                              ),
-                                              Positioned(
-                                                right: 0,
-                                                child: Image.asset(
-                                                  "assets/images/edit.png",
-                                                  height: 20,
-                                                  width: 20,
-                                                ),
-                                              )
-                                            ],
+                                        Positioned(
+                                          right: 0,
+                                          child: Image.asset(
+                                            "assets/images/edit.png",
+                                            height: 20,
+                                            width: 20,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                        hintText: "Email ID",
+                                        hintStyle: CustomFonts.poppins14W500(
+                                          color: HexColor("#222425"),
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
+                                      controller: emailConteoller,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                        hintText: "Phone Number",
+                                        hintStyle: CustomFonts.poppins14W500(
+                                            color: HexColor("#222425")),
+                                        border: InputBorder.none,
+                                      ),
+                                      controller: phoneController,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                // SingleSelect(
+                                //   label: "View City",
+                                //   items: doctorController.cities
+                                //       .map((e) => e.toJson())
+                                //       .toList(),
+                                //   onTap: (String value) {
+                                //     setState(() {
+                                //       selectedCityId = value;
+                                //       selectedCityName =
+                                //           doctorController.cities
+                                //               .firstWhere(
+                                //                 (element) =>
+                                //                     element.id ==
+                                //                     selectedCityId,
+                                //               )
+                                //               .name;
+                                //     });
+                                //   },
+                                //   value: "_id",
+                                // ),
+                                Container(
+                                  width: double.infinity,
+                                  height: 48,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(30),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16),
+                                    child: TextField(
+                                      decoration: InputDecoration(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                                horizontal: 16),
+                                        hintText: "City",
+                                        hintStyle: CustomFonts.poppins14W500(
+                                            color: HexColor("#222425")),
+                                        border: InputBorder.none,
+                                      ),
+                                      controller: cityController,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 16,
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    doctorController
+                                        .creatDoctorList(
+                                            cityController.text.isEmpty
+                                                ? {
+                                                    "personalInfo": {
+                                                      "name":
+                                                          doctorNameController
+                                                              .text,
+                                                      "phone":
+                                                          phoneController.text,
+                                                      "email":
+                                                          emailConteoller.text
+                                                    },
+                                                    "brandId": selectedBrandId,
+                                                    "brandName":
+                                                        selectBrandName,
+                                                    "specializationId":
+                                                        selectedSpecializationId,
+                                                    "specializationName":
+                                                        selectedSpecializationName
+                                                  }
+                                                : {
+                                                    "personalInfo": {
+                                                      "name":
+                                                          doctorNameController
+                                                              .text,
+                                                      "phone":
+                                                          phoneController.text,
+                                                      "email":
+                                                          emailConteoller.text
+                                                    },
+                                                    "brandId": selectedBrandId,
+                                                    "brandName":
+                                                        selectBrandName,
+                                                    "specializationId":
+                                                        selectedSpecializationId,
+                                                    "specializationName":
+                                                        selectedSpecializationName,
+                                                    "city": cityController.text
+                                                  },
+                                            fToast!)
+                                        .then(
+                                      (value) {
+                                        doctorController.getAllDoctorList();
+                                      },
+                                    );
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Container(
+                                      height: 37,
+                                      width: 160,
+                                      decoration: BoxDecoration(
+                                        color: HexColor("#FF724C"),
+                                        borderRadius: BorderRadius.circular(30),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          'Add Doctor',
+                                          style: CustomFonts.poppins14W700(
+                                            color: Colors.white,
                                           ),
                                         ),
                                       ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16),
-                                              hintText: "Email ID",
-                                              hintStyle:
-                                                  CustomFonts.poppins14W500(
-                                                color: HexColor("#222425"),
-                                              ),
-                                              border: InputBorder.none,
-                                            ),
-                                            controller: emailConteoller,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16),
-                                              hintText: "Phone Number",
-                                              hintStyle:
-                                                  CustomFonts.poppins14W500(
-                                                      color:
-                                                          HexColor("#222425")),
-                                              border: InputBorder.none,
-                                            ),
-                                            controller: phoneController,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      // SingleSelect(
-                                      //   label: "View City",
-                                      //   items: doctorController.cities
-                                      //       .map((e) => e.toJson())
-                                      //       .toList(),
-                                      //   onTap: (String value) {
-                                      //     setState(() {
-                                      //       selectedCityId = value;
-                                      //       selectedCityName =
-                                      //           doctorController.cities
-                                      //               .firstWhere(
-                                      //                 (element) =>
-                                      //                     element.id ==
-                                      //                     selectedCityId,
-                                      //               )
-                                      //               .name;
-                                      //     });
-                                      //   },
-                                      //   value: "_id",
-                                      // ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 48,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(30),
-                                        ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 16),
-                                          child: TextField(
-                                            decoration: InputDecoration(
-                                              contentPadding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 16),
-                                              hintText: "City",
-                                              hintStyle:
-                                                  CustomFonts.poppins14W500(
-                                                      color:
-                                                          HexColor("#222425")),
-                                              border: InputBorder.none,
-                                            ),
-                                            controller: cityController,
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 16,
-                                      ),
-                                      GestureDetector(
-                                        onTap: () {
-                                          doctorController
-                                              .creatDoctorList(
-                                                  cityController.text.isEmpty
-                                                      ? {
-                                                          "personalInfo": {
-                                                            "name":
-                                                                doctorNameController
-                                                                    .text,
-                                                            "phone":
-                                                                phoneController
-                                                                    .text,
-                                                            "email":
-                                                                emailConteoller
-                                                                    .text
-                                                          },
-                                                          "brandId":
-                                                              selectedBrandId,
-                                                          "brandName":
-                                                              selectBrandName,
-                                                          "specializationId":
-                                                              selectedSpecializationId,
-                                                          "specializationName":
-                                                              selectedSpecializationName
-                                                        }
-                                                      : {
-                                                          "personalInfo": {
-                                                            "name":
-                                                                doctorNameController
-                                                                    .text,
-                                                            "phone":
-                                                                phoneController
-                                                                    .text,
-                                                            "email":
-                                                                emailConteoller
-                                                                    .text
-                                                          },
-                                                          "brandId":
-                                                              selectedBrandId,
-                                                          "brandName":
-                                                              selectBrandName,
-                                                          "specializationId":
-                                                              selectedSpecializationId,
-                                                          "specializationName":
-                                                              selectedSpecializationName,
-                                                          "city": cityController
-                                                              .text
-                                                        },
-                                                  fToast!)
-                                              .then(
-                                            (value) {
-                                              doctorController
-                                                  .getAllDoctorList();
-                                            },
-                                          );
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: Container(
-                                            height: 37,
-                                            width: 160,
-                                            decoration: BoxDecoration(
-                                              color: HexColor("#FF724C"),
-                                              borderRadius:
-                                                  BorderRadius.circular(30),
-                                            ),
-                                            child: Center(
-                                              child: Text(
-                                                'Add Doctor',
-                                                style:
-                                                    CustomFonts.poppins14W700(
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                           ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        children: [
                           const SizedBox(
-                            height: 16,
+                            width: 140,
+                            child: SingleSelect2(items: [
+                              "All Brands",
+                              "Orange Brand Dental",
+                              "Orange Brand Orthopedics",
+                              "Orange Brand Homeopathy",
+                              "Precilo Brand Dental",
+                              "Precilo Brand Orthopedics1",
+                              "Precilo Brand Orthopedics2",
+                              "Precilo Brand Orthopedics3"
+                            ], label: 'All Brands'),
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Container(
+                            width: 120,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                                color: HexColor("#FF724C"),
+                                borderRadius: BorderRadius.circular(30)),
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  width: 140,
-                                  child: SingleSelect2(items: [
-                                    "All Brands",
-                                    "Orange Brand Dental",
-                                    "Orange Brand Orthopedics",
-                                    "Orange Brand Homeopathy",
-                                    "Precilo Brand Dental",
-                                    "Precilo Brand Orthopedics1",
-                                    "Precilo Brand Orthopedics2",
-                                    "Precilo Brand Orthopedics3"
-                                  ], label: 'All Brands'),
+                                Text(
+                                  "Filter",
+                                  style: CustomFonts.poppins14W600(
+                                      color: Colors.white),
                                 ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Container(
-                                  width: 120,
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 16, vertical: 8),
-                                  decoration: BoxDecoration(
-                                      color: HexColor("#FF724C"),
-                                      borderRadius: BorderRadius.circular(30)),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "Filter",
-                                        style: CustomFonts.poppins14W600(
-                                            color: Colors.white),
-                                      ),
-                                      const Icon(
-                                        Icons.keyboard_arrow_down_outlined,
-                                        color: Colors.white,
-                                      )
-                                    ],
-                                  ),
+                                const Icon(
+                                  Icons.keyboard_arrow_down_outlined,
+                                  color: Colors.white,
                                 )
                               ],
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Padding(
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 16,
+                    ),
+                    doctorController.isFetching.value
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                            color: Colors.orange,
+                          ))
+                        : Padding(
                             padding: EdgeInsets.symmetric(horizontal: 16),
                             child: Column(
                               children: [
@@ -551,11 +527,11 @@ class _DoctorCreateState extends State<DoctorCreate> {
                               ],
                             ),
                           )
-                        ],
-                      ),
-                    )
                   ],
-                );
+                ),
+              )
+            ],
+          );
         },
       ),
     );

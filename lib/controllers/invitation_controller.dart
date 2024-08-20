@@ -7,9 +7,11 @@ import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
 import 'package:orange_doctor_dashboard/models/brands_model.dart';
 import 'package:orange_doctor_dashboard/models/invitation_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common_methods/common_methods.dart';
 import '../constants/constants.dart';
+import 'api_common_functions.dart';
 
 class InvitationController extends GetxController {
   RxBool isDataLoading = false.obs;
@@ -26,76 +28,89 @@ class InvitationController extends GetxController {
   setData() async {
     isDataLoading.value = true;
     getInvitationLinkList();
-    await getBrands();
-    await getSpecialization();
+    getBrandsList();
+    getSpecializatonList();
     isDataLoading.value = false;
   }
 
-  Future<Map<String, dynamic>> getBrands() async {
-    Map<String, dynamic> resp = {};
-    try {
-      var headers = {
-        'Content-Type': 'application/json',
-      };
-      var request = http.Request('GET', Uri.parse('$baseUrl/api/brand/list'));
+  // Future<Map<String, dynamic>> getBrands() async {
+  //   Map<String, dynamic> resp = {};
+  //   try {
+  //     var headers = {
+  //       'Content-Type': 'application/json',
+  //     };
+  //     var request = http.Request('GET', Uri.parse('$baseUrl/api/brand/list'));
+  //
+  //     request.headers.addAll(headers);
+  //
+  //     http.StreamedResponse response = await request.send();
+  //
+  //     if (response.statusCode == 401) {
+  //     } else {
+  //       if (response.statusCode == 200) {
+  //         resp = await CommonMethods.decodeStreamedResponse(response);
+  //         brands.value = resp['data']
+  //             .map<BrandsModel>((e) => BrandsModel.fromJson(e))
+  //             .toList();
+  //       } else {
+  //         if (kDebugMode) {
+  //           print(response.reasonPhrase);
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {}
+  //   return resp;
+  // }
+  //
+  // Future<Map<String, dynamic>> getSpecialization() async {
+  //   Map<String, dynamic> resp = {};
+  //   try {
+  //     var headers = {
+  //       'Content-Type': 'application/json',
+  //     };
+  //     var request =
+  //         http.Request('GET', Uri.parse('$baseUrl/api/specialization/list'));
+  //
+  //     request.headers.addAll(headers);
+  //
+  //     http.StreamedResponse response = await request.send();
+  //
+  //     if (response.statusCode == 401) {
+  //       // Get.offAndToNamed('login');
+  //     } else {
+  //       if (response.statusCode == 200) {
+  //         resp = await CommonMethods.decodeStreamedResponse(response);
+  //         specializations.value = resp['data']
+  //             .map<Specialization>((e) => Specialization.fromJson(e))
+  //             .toList();
+  //       } else {
+  //         if (kDebugMode) {
+  //           print(response.reasonPhrase);
+  //         }
+  //       }
+  //     }
+  //   } catch (e) {}
+  //   return resp;
+  // }
 
-      request.headers.addAll(headers);
-
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 401) {
-      } else {
-        if (response.statusCode == 200) {
-          resp = await CommonMethods.decodeStreamedResponse(response);
-          brands.value = resp['data']
-              .map<BrandsModel>((e) => BrandsModel.fromJson(e))
-              .toList();
-        } else {
-          if (kDebugMode) {
-            print(response.reasonPhrase);
-          }
-        }
-      }
-    } catch (e) {}
-    return resp;
+  Future getBrandsList() async {
+    brands.value = await getAllBrands();
   }
 
-  Future<Map<String, dynamic>> getSpecialization() async {
-    Map<String, dynamic> resp = {};
-    try {
-      var headers = {
-        'Content-Type': 'application/json',
-      };
-      var request =
-          http.Request('GET', Uri.parse('$baseUrl/api/specialization/list'));
+  Future getSpecializatonList() async {
+    // isFetching.value = true;
+    specializations.value = await getAllSepcilizations();
 
-      request.headers.addAll(headers);
-
-      http.StreamedResponse response = await request.send();
-
-      if (response.statusCode == 401) {
-        // Get.offAndToNamed('login');
-      } else {
-        if (response.statusCode == 200) {
-          resp = await CommonMethods.decodeStreamedResponse(response);
-          specializations.value = resp['data']
-              .map<Specialization>((e) => Specialization.fromJson(e))
-              .toList();
-        } else {
-          if (kDebugMode) {
-            print(response.reasonPhrase);
-          }
-        }
-      }
-    } catch (e) {}
-    return resp;
+    // isFetching.value = false;
   }
 
   Future<Map<String, dynamic>> getInvitationLinkList() async {
     Map<String, dynamic> resp = {};
+    SharedPreferences shared = await SharedPreferences.getInstance();
     try {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request =
           http.Request('GET', Uri.parse('$baseUrl/api/registrationlink/list'));
@@ -108,9 +123,13 @@ class InvitationController extends GetxController {
       } else {
         if (response.statusCode == 200) {
           resp = await CommonMethods.decodeStreamedResponse(response);
-          invitationsList.value = resp['data']
-              .map<InvitationModel>((e) => InvitationModel.fromJson(e))
-              .toList();
+          if (resp['data'] != null) {
+            invitationsList.value = resp['data']
+                .map<InvitationModel>((e) => InvitationModel.fromJson(e))
+                .toList();
+          } else {
+            invitationsList.value = []; // or handle it as needed
+          }
         } else {
           if (kDebugMode) {
             print(response.reasonPhrase);
@@ -125,9 +144,11 @@ class InvitationController extends GetxController {
 
   Future<Map<String, dynamic>> addInvitationLink(body, fToast) async {
     Map<String, dynamic> resp = {};
+    SharedPreferences shared = await SharedPreferences.getInstance();
     try {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request =
           http.Request('POST', Uri.parse('$baseUrl/api/registrationlink/add'));
@@ -157,9 +178,11 @@ class InvitationController extends GetxController {
 
   Future<Map<String, dynamic>> deleteInvitationLink(body, fToast) async {
     Map<String, dynamic> resp = {};
+    SharedPreferences shared = await SharedPreferences.getInstance();
     try {
       var headers = {
         'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
           'POST', Uri.parse('$baseUrl/api/registrationlink/delete'));
@@ -175,7 +198,7 @@ class InvitationController extends GetxController {
         showToast(fToast, resp["message"], true);
       } else {
         if (response.statusCode == 200) {
-          showToast(fToast, "Registration link successfully deleted.", true);
+          showToast(fToast, "Registration link successfully deleted.", false);
           getInvitationLinkList();
         } else {
           showToast(fToast, resp["message"], true);

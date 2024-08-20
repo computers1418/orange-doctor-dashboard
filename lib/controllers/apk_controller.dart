@@ -1,10 +1,13 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orange_doctor_dashboard/models/send_apk_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import '../common_methods/common_methods.dart';
 import '../common_methods/custom_print.dart';
 import '../constants/constants.dart';
 import '../models/brands_model.dart';
@@ -15,7 +18,7 @@ import 'api_common_functions.dart';
 class ApkController extends GetxController {
   var rxGetList = RxStatus.empty().obs;
   var isFetching = false.obs;
-  var brands = <BrandsModel>[].obs;
+  RxList<BrandsModel> brands = <BrandsModel>[].obs;
   var specializations = <Specialization>[].obs;
   RxList<SendApkModel> sendApkList = <SendApkModel>[].obs;
   var sendApkData = SendApkModel(
@@ -60,40 +63,120 @@ class ApkController extends GetxController {
     isFetching.value = false;
   }
 
+  Future getAllApkInvitationSearch(body) async {
+    isFetching.value = true;
+    sendApkList.value = await apkInvitaionSearch(body);
+    isFetching.value = false;
+  }
+
   Future<bool> sendApk({required data, required FToast fToast}) async {
-    // creatingCity.value = true;
     try {
-      final response = await ApiMiddleWear(
-        url: 'doctor/send-apk',
-        data: data,
-      ).post(
-        options: Options(
-          contentType: Headers.jsonContentType,
-        ),
-      );
+      Map<String, dynamic> resp = {};
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
+      };
+      var request =
+          http.Request('POST', Uri.parse('$baseUrl/api/doctor/send-apk'));
+
+      request.headers.addAll(headers);
+
+      request.body = jsonEncode(data);
+      http.StreamedResponse response = await request.send();
+      resp = await CommonMethods.decodeStreamedResponse(response);
 
       if (response.statusCode == 200) {
-        if (response.data["data"] != null) {
-          showToast(fToast, response.data["message"], false);
+        if (resp["data"] != null) {
+          showToast(fToast, resp["message"], false);
           getAllSendApkList();
-          // rxGetList.value =
-          //     cities.isEmpty ? RxStatus.empty() : RxStatus.success();
           return true;
         }
       } else {
-        showToast(fToast, response.data["message"], true);
+        showToast(fToast, resp["message"], true);
       }
     } catch (e) {
       printC('error:$e');
-    } finally {
-      // creatingCity.value = false;
-    }
+    } finally {}
     return false;
   }
 
+  Future<Map<String, dynamic>> resendApk(body, context, fToast) async {
+    Map<String, dynamic> resp = {};
+    try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
+      };
+      var request =
+          http.Request('POST', Uri.parse('$baseUrl/api/doctor/resend-apk'));
+
+      request.headers.addAll(headers);
+
+      request.body = jsonEncode(body);
+
+      http.StreamedResponse response = await request.send();
+      resp = await CommonMethods.decodeStreamedResponse(response);
+      if (response.statusCode == 401) {
+      } else if (response.statusCode == 403) {
+        showToast(fToast, resp["message"], true);
+      } else {
+        if (response.statusCode == 200) {
+          showToast(fToast, resp["message"], false);
+          getAllSendApkList();
+        } else {
+          showToast(fToast, resp["message"], true);
+          if (kDebugMode) {
+            print(response.reasonPhrase);
+          }
+        }
+      }
+    } catch (e) {}
+    return resp;
+  }
+
+  Future<Map<String, dynamic>> deleteApk(id, context, fToast) async {
+    Map<String, dynamic> resp = {};
+    try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ${shared.getString("access_token")}'
+      };
+      var request = http.Request(
+          'DELETE', Uri.parse('$baseUrl/api/doctor/send-apk/delete/$id'));
+
+      request.headers.addAll(headers);
+
+      http.StreamedResponse response = await request.send();
+      resp = await CommonMethods.decodeStreamedResponse(response);
+      if (response.statusCode == 401) {
+        showToast(fToast, resp["message"], true);
+      } else {
+        if (response.statusCode == 200) {
+          showToast(fToast, resp["data"], false);
+          getAllSendApkList();
+        } else {
+          showToast(fToast, resp["message"], true);
+          if (kDebugMode) {
+            print(response.reasonPhrase);
+          }
+        }
+      }
+    } catch (e) {}
+    return resp;
+  }
+
   Future<void> fetchSendApkById(String id) async {
-    final response =
-        await http.get(Uri.parse('$baseUrl/api/doctor/send-apk/get/$id'));
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${shared.getString("access_token")}'
+    };
+    final response = await http.get(
+        Uri.parse('$baseUrl/api/doctor/send-apk/get/$id'),
+        headers: headers);
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
