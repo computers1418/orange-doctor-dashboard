@@ -5,11 +5,12 @@ import '../constants/text_style.dart';
 
 class DeleteDialog extends StatefulWidget {
   final VoidCallback onTap;
+  final String? text;
 
-  const DeleteDialog({
-    super.key,
-    required this.onTap,
-  });
+  const DeleteDialog(
+      {super.key,
+      required this.onTap,
+      this.text = "Are you sure want to delete?"});
 
   @override
   State<DeleteDialog> createState() => _DeleteDialogState();
@@ -45,8 +46,11 @@ class _DeleteDialogState extends State<DeleteDialog> {
               height: 20,
             ),
             Text(
-              "Are you sure want to delete?",
+              widget.text!.isEmpty
+                  ? "Are you sure want to delete?"
+                  : widget.text!,
               style: CustomFonts.poppins16W600(),
+              textAlign: TextAlign.center,
             ),
             SizedBox(
               height: 30,

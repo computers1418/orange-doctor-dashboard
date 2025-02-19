@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common_methods/common_methods.dart';
 import '../common_methods/custom_print.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import '../models/brands_model.dart';
 import '../models/specilization.dart';
 import '../respositories/api_middle_wear_api.dart';
@@ -78,7 +78,7 @@ class ApkController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request =
-          http.Request('POST', Uri.parse('$baseUrl/api/doctor/send-apk'));
+          http.Request('POST', Uri.parse('${UrlConst.baseUrl}doctor/send-apk'));
 
       request.headers.addAll(headers);
 
@@ -109,8 +109,8 @@ class ApkController extends GetxController {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
-      var request =
-          http.Request('POST', Uri.parse('$baseUrl/api/doctor/resend-apk'));
+      var request = http.Request(
+          'POST', Uri.parse('${UrlConst.baseUrl}doctor/resend-apk'));
 
       request.headers.addAll(headers);
 
@@ -145,7 +145,7 @@ class ApkController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
-          'DELETE', Uri.parse('$baseUrl/api/doctor/send-apk/delete/$id'));
+          'DELETE', Uri.parse('${UrlConst.baseUrl}doctor/send-apk/delete/$id'));
 
       request.headers.addAll(headers);
 
@@ -175,7 +175,7 @@ class ApkController extends GetxController {
       'Authorization': 'Bearer ${shared.getString("access_token")}'
     };
     final response = await http.get(
-        Uri.parse('$baseUrl/api/doctor/send-apk/get/$id'),
+        Uri.parse('${UrlConst.baseUrl}doctor/send-apk/get/$id'),
         headers: headers);
 
     if (response.statusCode == 200) {

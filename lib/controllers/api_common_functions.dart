@@ -11,15 +11,12 @@ import 'package:orange_doctor_dashboard/respositories/api_middle_wear_api.dart';
 import 'package:http/http.dart' as http;
 import 'package:orange_doctor_dashboard/services/api/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../constants/constants.dart';
 import '../constants/url_const.dart';
 import '../models/list_invitation_model.dart';
 
 Future<List<Specialization>> getAllSepcilizations() async {
   Api api = Api();
-  SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
+
   List<Specialization> specializations = [];
   try {
     Response response = await api.sendRequest.get("specialization/list");
@@ -53,9 +50,7 @@ Future<List<Specialization>> getAllSepcilizations() async {
 
 Future<List<SetProblemModel>> getAllSetProblemList() async {
   Api api = Api();
-  // SharedPreferences shared = await SharedPreferences.getInstance();
-  // api.dio.options.headers['Authorization'] =
-  // 'Bearer ${shared.getString("access_token")}';
+
   List<SetProblemModel> problemList = [];
   try {
     Response response = await api.sendRequest.post("doctor/problem/list");
@@ -90,9 +85,6 @@ Future<List<SetProblemModel>> getAllSetProblemList() async {
 Future<List<BrandsModel>> getAllBrands() async {
   Api api = Api();
   List<BrandsModel> brands = [];
-  SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
   try {
     Response response = await api.sendRequest.get(UrlConst.brandList);
     if (response.statusCode == 200) {
@@ -124,50 +116,41 @@ Future<List<BrandsModel>> getAllBrands() async {
 }
 
 Future<List<DoctorModel>> getDoctorByCity(data) async {
-  Api api = Api();
-  SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
+  var headers = {
+    'Content-Type': 'application/json',
+  };
   List<DoctorModel> doctors = [];
-  try {
-    Response response = await api.sendRequest.get("city/doctors", data: data);
-    if (response.statusCode == 200) {
-      var jsonResponse = response.data;
-      if (jsonResponse["data"] != null) {
-        for (var brand in jsonResponse["data"]) {
-          doctors.add(DoctorModel.fromJson(brand));
-        }
-        return doctors;
-      } else {
-        return [];
+  var request = http.Request(
+      'GET',
+      Uri.parse(
+          "${UrlConst.baseUrl}city/doctors?cityId=${data["cityId"]}&brandId=${data["brandId"]}&specializationId=${data["specializationId"]}"))
+    ..headers.addAll(headers);
+  var response = await request.send();
+  String responseBody = await response.stream.bytesToString();
+  var jsonResponse = jsonDecode(responseBody);
+  if (response.statusCode == 200) {
+    if (jsonResponse["data"] != null) {
+      for (var brand in jsonResponse["data"]) {
+        doctors.add(DoctorModel.fromJson(brand));
       }
+      return doctors;
     } else {
       return [];
     }
-  } on DioException catch (e) {
-    if (e.response != null) {
-      // Server responded with an error
-      print("Dio Error: ${e.response!.data["message"]}");
-    } else {
-      // Request failed due to network issues
-      print("Network Error: ${e.message}");
-    }
-    return [];
-  } catch (e) {
-    // Unexpected error
-    print("Unexpected Error: $e");
+  } else {
     return [];
   }
 }
 
 Future<List<DoctorModel>> getAllDoctorData() async {
-  Api api = Api();
-  SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
-  List<DoctorModel> doctors = [];
+  // Api api = Api();
   try {
-    Response response = await api.sendRequest.get("doctor/get");
+    Dio dio = Dio();
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    dio.options.headers['Authorization'] =
+        'Bearer ${shared.getString("access_token")}';
+    List<DoctorModel> doctors = [];
+    Response response = await dio.get("${UrlConst.baseUrl}doctor/get");
     if (response.statusCode == 200) {
       // var responseData = await response.stream.bytesToString();
       var jsonResponse = response.data;
@@ -182,27 +165,19 @@ Future<List<DoctorModel>> getAllDoctorData() async {
     } else {
       return [];
     }
-  } on DioException catch (e) {
-    if (e.response != null) {
-      // Server responded with an error
-      print("Dio Error: ${e.response!.data["message"]}");
-    } else {
-      // Request failed due to network issues
-      print("Network Error: ${e.message}");
-    }
-    return [];
   } catch (e) {
-    // Unexpected error
-    print("Unexpected Error: $e");
-    return [];
+    if (e is DioException) {
+      print("DioException: ${e.response?.data}");
+      return [];
+    } else {
+      print("Unexpected error: $e");
+      return [];
+    }
   }
 }
 
 Future<List<SendApkModel>> sendApkListData() async {
   Api api = Api();
-  SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
   List<SendApkModel> doctors = [];
 
   try {
@@ -280,8 +255,7 @@ Future<List<SendApkModel>> apkInvitaionSearch(body) async {
 Future<List<ListInvitationModel>> invitaionSearch(body) async {
   Api api = Api();
   SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
+
   List<ListInvitationModel> doctors = [];
 
   try {
@@ -293,13 +267,13 @@ Future<List<ListInvitationModel>> invitaionSearch(body) async {
         for (var brand in jsonResponse["data"]) {
           if (brand["isDeleted"] == false)
             doctors.add(ListInvitationModel(
-                id: brand["id"],
-                brandName: brand["brand"],
-                specializationName: brand["specialization"],
-                doctorName: brand["name"],
-                email: brand["email"],
-                phone: brand["phone"],
-                city: brand["city"],
+                id: brand["id"] ?? "",
+                brandName: brand["brand"] ?? "",
+                specializationName: brand["specialization"] ?? "",
+                doctorName: brand["name"] ?? "",
+                email: brand["email"] ?? "",
+                phone: brand["phone"] ?? "",
+                city: brand["city"] ?? "",
                 timeSent: DateTime.parse(brand["createdAt"]),
                 timeUpdated: DateTime.parse(brand["updatedAt"])));
         }
@@ -330,8 +304,8 @@ Future<List<DoctorModel>> getDoctorBySearch(body) async {
   List<DoctorModel> doctors = [];
   Api api = Api();
   SharedPreferences shared = await SharedPreferences.getInstance();
-  api.dio.options.headers['Authorization'] =
-      'Bearer ${shared.getString("access_token")}';
+  // api.dio.options.headers['Authorization'] =
+  //     'Bearer ${shared.getString("access_token")}';
   try {
     Response response = await api.sendRequest.post("doctor/search", data: body);
     if (response.statusCode == 200) {

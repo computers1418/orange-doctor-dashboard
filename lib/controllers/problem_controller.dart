@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 
 import '../common_methods/common_methods.dart';
 import '../common_methods/custom_print.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import '../models/send_apk_model.dart';
 import 'api_common_functions.dart';
 
@@ -38,7 +38,7 @@ class ProblemController extends GetxController {
       };
 
       var request =
-          http.Request('POST', Uri.parse('$baseUrl/api/doctor/problem/add'));
+          http.Request('POST', Uri.parse('${UrlConst.baseUrl}doctor/problem/add'));
 
       request.headers.addAll(headers);
 

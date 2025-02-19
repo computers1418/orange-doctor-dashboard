@@ -14,7 +14,7 @@ import 'package:orange_doctor_dashboard/models/doctor_model.dart';
 import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:orange_doctor_dashboard/respositories/specialization_api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import '../respositories/api_middle_wear_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -28,7 +28,14 @@ class CityController extends GetxController {
   var cities = <CityModel>[].obs;
   var creatingCity = false.obs;
   var updatingCity = -1.obs;
+  var drawerIndex = 0;
   RxList<DoctorModel> doctorList = <DoctorModel>[].obs;
+
+  changeDrawerIndex(int value) {
+    print("sdsds========${value}");
+    drawerIndex = value;
+    update();
+  }
 
   Future getBrandsList() async {
     rxGetList.value = RxStatus.loading();
@@ -62,33 +69,19 @@ class CityController extends GetxController {
   }
 
   Future getCitiesList(String brandId, String specializationId) async {
-    // Dio dio = Dio();
-
     try {
       rxGetList.value = RxStatus.loading();
       update();
       cities.clear();
-      Map<String, dynamic> data = {
-        "brandId": brandId,
-        "specializationId": specializationId,
-      };
-      SharedPreferences shared = await SharedPreferences.getInstance();
       var headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
-      // var response = await dio.request(
-      //   "https://162.240.106.108:9091/api/city/by-brand-specialization",
-      //   data: jsonEncode(data),
-      //   options: Options(method: 'GET', headers: headers),
-      // );
-      String jsonBody = jsonEncode(data);
+
       var request = http.Request(
           'GET',
           Uri.parse(
-              "https://162.240.106.108:9091/api/city/by-brand-specialization"))
-        ..headers.addAll(headers)
-        ..body = jsonBody;
+              "${UrlConst.baseUrl}city/by-brand-specialization?brandId=${brandId}&specializationId=${specializationId}"))
+        ..headers.addAll(headers);
       var response = await request.send();
       if (response.statusCode == 200) {
         String responseBody = await response.stream.bytesToString();
@@ -127,12 +120,9 @@ class CityController extends GetxController {
         "specializationId": specializationId,
         "isActive": true
       };
-      // final response =
-      //     await ApiMiddleWear(url: 'city/create', data: data, headers: headers)
-      //         .post();
       String jsonBody = jsonEncode(data);
       var request = http.Request(
-          'POST', Uri.parse("https://162.240.106.108:9091/api/city/create"))
+          'POST', Uri.parse("${UrlConst.baseUrl}city/create"))
         ..headers.addAll(headers)
         ..body = jsonBody;
       var response = await request.send();
@@ -198,9 +188,6 @@ class CityController extends GetxController {
       SharedPreferences shared = await SharedPreferences.getInstance();
       api.dio.options.headers['Authorization'] =
           'Bearer ${shared.getString("access_token")}';
-      // final response =
-      //     await ApiMiddleWear(url: 'city/delete/$cityId', headers: headers)
-      //         .delete();
       dio.Response response =
           await api.sendRequest.delete("city/delete/$cityId");
 

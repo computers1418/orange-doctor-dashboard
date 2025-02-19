@@ -12,7 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common_methods/common_methods.dart';
 import '../common_methods/custom_print.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import '../services/api/api.dart';
 
 class SendInvitationController extends GetxController {
@@ -77,15 +77,15 @@ class SendInvitationController extends GetxController {
     SharedPreferences shared = await SharedPreferences.getInstance();
     var headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${shared.getString("access_token")}'
+      // 'Authorization': 'Bearer ${shared.getString("access_token")}'
     };
     final response = await http.get(
-        Uri.parse('$baseUrl/api/subadmin/getIinvitation/$id'),
+        Uri.parse('${UrlConst.baseUrl}subadmin/getIinvitation/$id'),
         headers: headers);
 
     if (response.statusCode == 200) {
-      print("dsdsdsd======${response.body}");
       final Map<String, dynamic> data = jsonDecode(response.body);
+      print("sdsdsd========${data}");
       invitationData.value = ResendInvitationModel.fromJson(data["data"]);
     } else {
       // Handle error
@@ -95,73 +95,73 @@ class SendInvitationController extends GetxController {
 
   Future<Map<String, dynamic>> sendInvitationLink(body, context, fToast) async {
     Map<String, dynamic> resp = {};
-    try {
-      SharedPreferences shared = await SharedPreferences.getInstance();
-      var headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${shared.getString("access_token")}'
-      };
+    // try {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${shared.getString("access_token")}'
+    };
 
-      var request = http.Request(
-          'POST', Uri.parse('$baseUrl/api/subadmin/sendInvitation'));
+    var request =
+        http.Request('POST', Uri.parse('${UrlConst.baseUrl}subadmin/sendInvitation'));
 
-      request.headers.addAll(headers);
+    request.headers.addAll(headers);
 
-      request.body = jsonEncode(body);
+    request.body = jsonEncode(body);
 
-      http.StreamedResponse response = await request.send();
-      resp = await CommonMethods.decodeStreamedResponse(response);
-      if (response.statusCode == 401) {
-      } else if (response.statusCode == 403) {
-        showToast(fToast, resp["message"], true);
+    http.StreamedResponse response = await request.send();
+    resp = await CommonMethods.decodeStreamedResponse(response);
+    if (response.statusCode == 401) {
+    } else if (response.statusCode == 403) {
+      showToast(fToast, resp["message"], true);
+    } else {
+      if (response.statusCode == 200) {
+        showToast(fToast, resp["message"], false);
+        getListInvitation();
       } else {
-        if (response.statusCode == 200) {
-          showToast(fToast, resp["message"], false);
-          getListInvitation();
-        } else {
-          showToast(fToast, resp["message"], true);
-          if (kDebugMode) {
-            print(response.reasonPhrase);
-          }
+        showToast(fToast, resp["message"], true);
+        if (kDebugMode) {
+          print(response.reasonPhrase);
         }
       }
-    } catch (e) {}
+    }
+    // } catch (e) {}
     return resp;
   }
 
   Future<Map<String, dynamic>> resendInvitationLink(
       body, context, fToast) async {
     Map<String, dynamic> resp = {};
-    try {
-      SharedPreferences shared = await SharedPreferences.getInstance();
-      var headers = {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${shared.getString("access_token")}'
-      };
-      var request = http.Request(
-          'PUT', Uri.parse('$baseUrl/api/subadmin/resendInvitation'));
+    // try {
+    SharedPreferences shared = await SharedPreferences.getInstance();
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ${shared.getString("access_token")}'
+    };
+    var request = http.Request(
+        'PUT', Uri.parse('${UrlConst.baseUrl}subadmin/resendInvitation'));
 
-      request.headers.addAll(headers);
+    request.headers.addAll(headers);
 
-      request.body = jsonEncode(body);
+    request.body = jsonEncode(body);
 
-      http.StreamedResponse response = await request.send();
-      resp = await CommonMethods.decodeStreamedResponse(response);
-      if (response.statusCode == 401) {
-      } else if (response.statusCode == 403) {
-        showToast(fToast, resp["message"], true);
+    http.StreamedResponse response = await request.send();
+    resp = await CommonMethods.decodeStreamedResponse(response);
+    if (response.statusCode == 401) {
+    } else if (response.statusCode == 403) {
+      showToast(fToast, resp["message"], true);
+    } else {
+      if (response.statusCode == 200) {
+        showToast(fToast, resp["message"], false);
+        getListInvitation();
       } else {
-        if (response.statusCode == 200) {
-          showToast(fToast, resp["message"], false);
-          getListInvitation();
-        } else {
-          showToast(fToast, resp["message"], true);
-          if (kDebugMode) {
-            print(response.reasonPhrase);
-          }
+        showToast(fToast, resp["message"], true);
+        if (kDebugMode) {
+          print(response.reasonPhrase);
         }
       }
-    } catch (e) {}
+    }
+    // } catch (e) {}
     return resp;
   }
 
@@ -172,17 +172,15 @@ class SendInvitationController extends GetxController {
   }
 
   Future<Map<String, dynamic>> getListInvitation() async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
     sendInvitationList.value = [];
     isFetching.value = true;
     Map<String, dynamic> resp = {};
     try {
       var headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
-          'GET', Uri.parse('$baseUrl/api/subadmin/listInvitation'));
+          'GET', Uri.parse('${UrlConst.baseUrl}subadmin/listInvitation'));
 
       request.headers.addAll(headers);
 
@@ -225,7 +223,7 @@ class SendInvitationController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
-          'DELETE', Uri.parse('$baseUrl/api/subadmin/deleteInvitation'));
+          'DELETE', Uri.parse('${UrlConst.baseUrl}subadmin/deleteInvitation'));
 
       request.headers.addAll(headers);
 

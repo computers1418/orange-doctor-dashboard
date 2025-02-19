@@ -14,8 +14,6 @@ class ResendInvitationModel {
   final String name;
   final String brandId;
   final String specializationId;
-  // final DateTime onboardingCodeExpiration;
-  // final DateTime expressCodeExpiration;
   final String city;
   final String email;
   final String phone;
@@ -38,8 +36,6 @@ class ResendInvitationModel {
     required this.name,
     required this.brandId,
     required this.specializationId,
-    // required this.onboardingCodeExpiration,
-    // required this.expressCodeExpiration,
     required this.city,
     required this.email,
     required this.phone,
@@ -59,17 +55,14 @@ class ResendInvitationModel {
       onboardingCode: json["onboardingCode"],
       invitationUrl: json["invitationUrl"],
       expressCode: json["expressCode"],
-      specialization: json["specialization"],
-      brand: json["brand"],
-      name: json["name"],
-      brandId: json["brandId"],
-      specializationId: json["specializationId"],
-      // onboardingCodeExpiration:
-      //     DateTime.parse(json["onboardingCodeExpiration"]),
-      // expressCodeExpiration: DateTime.parse(json["expressCodeExpiration"]),
-      city: json["city"],
-      email: json["email"],
-      phone: json["phone"],
+      specialization: json["specialization"] ?? "",
+      brand: json["brand"] ?? "",
+      name: json["name"] ?? "",
+      brandId: json["brandId"] ?? "",
+      specializationId: json["specializationId"] ?? "",
+      city: json["city"] ?? "",
+      email: json["email"] ?? "",
+      phone: json["phone"] ?? "",
       createdAt: DateTime.parse(json["createdAt"]),
       updatedAt: DateTime.parse(json["updatedAt"]),
     );

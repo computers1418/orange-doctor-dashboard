@@ -11,6 +11,7 @@ class DoctorListServices {
     SharedPreferences shared = await SharedPreferences.getInstance();
     api.dio.options.headers['Authorization'] =
         'Bearer ${shared.getString("access_token")}';
+    print(UrlConst.createDoctor);
     try {
       var response =
           await api.sendRequest.post(UrlConst.createDoctor, data: data);

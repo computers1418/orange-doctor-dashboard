@@ -41,8 +41,13 @@ class DoctorModel {
 
   DoctorModel.fromJson(Map<String, dynamic> json) {
     personalInfo = PersonalInfo.fromJson(json['personalInfo']);
-    expertiseField = ExpertiseField.fromJson(json['expertiseField']);
-    address = Address.fromJson(json['address']);
+    expertiseField = json['expertiseField'] != null &&
+            json['expertiseField'] is Map<String, dynamic>
+        ? ExpertiseField.fromJson(json['expertiseField'])
+        : ExpertiseField();
+    address = json['address'] != null && json['address'] is Map<String, dynamic>
+        ? Address.fromJson(json['address'])
+        : Address();
     createdAt = DateTime.parse(json["createdAt"]);
 
     isDeleted = json['isDeleted'];
@@ -56,8 +61,8 @@ class DoctorModel {
     review = List.castFrom<dynamic, dynamic>(json['review']);
     guidelines = List.castFrom<dynamic, dynamic>(json['guidelines']);
     updatedAt = DateTime.parse(json["updatedAt"]);
-    firstName = json['firstName'];
-    lastName = json['lastName'];
+    firstName = json['firstName'] ?? '';
+    lastName = json['lastName'] ?? '';
     V = json['__v'];
   }
 
@@ -115,24 +120,24 @@ class PersonalInfo {
 
 class ExpertiseField {
   ExpertiseField({
-    required this.degree,
-    required this.specialization,
-    required this.bio,
-    required this.educationBrief,
-    required this.specializationBrief,
-    required this.experienceBrief,
-    required this.achievementBrief,
-    required this.membershipBrief,
+    this.degree,
+    this.specialization,
+    this.bio,
+    this.educationBrief,
+    this.specializationBrief,
+    this.experienceBrief,
+    this.achievementBrief,
+    this.membershipBrief,
   });
 
-  late final String degree;
-  late final String specialization;
-  late final String bio;
-  late final String educationBrief;
-  late final String specializationBrief;
-  late final String experienceBrief;
-  late final String achievementBrief;
-  late final String membershipBrief;
+  late final String? degree;
+  late final String? specialization;
+  late final String? bio;
+  late final String? educationBrief;
+  late final String? specializationBrief;
+  late final String? experienceBrief;
+  late final String? achievementBrief;
+  late final String? membershipBrief;
 
   ExpertiseField.fromJson(Map<String, dynamic> json) {
     degree = json['degree'] ?? "";
@@ -161,24 +166,24 @@ class ExpertiseField {
 
 class Address {
   Address({
-    required this.addressLine1,
-    required this.addressLine2,
-    required this.addressLine3,
-    required this.city,
-    required this.state,
-    required this.country,
+    this.addressLine1,
+    this.addressLine2,
+    this.addressLine3,
+    this.city,
+    this.state,
+    this.country,
     this.zipCode,
-    required this.identityProof,
+    this.identityProof,
   });
 
-  late final String addressLine1;
-  late final String addressLine2;
-  late final String addressLine3;
-  late final String city;
-  late final String state;
-  late final String country;
+  late final String? addressLine1;
+  late final String? addressLine2;
+  late final String? addressLine3;
+  late final String? city;
+  late final String? state;
+  late final String? country;
   late final Null zipCode;
-  late final String identityProof;
+  late final String? identityProof;
 
   Address.fromJson(Map<String, dynamic> json) {
     addressLine1 = json['addressLine1'] ?? "";

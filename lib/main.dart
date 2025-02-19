@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:orange_doctor_dashboard/constants/initial_binding.dart';
 import 'package:orange_doctor_dashboard/navigation.dart';
 import 'package:orange_doctor_dashboard/controllers/create_specialization_vc.dart';
-import 'package:orange_doctor_dashboard/pages/create_brand/brand_list.dart';
+import 'package:orange_doctor_dashboard/pages/admin_login/admin_login.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: Navigation(),
+      home: AdminLogin(),
     );
   }
 }

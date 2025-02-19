@@ -11,7 +11,6 @@ ListInvitationModel listInvitationModelFromJson(String str) =>
 String listInvitationModelToJson(ListInvitationModel data) =>
     json.encode(data.toJson());
 
-
 // class ListInvitationModel {
 //   final String type;
 //   final bool isDeleted;
@@ -141,7 +140,7 @@ String listInvitationModelToJson(ListInvitationModel data) =>
 class ListInvitationModel {
   String id;
   String brandName;
-  dynamic specializationName;
+  String specializationName;
   String doctorName;
   String email;
   String phone;
@@ -161,27 +160,28 @@ class ListInvitationModel {
     required this.timeUpdated,
   });
 
-  factory ListInvitationModel.fromJson(Map<String, dynamic> json) => ListInvitationModel(
-    id: json["id"],
-    brandName: json["brandName"] ?? "",
-    specializationName: json["specializationName"] ?? "",
-    doctorName: json["doctorName"] ?? "",
-    email: json["email"] ?? "",
-    phone: json["phone"] ?? "",
-    city: json["city"] ?? "",
-    timeSent: DateTime.parse(json["timeSent"]),
-    timeUpdated: DateTime.parse(json["timeUpdated"]),
-  );
+  factory ListInvitationModel.fromJson(Map<String, dynamic> json) =>
+      ListInvitationModel(
+        id: json["id"],
+        brandName: json["brandName"] ?? "",
+        specializationName: json["specializationName"] ?? "",
+        doctorName: json["doctorName"] ?? "",
+        email: json["email"] ?? "",
+        phone: json["phone"] ?? "",
+        city: json["city"] ?? "",
+        timeSent: DateTime.parse(json["timeSent"]),
+        timeUpdated: DateTime.parse(json["timeUpdated"]),
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "brandName": brandName,
-    "specializationName": specializationName,
-    "doctorName": doctorName,
-    "email": email,
-    "phone": phone,
-    "city": city,
-    "timeSent": timeSent.toIso8601String(),
-    "timeUpdated": timeUpdated.toIso8601String(),
-  };
+        "id": id,
+        "brandName": brandName,
+        "specializationName": specializationName,
+        "doctorName": doctorName,
+        "email": email,
+        "phone": phone,
+        "city": city,
+        "timeSent": timeSent.toIso8601String(),
+        "timeUpdated": timeUpdated.toIso8601String(),
+      };
 }

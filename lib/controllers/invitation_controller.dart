@@ -10,7 +10,7 @@ import 'package:orange_doctor_dashboard/models/specilization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../common_methods/common_methods.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import 'api_common_functions.dart';
 
 class InvitationController extends GetxController {
@@ -19,79 +19,14 @@ class InvitationController extends GetxController {
   RxList<Specialization> specializations = <Specialization>[].obs;
   RxList<InvitationModel> invitationsList = <InvitationModel>[].obs;
 
-  @override
-  void onInit() async {
-    super.onInit();
-    setData();
-  }
-
   setData() async {
     isDataLoading.value = true;
+
     getInvitationLinkList();
     getBrandsList();
     getSpecializatonList();
     isDataLoading.value = false;
   }
-
-  // Future<Map<String, dynamic>> getBrands() async {
-  //   Map<String, dynamic> resp = {};
-  //   try {
-  //     var headers = {
-  //       'Content-Type': 'application/json',
-  //     };
-  //     var request = http.Request('GET', Uri.parse('$baseUrl/api/brand/list'));
-  //
-  //     request.headers.addAll(headers);
-  //
-  //     http.StreamedResponse response = await request.send();
-  //
-  //     if (response.statusCode == 401) {
-  //     } else {
-  //       if (response.statusCode == 200) {
-  //         resp = await CommonMethods.decodeStreamedResponse(response);
-  //         brands.value = resp['data']
-  //             .map<BrandsModel>((e) => BrandsModel.fromJson(e))
-  //             .toList();
-  //       } else {
-  //         if (kDebugMode) {
-  //           print(response.reasonPhrase);
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {}
-  //   return resp;
-  // }
-  //
-  // Future<Map<String, dynamic>> getSpecialization() async {
-  //   Map<String, dynamic> resp = {};
-  //   try {
-  //     var headers = {
-  //       'Content-Type': 'application/json',
-  //     };
-  //     var request =
-  //         http.Request('GET', Uri.parse('$baseUrl/api/specialization/list'));
-  //
-  //     request.headers.addAll(headers);
-  //
-  //     http.StreamedResponse response = await request.send();
-  //
-  //     if (response.statusCode == 401) {
-  //       // Get.offAndToNamed('login');
-  //     } else {
-  //       if (response.statusCode == 200) {
-  //         resp = await CommonMethods.decodeStreamedResponse(response);
-  //         specializations.value = resp['data']
-  //             .map<Specialization>((e) => Specialization.fromJson(e))
-  //             .toList();
-  //       } else {
-  //         if (kDebugMode) {
-  //           print(response.reasonPhrase);
-  //         }
-  //       }
-  //     }
-  //   } catch (e) {}
-  //   return resp;
-  // }
 
   Future getBrandsList() async {
     brands.value = await getAllBrands();
@@ -113,16 +48,15 @@ class InvitationController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request =
-          http.Request('GET', Uri.parse('$baseUrl/api/registrationlink/list'));
+          http.Request('GET', Uri.parse('${UrlConst.baseUrl}registrationlink/list'));
 
       request.headers.addAll(headers);
 
       http.StreamedResponse response = await request.send();
-
+      resp = await CommonMethods.decodeStreamedResponse(response);
       if (response.statusCode == 401) {
       } else {
         if (response.statusCode == 200) {
-          resp = await CommonMethods.decodeStreamedResponse(response);
           if (resp['data'] != null) {
             invitationsList.value = resp['data']
                 .map<InvitationModel>((e) => InvitationModel.fromJson(e))
@@ -151,7 +85,7 @@ class InvitationController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request =
-          http.Request('POST', Uri.parse('$baseUrl/api/registrationlink/add'));
+          http.Request('POST', Uri.parse('${UrlConst.baseUrl}registrationlink/add'));
 
       request.headers.addAll(headers);
 
@@ -185,7 +119,7 @@ class InvitationController extends GetxController {
         'Authorization': 'Bearer ${shared.getString("access_token")}'
       };
       var request = http.Request(
-          'POST', Uri.parse('$baseUrl/api/registrationlink/delete'));
+          'POST', Uri.parse('${UrlConst.baseUrl}registrationlink/delete'));
 
       request.headers.addAll(headers);
 

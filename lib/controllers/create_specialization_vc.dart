@@ -1,15 +1,19 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:http_parser/http_parser.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:orange_doctor_dashboard/common_methods/custom_print.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../common_methods/common_methods.dart';
-import '../constants/constants.dart';
+import '../constants/url_const.dart';
 import '../models/specilization.dart';
 import '../models/specilization_detail.dart';
 import '../pages/specialization/create/create_specialization_view.dart';
@@ -42,14 +46,12 @@ class CreateSpecializationVC extends GetxController {
     rxGetList = RxStatus.loading();
     specializations = [];
     Map<String, dynamic> resp = {};
-    SharedPreferences shared = await SharedPreferences.getInstance();
 
     var headers = {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ${shared.getString("access_token")}'
     };
-    var request =
-        http.Request('GET', Uri.parse('$baseUrl/api/specialization/list'));
+    var request = http.Request(
+        'GET', Uri.parse('${UrlConst.baseUrl}specialization/list'));
 
     request.headers.addAll(headers);
 
@@ -81,31 +83,41 @@ class CreateSpecializationVC extends GetxController {
   }
 
   Future deleteSpecializaton(String id, FToast fToast) async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
-    api.dio.options.headers['Authorization'] =
-        'Bearer ${shared.getString("access_token")}';
-    rxGetList = RxStatus.loading();
-    update();
-    Response response =
-        await api.sendRequest.delete("specialization/delete/$id");
-    if (response.statusCode == 200) {
-      if (response.data != null) {
-        showToast(
-            fToast, "Specialization has been deleted successfully.", false);
+    try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      api.dio.options.headers['Authorization'] =
+          'Bearer ${shared.getString("access_token")}';
+      rxGetList = RxStatus.loading();
+      update();
+      Response response =
+          await api.sendRequest.delete("specialization/delete/$id");
+      if (response.statusCode == 200) {
+        if (response.data != null) {
+          showToast(
+              fToast, "Specialization has been deleted successfully.", false);
+          update();
+        }
+      } else {
+        showToast(fToast, response.data["message"], true);
+        rxGetList = RxStatus.error();
         update();
       }
-    } else {
-      showToast(fToast, response.data["message"], true);
-      rxGetList = RxStatus.error();
-      update();
+    } on DioException catch (e) {
+      if (e.response != null) {
+        // The server responded with an error
+        showToast(fToast, e.response!.data['message'].toString(), true);
+      } else {
+        // The request was not sent due to a network issue, timeout, etc.
+        showToast(fToast, "An error occurred: ${e.message}", true);
+      }
+    } catch (e) {
+      showToast(fToast, "An unexpected error occurred", true);
     }
+
     update();
   }
 
   Future getSpecializatonById(String id) async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
-    api.dio.options.headers['Authorization'] =
-        'Bearer ${shared.getString("access_token")}';
     rxGetList = RxStatus.loading();
     update();
     Response response = await api.sendRequest.get("specialization/details/$id");
@@ -129,41 +141,65 @@ class CreateSpecializationVC extends GetxController {
 
   Future deleteIconById(
       BuildContext context, String id, String iconId, fToast) async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
-    api.dio.options.headers['Authorization'] =
-        'Bearer ${shared.getString("access_token")}';
-    Response response =
-        await api.sendRequest.get("specialization/delete-icon/$id/$iconId");
-    if (response.statusCode == 200) {
-      showToast(fToast, "Icon has been deleted successfully.", false);
-      if (response.data != null) {
+    try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      api.dio.options.headers['Authorization'] =
+          'Bearer ${shared.getString("access_token")}';
+      Response response =
+          await api.sendRequest.get("specialization/delete-icon/$id/$iconId");
+      if (response.statusCode == 200) {
+        showToast(fToast, "Icon has been deleted successfully.", false);
+        if (response.data != null) {
+          update();
+        }
+      } else {
+        showToast(fToast, response.data["message"], true);
         update();
       }
-    } else {
-      showToast(fToast, response.data["message"], true);
-      update();
+    } on DioException catch (e) {
+      if (e.response != null) {
+        // The server responded with an error
+        showToast(fToast, e.response!.data['message'].toString(), true);
+      } else {
+        // The request was not sent due to a network issue, timeout, etc.
+        showToast(fToast, "An error occurred: ${e.message}", true);
+      }
+    } catch (e) {
+      showToast(fToast, "An unexpected error occurred", true);
     }
+
     update();
   }
 
   Future updateSpecializatonById(String id, updateName, fToast) async {
-    SharedPreferences shared = await SharedPreferences.getInstance();
-    api.dio.options.headers['Authorization'] =
-        'Bearer ${shared.getString("access_token")}';
+    try {
+      SharedPreferences shared = await SharedPreferences.getInstance();
+      api.dio.options.headers['Authorization'] =
+          'Bearer ${shared.getString("access_token")}';
 
-    Response response =
-        await api.sendRequest.post("specialization/update/$id", data: {
-      "name": updateName,
-    });
-    if (response.statusCode == 200) {
-      showToast(fToast, "Specialization has been updated successfully.", false);
-      // if (response.data != null) {
-      //   update();
-      // }
-    } else {
-      showToast(fToast, response.data["message"], true);
-      update();
+      Response response =
+          await api.sendRequest.post("specialization/update/$id", data: {
+        "name": updateName,
+      });
+      if (response.statusCode == 200) {
+        showToast(
+            fToast, "Specialization has been updated successfully.", false);
+      } else {
+        showToast(fToast, response.data["message"], true);
+        update();
+      }
+    } on DioException catch (e) {
+      if (e.response != null) {
+        // The server responded with an error
+        showToast(fToast, e.response!.data['message'].toString(), true);
+      } else {
+        // The request was not sent due to a network issue, timeout, etc.
+        showToast(fToast, "An error occurred: ${e.message}", true);
+      }
+    } catch (e) {
+      showToast(fToast, "An unexpected error occurred", true);
     }
+
     update();
   }
 
@@ -198,6 +234,7 @@ class CreateSpecializationVC extends GetxController {
     } on DioException catch (e) {
       if (e.response != null) {
         // The server responded with an error
+        print("cxcxc======${e.response!.data}");
         showToast(fToast, e.response!.data['message'].toString(), true);
       } else {
         // The request was not sent due to a network issue, timeout, etc.
@@ -208,55 +245,66 @@ class CreateSpecializationVC extends GetxController {
     }
   }
 
-  Future<void> uploadImage(BuildContext context, List<String> paths,
-      List<String> name, String specializationName, fToast) async {
-    List<MultipartFile> iconFiles = [];
+  Future<void> uploadImage(
+    BuildContext context,
+    List<String> paths,
+    List<String> names,
+    String specializationName,
+    fToast,
+  ) async {
     SharedPreferences shared = await SharedPreferences.getInstance();
-    api.dio.options.headers['Authorization'] =
-        'Bearer ${shared.getString("access_token")}';
+    String? accessToken = shared.getString("access_token");
+    String? userId = shared.getString("userId");
 
-    for (int i = 0; i < paths.length; i++) {
-      iconFiles.add(
-        await MultipartFile.fromFile(
-          paths[i],
-          filename: name[i],
-          contentType: DioMediaType("image", "jpeg"),
-        ),
-      );
+    if (accessToken == null) {
+      showToast(fToast, "Access token is missing.", true);
+      return;
     }
 
+    List<http.MultipartFile> iconFiles = [];
+
     try {
-      FormData formData = FormData.fromMap({
-        'name': specializationName,
-        'icons': iconFiles,
-        "createdBy": "668fe0a5f368b564f171e85e",
-        "updatedBy": "668fe0a5f368b564f171e85e"
-      });
-      Response response =
-          await api.sendRequest.post("specialization/create", data: formData);
+      for (int i = 0; i < paths.length; i++) {
+        File file = File(paths[i]);
+        iconFiles.add(await http.MultipartFile.fromPath(
+          'icons',
+          file.path,
+          filename: names[i],
+          contentType: MediaType('image', 'jpeg'),
+        ));
+      }
+
+      var uri = Uri.parse("${UrlConst.baseUrl}specialization/create");
+      var request = http.MultipartRequest('POST', uri);
+
+      // Add headers
+      request.headers['Authorization'] = 'Bearer $accessToken';
+      request.headers['content-Type'] = 'multipart/form-data';
+
+      // Add fields
+      request.fields['name'] = specializationName;
+      request.fields['createdBy'] = userId!;
+      request.fields['updatedBy'] = userId;
+
+      // Add files
+      request.files.addAll(iconFiles);
+
+      // Send the request
+      var response = await request.send();
       if (response.statusCode == 200) {
+        var responseData = await response.stream.bytesToString();
+        var jsonResponse = json.decode(responseData);
+
         showToast(
             fToast, "Specialization has been created successfully.", false);
-        Navigator.pop(context);
-        getSpecializatonList().then((val) {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => const CreateSpecializationView()));
-        });
+        getSpecializatonList().then((val) {});
       } else {
-        showToast(fToast, response.data["message"], true);
-      }
-    } on DioException catch (e) {
-      if (e.response != null) {
-        // The server responded with an error
-        showToast(fToast, e.response!.data['message'].toString(), true);
-      } else {
-        // The request was not sent due to a network issue, timeout, etc.
-        showToast(fToast, "An error occurred: ${e.message}", true);
+        var responseData = await response.stream.bytesToString();
+        var jsonResponse = json.decode(responseData);
+        showToast(fToast, jsonResponse["message"] ?? "Error occurred.", true);
       }
     } catch (e) {
-      showToast(fToast, "An unexpected error occurred", true);
+      showToast(fToast, "An unexpected error occurred: $e", true);
     }
   }
 }
